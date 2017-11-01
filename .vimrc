@@ -34,6 +34,7 @@ Plugin 'xolox/vim-easytags'
 Plugin 'morhetz/gruvbox'
 Plugin 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all'  }
 Plugin 'junegunn/fzf.vim'
+Plugin 'christoomey/vim-tmux-navigator'
 call vundle#end()
 filetype plugin indent on
 filetype indent on
@@ -125,13 +126,13 @@ let g:easytags_async=1
 au FileType *.go,*.js,*.py,*.rb,*.php BufWritePost UpdateTags
 let g:easytags_languages = {
 			\   'javascript': {
-      \     'cmd': '/usr/local/bin/jsctags',
-      \       'args': [],
-      \       'fileoutput_opt': '-f',
-      \       'stdout_opt': '-f-',
-      \       'recurse_flag': '-R'
-      \   }
-      \}
+			\     'cmd': '/usr/local/bin/jsctags',
+			\       'args': [],
+			\       'fileoutput_opt': '-f',
+			\       'stdout_opt': '-f-',
+			\       'recurse_flag': '-R'
+			\   }
+			\}
 
 set bs=2
 
@@ -139,30 +140,30 @@ set bs=2
 let g:Powerline_symbols = 'fancy'
 
 function! s:swap_lines(n1, n2)
-    let line1 = getline(a:n1)
-    let line2 = getline(a:n2)
-    call setline(a:n1, line2)
-    call setline(a:n2, line1)
+	let line1 = getline(a:n1)
+	let line2 = getline(a:n2)
+	call setline(a:n1, line2)
+	call setline(a:n2, line1)
 endfunction
 
 function! s:swap_up()
-    let n = line('.')
-    if n == 1
-        return
-    endif
+	let n = line('.')
+	if n == 1
+		return
+	endif
 
-    call s:swap_lines(n, n - 1)
-    exec n - 1
+	call s:swap_lines(n, n - 1)
+	exec n - 1
 endfunction
 
 function! s:swap_down()
-    let n = line('.')
-    if n == line('$')
-        return
-    endif
+	let n = line('.')
+	if n == line('$')
+		return
+	endif
 
-    call s:swap_lines(n, n + 1)
-    exec n + 1
+	call s:swap_lines(n, n + 1)
+	exec n + 1
 endfunction
 
 noremap <silent> <c-k> :call <SID>swap_up()<CR>
@@ -173,10 +174,29 @@ set splitbelow
 set splitright
 
 let g:ctrlp_custom_ignore = {
-  \  'dir': '(Godeps|vendor)$',
-  \  'file': '\w*[\/]tags$',
-  \ }
+			\  'dir': '(Godeps|vendor)$',
+			\  'file': '\w*[\/]tags$',
+			\ }
 
 map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 map <A-]> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 
+""" FocusMode
+function! ToggleFocusMode()
+	if (&foldcolumn != 12)
+		set laststatus=0
+		set numberwidth=10
+		set foldcolumn=12
+		set noruler
+		hi FoldColumn ctermbg=none
+		hi LineNr ctermfg=0 ctermbg=none
+		hi NonText ctermfg=0
+	else
+		set laststatus=2
+		set numberwidth=4
+		set foldcolumn=0
+		set ruler
+		execute 'colorscheme ' . g:colors_name
+	endif
+endfunc
+nnoremap <F2> :call ToggleFocusMode()<cr>

@@ -6,18 +6,14 @@ call vundle#begin()
 
 Plugin 'gmarik/Vundle.vim'
 Plugin 'mileszs/ack.vim'
-Plugin 'kien/ctrlp.vim'
-Plugin 'bling/vim-airline'
 Plugin 'Valloric/YouCompleteMe'
-Plugin 'scrooloose/nerdcommenter'
+Plugin 'tpope/vim-commentary'
+Plugin 'junegunn/goyo.vim'
 Plugin 'scrooloose/nerdtree'
 Plugin 'tpope/vim-fugitive'
 Plugin 'nathanaelkane/vim-indent-guides'
-Plugin 'digitaltoad/vim-jade'
-Plugin 'groenewege/vim-less'
 Plugin 'tpope/vim-markdown'
-Plugin 'powerline/powerline'
-Plugin 'tpope/vim-rails'
+Plugin 'vim-airline/vim-airline'
 Plugin 'tpope/vim-surround'
 Plugin 'xolox/vim-misc'
 Plugin 'fatih/vim-go'
@@ -33,6 +29,7 @@ Plugin 'gregsexton/MatchTag'
 Plugin 'xolox/vim-easytags'
 Plugin 'morhetz/gruvbox'
 Plugin 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all'  }
+       "
 Plugin 'junegunn/fzf.vim'
 Plugin 'christoomey/vim-tmux-navigator'
 call vundle#end()
@@ -77,6 +74,8 @@ set mouse=a
 set list
 set listchars=tab:\|\ 
 
+let mapleader = ","
+
 nnoremap <leader>nt :NERDTreeToggle<cr>
 
 " copy to buffer
@@ -98,15 +97,10 @@ au FileType go nmap <Leader>i <Plug>(go-info)
 "Displays interfaces that are implemented by word under cursor
 au FileType go nmap <Leader>n <Plug>(go-implements)
 au FileType go nmap <Leader>e <Plug>(go-rename)
-au FileType go nmap <Leader>r <Plug>(go-referrers)
+au FileType go nmap gf <Plug>(go-referrers)
+au FileType go nmap gi <Plug>(go-install)
 
 let g:go_fmt_command = "goimports"
-
-" Add spaces after comment delimiters by default
-let g:NERDSpaceDelims = 1
-
-" Enable trimming of trailing whitespace when uncommenting
-let g:NERDTrimTrailingWhitespace = 1
 
 " Python modifications
 " Smart indenting
@@ -136,67 +130,40 @@ let g:easytags_languages = {
 
 set bs=2
 
-" Powerline settings
-let g:Powerline_symbols = 'fancy'
-
-function! s:swap_lines(n1, n2)
-	let line1 = getline(a:n1)
-	let line2 = getline(a:n2)
-	call setline(a:n1, line2)
-	call setline(a:n2, line1)
-endfunction
-
-function! s:swap_up()
-	let n = line('.')
-	if n == 1
-		return
-	endif
-
-	call s:swap_lines(n, n - 1)
-	exec n - 1
-endfunction
-
-function! s:swap_down()
-	let n = line('.')
-	if n == line('$')
-		return
-	endif
-
-	call s:swap_lines(n, n + 1)
-	exec n + 1
-endfunction
-
-noremap <silent> <c-k> :call <SID>swap_up()<CR>
-noremap <silent> <c-j> :call <SID>swap_down()<CR>
-
 "Split options
 set splitbelow
 set splitright
 
-let g:ctrlp_custom_ignore = {
-			\  'dir': '(Godeps|vendor)$',
-			\  'file': '\w*[\/]tags$',
-			\ }
-
 map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 map <A-]> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 
-""" FocusMode
-function! ToggleFocusMode()
-	if (&foldcolumn != 12)
-		set laststatus=0
-		set numberwidth=10
-		set foldcolumn=12
-		set noruler
-		hi FoldColumn ctermbg=none
-		hi LineNr ctermfg=0 ctermbg=none
-		hi NonText ctermfg=0
-	else
-		set laststatus=2
-		set numberwidth=4
-		set foldcolumn=0
-		set ruler
-		execute 'colorscheme ' . g:colors_name
-	endif
-endfunc
-nnoremap <F2> :call ToggleFocusMode()<cr>
+Plugin 'wakatime/vim-wakatime'
+
+" FZF
+nmap ; :Buffers<CR>
+nmap <Leader>t :Files<CR>
+nmap <Leader>r :Tags<CR>
+
+" Fast import package
+" Install https://github.com/haya14busa/gopkgs & fzf
+       "
+augroup gopkgs
+   autocmd!
+     autocmd FileType go command! -buffer Import exe fzf#run({'source':'gopkgs', 'sink':'GoImport', 'option': 'm+', 'down': 30})
+       autocmd FileType go command! -buffer Doc exe fzf#run({'source':'gopkgs', 'sink':'GoImport', 'option': 'm+', 'down': 30})
+ augroup END
+
+map <Leader>q :call fzf#run({'source': 'gopkgs', 'sink':'GoImport', 'option':'m+', 'down': 30})<CR>
+
+function! ProseMode()
+	call goyo#execute(0, [])
+	set spell noci nosi noai nolist noshowmode noshowcmd
+	set complete+=s
+endfunction
+
+command! ProseMode call ProseMode()
+nmap \p :ProseMode<CR>
+
+if executable('ag')
+	let g:ackprg = 'ag --vimgrep'
+endif

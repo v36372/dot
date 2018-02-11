@@ -3,6 +3,7 @@
 
 # Vim history files
 *.un~
+*.un
 *.swp
 
 # netrw history 
@@ -10,7 +11,4 @@
 
 # ctags generated shit
 tags
-*.swp
-*.un
-*.un~
 *.pyc

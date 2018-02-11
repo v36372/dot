@@ -2,7 +2,7 @@
 	name = Tin Nguyen
 	email = nguyentrongtin2331@gmail.com
 [core]
-	excludesfile = /Users/nttin/.gitignore
+	excludesfile = /home/nttin/.gitignore_global
 	editor = vim
 [format]
 	pretty = format:%h %s (%an, %ad)
@@ -13,20 +13,15 @@
 	pr = pull --rebase
 	pom = pull origin master
 	co = checkout
-	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)%Creset' --abbrev-commit
-	hlog = log --date-order --all --graph --format='%C(green)%h %Creset%C(yellow)%an%Creset %C(blue bold)%ar%Creset %C(red bold)%d%Creset %s'
+	l = log --date-order --graph --pretty=format:'%C(green)%h %Creset%C(yellow)%an%Creset %C(blue bold)%ar%Creset %C(red bold)%d%Creset %s'
 	precommit = diff --cached --diff-algorithm=minimal -w
 	branches = branch -a
 	stashes = stash list
 	unstage = reset -q HEAD --
 	related = "!function git_related() { if git rev-list $1 | grep -q $2 ; then echo \"$2 is ancestor of $1\" ; elif git rev-list $2 | grep -q $1 ; then echo \"$1 is ancestor of $2\" ; else echo \"$1 unrelated to $2\" ; fi  } ; git_related $1 $2"
-	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)%Creset' --abbrev-commit
-	hlog = log --date-order --all --graph --format='%C(green)%h %Creset%C(yellow)%an%Creset %C(blue bold)%ar%Creset %C(red bold)%d%Creset %s'
+	hlog = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)%Creset' --abbrev-commit
+	lg = log --date-order --all --graph --format='%C(green)%h %Creset%C(yellow)%an%Creset %C(blue bold)%ar%Creset %C(red bold)%d%Creset %s'
 [color]
 	ui = auto
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
-[mergetool "sourcetree"]
-	cmd = /Users/nttin/Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
+[push]
+	default = simple

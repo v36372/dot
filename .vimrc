@@ -17,17 +17,13 @@ Plugin 'vim-airline/vim-airline'
 Plugin 'tpope/vim-surround'
 Plugin 'xolox/vim-misc'
 Plugin 'fatih/vim-go'
-Plugin 'jelera/vim-javascript-syntax'
-Plugin 'pangloss/vim-javascript'
-Plugin 'ejamesc/JavaScript-Indent'
 Plugin 'elzr/vim-json'
 Plugin 'majutsushi/tagbar'
 Plugin 'jiangmiao/auto-pairs'
-Plugin 'othree/yajs.vim', { 'for': 'javascript' }
 Plugin 'airblade/vim-gitgutter'
 Plugin 'gregsexton/MatchTag'
 Plugin 'xolox/vim-easytags'
-Plugin 'morhetz/gruvbox'
+Plugin 'nanotech/jellybeans.vim'
 Plugin 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all'  }
        "
 Plugin 'junegunn/fzf.vim'
@@ -41,7 +37,7 @@ set background=dark
 
 scriptencoding utf-8
 set modelines=0
-colorscheme gruvbox
+colorscheme jellybeans
 set autoindent noexpandtab tabstop=4 shiftwidth=4
 set encoding=utf-8
 set scrolloff=7
@@ -76,7 +72,8 @@ set listchars=tab:\|\
 
 let mapleader = ","
 
-nnoremap <leader>nt :NERDTreeToggle<cr>
+nnoremap <leader>n :NERDTreeToggle<cr>
+nnoremap <leader>f :NERDTreeFind<cr>
 
 " copy to buffer
 vmap <C-c> :w! ~/.vimbuffer<CR>
@@ -92,13 +89,11 @@ nmap <F4> :TagbarToggle<CR>
 let NERDTreeShowHidden=1
 let NERDTreeIgnore = ['\.pyc$','\.swp$', '\.un\~$', '\.DS_Store$']
 
-"display type information for word under cursor
-au FileType go nmap <Leader>i <Plug>(go-info)
-"Displays interfaces that are implemented by word under cursor
-au FileType go nmap <Leader>n <Plug>(go-implements)
-au FileType go nmap <Leader>e <Plug>(go-rename)
-au FileType go nmap gf <Plug>(go-referrers)
+au FileType go nmap ge <Plug>(go-rename)
+au FileType go nmap gr <Plug>(go-referrers)
 au FileType go nmap gi <Plug>(go-install)
+au FileType go nmap <Leader>v <Plug>(go-def-vertical)
+au FileType go nmap <Leader>s <Plug>(go-def-split)
 
 let g:go_fmt_command = "goimports"
 
@@ -140,7 +135,7 @@ map <A-]> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 Plugin 'wakatime/vim-wakatime'
 
 " FZF
-nmap ; :Buffers<CR>
+nmap <space> :Buffers<CR>
 nmap <Leader>t :Files<CR>
 nmap <Leader>r :Tags<CR>
 
@@ -153,7 +148,7 @@ augroup gopkgs
        autocmd FileType go command! -buffer Doc exe fzf#run({'source':'gopkgs', 'sink':'GoImport', 'option': 'm+', 'down': 30})
  augroup END
 
-map <Leader>q :call fzf#run({'source': 'gopkgs', 'sink':'GoImport', 'option':'m+', 'down': 30})<CR>
+map <Leader>i :call fzf#run({'source': 'gopkgs', 'sink':'GoImport', 'option':'m+', 'down': 30})<CR>
 
 function! ProseMode()
 	call goyo#execute(0, [])

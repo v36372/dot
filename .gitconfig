@@ -1,13 +1,16 @@
-[user]
-	name = Tin Nguyen
-	email = nguyentrongtin2331@gmail.com
+[includeIf "gitdir:/Users/tintnguyen/workspace/src/"]
+	path = ~/.gitconfig-personal
+[includeIf "gitdir:/Users/tintnguyen/workspace/axon/"]
+	path = ~/.gitconfig-work
 [core]
-	excludesfile = /home/nttin/.gitignore_global
+	excludesfile = /Users/tintnguyen/.gitignore_global
 	editor = vim
+	pager = diff-so-fancy | less --tabs=4 -RFX
 [format]
 	pretty = format:%h %s (%an, %ad)
 [alias]
 	st = status
+	d = diff
 	b = branch
 	p = push
 	pr = pull --rebase
@@ -22,6 +25,23 @@
 	hlog = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)%Creset' --abbrev-commit
 	lg = log --date-order --all --graph --format='%C(green)%h %Creset%C(yellow)%an%Creset %C(blue bold)%ar%Creset %C(red bold)%d%Creset %s'
 [color]
-	ui = auto
+	ui = true
 [push]
 	default = simple
+[color "diff-highlight"]
+	oldNormal = red bold
+	oldHighlight = red bold 52
+	newNormal = green bold
+	newHighlight = green bold 22
+[color "diff"]
+	meta = 11
+	frag = magenta bold
+	commit = yellow bold
+	old = red bold
+	new = green bold
+	whitespace = red reverse
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

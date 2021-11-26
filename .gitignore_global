@@ -5,6 +5,8 @@
 *.un~
 *.un
 *.swp
+.idea
+.vscode
 
 # netrw history 
 .netrwhist
@@ -12,3 +14,10 @@
 # ctags generated shit
 tags
 *.pyc
+
+media
+tags-dep
+
+node_modules
+
+*.raw

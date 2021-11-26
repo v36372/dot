@@ -6,12 +6,10 @@ call vundle#begin()
 
 Plugin 'gmarik/Vundle.vim'
 Plugin 'mileszs/ack.vim'
-Plugin 'Valloric/YouCompleteMe'
 Plugin 'scrooloose/nerdcommenter'
 
 Plugin 'scrooloose/nerdtree'
 Plugin 'tpope/vim-fugitive'
-Plugin 'nathanaelkane/vim-indent-guides'
 Plugin 'tpope/vim-markdown'
 Plugin 'tpope/vim-surround'
 Plugin 'fatih/vim-go'
@@ -30,13 +28,13 @@ Plugin 'junegunn/fzf.vim'
 Plugin 'christoomey/vim-tmux-navigator'
 Plugin 'easymotion/vim-easymotion'
 Plugin 'haya14busa/incsearch.vim'
-Plugin 'Vimjas/vim-python-pep8-indent'
 Plugin 'derekwyatt/vim-scala'
 Plugin 'tell-k/vim-autopep8'
 Plugin 'ceedubs/sbt-ctags'
 Plugin 'sainnhe/gruvbox-material'
 Plugin 'gkapfham/vim-vitamin-onec'
-Plugin 'ludokng/vim-odyssey'
+Plugin 'atahabaki/archman-vim'
+Plugin 'ycm-core/YouCompleteMe'
 
 " Plugin 'terryma/vim-smooth-scroll'
 
@@ -48,8 +46,6 @@ set autowrite
 " Fast saving
 nmap <leader>w :w!<cr>
 
-let g:deoplete#enable_at_startup = 1
-let g:indent_guides_enable_on_vim_startup = 1
 call vundle#end()
 filetype plugin indent on
 filetype indent on
@@ -59,7 +55,6 @@ set background=dark
 
 scriptencoding utf-8
 set modelines=0
-" colorscheme vitaminonec
 colorscheme odyssey
 set autoindent noexpandtab tabstop=4 shiftwidth=4
 set encoding=utf-8
@@ -119,10 +114,10 @@ set laststatus=2
 nnoremap <leader>n :NERDTreeToggle<cr>
 nnoremap <leader>f :NERDTreeFind<cr>
 
-noremap <Leader>y "*y
-noremap <Leader>p "*p
-noremap <Leader>Y "+y
-noremap <Leader>P "+p
+vmap <leader>y "*y
+noremap <leader>p "*p
+noremap <leader>Y "+y
+noremap <leader>P "+p
 
 cnoreabbrev Ack Ack!
 nnoremap <Leader>a :Ack!<Space>
@@ -233,7 +228,6 @@ endif
 
 set nocursorline
 
-let g:ycm_python_interpreter_path = '/usr/local/bin/python3'
 let g:ycm_global_ycm_extra_conf = '~/global_extra_conf.py'
 
 map /  <Plug>(incsearch-forward)

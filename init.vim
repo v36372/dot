@@ -1,4 +1,3 @@
-" Use Vim settings, rather than Vi settings (much better!).
 " This must be first, because it changes other options as a side effect.
 set nocompatible
 
@@ -48,8 +47,8 @@ set autowrite
 "set foldcolumn=4
 
 " Map leader key
-let mapleader = ","	" map leader key to ,
-let g:mapleader = ","
+let mapleader = ','
+let g:mapleader = ','
 
 " Fast saving
 nmap <leader>w :w!<cr>
@@ -212,11 +211,11 @@ vnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Moving around, tabs, windows and buffers
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-map <silent> <leader><cr> :noh<cr>
-map <silent> <leader>s :syntax sync fromstart<cr>
+" map <silent> <leader><cr> :noh<cr>
+" map <silent> <leader>s :syntax sync fromstart<cr>
 
 " Remap to toggle between the current and the alternate file
-map <leader>e <C-^>
+" map <leader>e <C-^>
 
 " Move between windows
 map <C-j> <C-W>j
@@ -252,7 +251,7 @@ au TabLeave * let g:lasttab = tabpagenr()
 
 " Opens a new tab with the current buffer's path
 " Super useful when editing files in the same directory
-map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
+map <leader>e :tabedit <c-r>=expand("%:p:h")<cr>/
 
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
@@ -326,93 +325,42 @@ set signcolumn=yes
 set rtp+=/usr/local/lib/python2.7/dist-packages/powerline/bindings/vim/
 
 call plug#begin('~/.vim/plugged')
-"Plug 'mattn/emmet-vim'
-"Plug 'dracula/vim'
 Plug 'scrooloose/nerdtree'
-" Disable due to bad performance https://github.com/Xuyuanp/nerdtree-git-plugin/issues/76
-" Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'scrooloose/nerdcommenter'
-Plug 'tyok/nerdtree-ack'
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'terryma/vim-multiple-cursors'
-"Plug 'scrooloose/syntastic'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-git'
-Plug 'tpope/vim-obsession'
+Plug 'lewis6991/moonlight.vim'
 Plug 'tpope/vim-surround'
-if has('nvim')
-  Plug 'fatih/vim-go'
-  Plug 'sebdah/vim-delve'
-  Plug 'SirVer/ultisnips'
-endif
+Plug 'SirVer/ultisnips'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-"Plug 'morhetz/gruvbox'
-"Plug 'chriskempson/base16-vim'
-"Plug 'ayu-theme/ayu-vim'
-Plug 'nsf/gocode', { 'rtp': 'nvim', 'do': '~/.config/nvim/plugged/gocode/nvim/symlink.sh' }
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'othree/html5.vim'
-Plug 'maksimr/vim-jsbeautify'
-Plug 'ludovicchabant/vim-gutentags'
-"Plug 'elzr/vim-json'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-"Plug 'wellle/tmux-complete.vim'
+Plug 'wellle/tmux-complete.vim'
+" Plug 'ryanoasis/vim-devicons'
 Plug 'ervandew/supertab'
+Plug 'wellle/visual-split.vim'
 Plug 'honza/vim-snippets'
-"Plug 'FuzzyFinder'
 Plug 'jiangmiao/auto-pairs'
-"Plug 'easymotion/vim-easymotion'
+Plug 'tpope/vim-unimpaired'
+Plug 'maxbrunsfeld/vim-yankstack'
 Plug 'majutsushi/tagbar'
 Plug 'Shougo/echodoc.vim'
 Plug 'godlygeek/tabular'
-"Plug 'plasticboy/vim-markdown'
 Plug 'mileszs/ack.vim'
-"Plug 'johngrib/vim-game-code-break'
-" Plug 'w0rp/ale'
 Plug 'airblade/vim-gitgutter'
-Plug 'pangloss/vim-javascript'
-Plug 'moll/vim-node'
 Plug 'w0rp/ale'
-"Plug 'digitaltoad/vim-pug'
-"Plug 'mustache/vim-mustache-handlebars'
-Plug 'Chiel92/vim-autoformat'
-Plug 'posva/vim-vue'
-"Plug 'sbdchd/neoformat'
-"Plug 'ryanoasis/vim-devicons'
-"Plug 'vim-utils/vim-ruby-fold'
-Plug 'isRuslan/vim-es6'
-"Plug 'ternjs/tern_for_vim'
+Plug 'fatih/vim-go'
 Plug 'Yggdroot/indentLine'
-"Plug 'sonph/onehalf'
+Plug 'garbas/vim-snipmate'
+Plug 'MarcWeber/vim-addon-mw-utils'
+Plug 'tomtom/tlib_vim'
 Plug 'drewtempelmeyer/palenight.vim'
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
-" RUBY 
-" 
-Plug 'tpope/vim-rails'
-Plug 'vim-ruby/vim-ruby'
-Plug 'tpope/vim-rbenv'
-Plug 'tpope/vim-bundler'
-Plug 'tpope/vim-endwise'
-Plug 'ruby-formatter/rufo-vim'
-Plug 'ngmy/vim-rubocop'
-Plug 'danchoi/ri.vim'
-Plug 'noprompt/vim-yardoc'
-
-" Rust
-Plug 'rust-lang/rust.vim'
-
-Plug 'editorconfig/editorconfig-vim'
-
-" Ansible
-Plug 'pearofducks/ansible-vim'
-" DBML
-Plug 'jidn/vim-dbml'
-
 Plug 'cespare/vim-toml'
 
 " Install L9 and avoid a Naming conflict if you've already installed a
@@ -421,28 +369,29 @@ Plug 'ascenator/L9', {'name': 'newL9'}
 
 " Autocompletion
 if has('nvim') && has('python3')
-  "Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
   "Plug 'zchee/deoplete-go', { 'do': 'make'}
   "Plug 'fishbullet/deoplete-ruby'
-  "Plug 'Shougo/neosnippet'
-  "Plug 'Shougo/neosnippet-snippets'
-  Plug 'roxma/nvim-yarp'
+  Plug 'Shougo/neosnippet'
+  Plug 'Shougo/neosnippet-snippets'
   "Plug 'autozimu/LanguageClient-neovim', {
   "  \ 'branch': 'next',
   "  \ 'do': 'bash install.sh',
   "  \ }
 
 else
+  Plug 'Shougo/deoplete.nvim'
+  Plug 'roxma/nvim-yarp'
   Plug 'roxma/vim-hug-neovim-rpc'
 endif
 
-Plug 'cakebaker/scss-syntax.vim'
+" Plug 'cakebaker/scss-syntax.vim'
 
 call plug#end()
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Theme
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-colorscheme palenight
+colorscheme moonlight
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Plugin config
@@ -522,35 +471,36 @@ command! -bang -nargs=* Ag
 " Advanced customization using autoload functions
 inoremap <expr> <c-x><c-k> fzf#vim#complete#word({'left': '15%'})
 
-" Map Ctrl + p to FZF
-map <C-p> :FZF<cr>
-map <C-b> :FzfBTags<cr>
+" Map Ctrl + f to FZF
+map <C-f> :FZF<cr>
+" map <C-b> :FzfBTags<cr>
 
 " Map Ctrl + a to set Ansible file type
-map <C-a> :set ft=yaml.ansible<cr>
+" map <C-a> :set ft=yaml.ansible<cr>
 
 " Map Leader _+ p to FzfBuffer
 map <space> :FzfBuffers<cr>
 
-let g:fzf_tags_command = 'ctags -R'
+" let g:fzf_tags_command = 'ctags -R'
 
 """"""""""""""""""""""""
 """ Fzf.vim
-command! -bang -nargs=* Rg call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, {'options': '--delimiter : --nth 4..'}, <bang>0)
+" command! -bang -nargs=* Rg call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, {'options': '--delimiter : --nth 4..'}, <bang>0)
 "command! -bang -nargs=* Rg
 "  \ call fzf#vim#grep(
 "  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
 "  \   <bang>0 ? fzf#vim#with_preview('up:60%')
 "  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
 "  \   <bang>0)
-nnoremap <C-f> :Rg<Cr>
+" nnoremap <C-f> :Rg<Cr>
 
 """"""""
 " NERDCommenter
 filetype plugin on
 
 " Add spaces after comment delimiters by default
-let g:NERDSpaceDelims = 1
+ let g:NERDSpaceDelims = 1
+ let g:NERDTreeIgnore = ['^cpp', '^python']
 
 " Enable trimming of trailing whitespace when uncommenting
 let g:NERDTrimTrailingWhitespace = 1
@@ -562,37 +512,38 @@ vmap <C-_>   <Plug>NERDCommenterToggle<CR>gv
 """""""""""""""""""""""""""""""""""""
 """ NERDTree
 " Map Toggle NERDTree
-map <Leader>n :NERDTreeToggle<CR>
+ map <Leader>n :NERDTreeToggle<CR>
 
-" Open current file in NERDTree
-map <Leader>F :NERDTreeFind<CR>
+ "Open current file in NERDTree
+ map <Leader>f :NERDTreeFind<CR>
 
 "Remap key to split screen
-let NERDTreeMapOpenVSplit='<C-v>'
-let NERDTreeMapOpenSplit='<C-x>'
-let NERDTreeMapOpenInTab='<C-t>'
-let NERDTreeMinimalUI = 1
-let NERDTreeDirArrows = 1
+ let NERDTreeMapOpenVSplit='<C-v>'
+ let NERDTreeMapOpenSplit='<C-x>'
+ let NERDTreeMapOpenInTab='<C-t>'
+ let NERDTreeMinimalUI = 1
+ let NERDTreeDirArrows = 1
+ let NERDTreeWinSize = 60
 
-" open NERDTree automatically on vim start, even if no file is specified
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+ "open NERDTree automatically on vim start, even if no file is specified
+ autocmd StdinReadPre * let s:std_in=1
+ autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 
-" Auto close NERDTree if it is the last and only buffer
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+ "Auto close NERDTree if it is the last and only buffer
+ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
-" Prevent FZF open file in NERDTree
-autocmd VimEnter * nnoremap <silent> <expr> <C-p> (expand('%') =~ 'NERD_tree' ? "\<c-w>\<c-w>" : '').":FZF\<cr>"
+ "Prevent FZF open file in NERDTree
+ autocmd VimEnter * nnoremap <silent> <expr> <C-p> (expand('%') =~ 'NERD_tree' ? "\<c-w>\<c-w>" : '').":FZF\<cr>"
 
-" Remap next hunk
-let g:NERDTreeMapNextHunk = '<leader>j'
-let g:NERDTreeMapPrevHunk = '<leader>k'
+ "Remap next hunk
+ " let g:NERDTreeMapNextHunk = '<leader>j'
+ " let g:NERDTreeMapPrevHunk = '<leader>k'
 
 """""""""""""""""""""""
 """ Deoplete
-"let g:deoplete#enable_at_startup=1
-"let g:deoplete#enable_smart_case = 1
-"call deoplete#custom#option('auto_complete_delay', 400)
+let g:deoplete#enable_at_startup=1
+" let g:deoplete#enable_smart_case = 1
+call deoplete#custom#option('auto_complete_delay', 400)
 
 
 " Disable deoplete when in multi cursor mode
@@ -622,50 +573,50 @@ autocmd FileType cpp setlocal expandtab tabstop=4 shiftwidth=4
 
 """""""""""""""""""""""
 """ Supertab
-let g:SuperTabDefaultCompletionType = '<C-n>'
+let g:SuperTabDefaultCompletionType = '<c-n>'
 
 """""""""""""""""""""""
 " Go config (vims-go)
 "map <Leader>] :cnext<CR>
 "map <Leader>[ :cprevious<CR>
-nnoremap <Esc> :pc<CR> :cclose<CR>
-autocmd FileType go nmap <leader>b  <Plug>(go-build)
-autocmd FileType go nmap <leader>r  <Plug>(go-run)
-let g:go_fmt_command = "goimports"
-let g:go_fmt_autosave = 1
-let g:go_snippet_case_type = "camelcase"
-let g:go_highlight_types = 1
-let g:go_highlight_structs = 1
-let g:go_highlight_fields = 1
-let g:go_highlight_functions = 1
-let g:go_highlight_methods = 1
-let g:go_highlight_operators = 1
-let g:go_highlight_extra_types = 1
-let g:go_highlight_build_constraints = 1
-let g:go_metalinter_enabled = ['vet', 'errcheck']
-let g:go_metalinter_autosave = 1
-let g:go_metalinter_autosave_enabled = ['vet']
-let g:syntastic_go_checkers = ['govet', 'errcheck']
-let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
-let g:syntastic_aggregate_errors = 1
-let g:go_list_type = "quickfix"
-let g:go_auto_type_info = 1
-set updatetime=100
-let g:go_auto_sameids = 1
-au FileType go nmap gi <Plug>(go-install)
-au FileType go nmap gt <Plug>(go-test)
-let g:go_def_mode='gopls'
-let g:go_info_mode='gopls'
+" nnoremap <Esc> :pc<CR> :cclose<CR>
+" autocmd FileType go nmap <leader>b  <Plug>(go-build)
+" autocmd FileType go nmap <leader>r  <Plug>(go-run)
+" let g:go_fmt_command = "goimports"
+" let g:go_fmt_autosave = 1
+" let g:go_snippet_case_type = "camelcase"
+" let g:go_highlight_types = 1
+" let g:go_highlight_structs = 1
+" let g:go_highlight_fields = 1
+" let g:go_highlight_functions = 1
+" let g:go_highlight_methods = 1
+" let g:go_highlight_operators = 1
+" let g:go_highlight_extra_types = 1
+" let g:go_highlight_build_constraints = 1
+" let g:go_metalinter_enabled = ['vet', 'errcheck']
+" let g:go_metalinter_autosave = 1
+" let g:go_metalinter_autosave_enabled = ['vet']
+" let g:syntastic_go_checkers = ['govet', 'errcheck']
+" let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
+" let g:syntastic_aggregate_errors = 1
+" let g:go_list_type = "quickfix"
+" let g:go_auto_type_info = 1
+" set updatetime=100
+" let g:go_auto_sameids = 1
+" au FileType go nmap gi <Plug>(go-install)
+" au FileType go nmap gt <Plug>(go-test)
+" let g:go_def_mode='gopls'
+" let g:go_info_mode='gopls'
 
 " Fast import package
 " Install https://github.com/haya14busa/gopkgs & fzf
-augroup gopkgs
-  autocmd!
-  autocmd FileType go command! -buffer Import exe fzf#run({'source': 'gopkgs', 'sink':'GoImport', 'option': 'm+', 'down': 30})
-  autocmd FileType go command! -buffer Doc exe fzf#run({'source': 'gopkgs', 'sink':'GoImport', 'option': 'm+', 'down': 30})
-augroup END
+" augroup gopkgs
+  " autocmd!
+  " autocmd FileType go command! -buffer Import exe fzf#run({'source': 'gopkgs', 'sink':'GoImport', 'option': 'm+', 'down': 30})
+  " autocmd FileType go command! -buffer Doc exe fzf#run({'source': 'gopkgs', 'sink':'GoImport', 'option': 'm+', 'down': 30})
+" augroup END
 
-map <Leader>i :call fzf#run({'source': 'gopkgs', 'sink':'GoImport', 'option': 'm+', 'down': 30})<CR>
+" map <Leader>i :call fzf#run({'source': 'gopkgs', 'sink':'GoImport', 'option': 'm+', 'down': 30})<CR>
 
 
 """""""""""""""""""""""""""""""
@@ -673,71 +624,6 @@ map <Leader>i :call fzf#run({'source': 'gopkgs', 'sink':'GoImport', 'option': 'm
 
 " Map F8 to toggle Tagbar
 nmap <F8> :TagbarToggle<CR>
-
-" Tagbar for go
-let g:tagbar_type_go = {
-    \ 'ctagstype' : 'go',
-    \ 'kinds'     : [
-        \ 'p:package',
-        \ 'i:imports:1',
-        \ 'c:constants',
-        \ 'v:variables',
-        \ 't:types',
-        \ 'n:interfaces',
-        \ 'w:fields',
-        \ 'e:embedded',
-        \ 'm:methods',
-        \ 'r:constructor',
-        \ 'f:functions'
-    \ ],
-    \ 'sro' : '.',
-    \ 'kind2scope' : {
-        \ 't' : 'ctype',
-        \ 'n' : 'ntype'
-    \ },
-    \ 'scope2kind' : {
-        \ 'ctype' : 't',
-        \ 'ntype' : 'n'
-    \ },
-    \ 'ctagsbin'  : 'gotags',
-    \ 'ctagsargs' : '-sort -silent'
-    \ }
-
-let g:tagbar_type_ruby = {
-    \ 'kinds' : [
-        \ 'm:modules',
-        \ 'c:classes',
-        \ 'd:describes',
-        \ 'C:contexts',
-        \ 'f:methods',
-        \ 'F:singleton methods'
-    \ ]
-    \ }
-
-let g:tagbar_type_markdown = {
-    \ 'ctagstype' : 'markdown',
-    \ 'kinds' : [
-        \ 'h:Heading_L1',
-        \ 'i:Heading_L2',
-        \ 'k:Heading_L3'
-    \ ]
-    \ }
-
-if executable('ripper-tags')
-  let g:tagbar_type_ruby = {
-      \ 'kinds'      : ['m:modules',
-                      \ 'c:classes',
-                      \ 'C:constants',
-                      \ 'F:singleton methods',
-                      \ 'f:methods',
-                      \ 'a:aliases'],
-      \ 'kind2scope' : { 'c' : 'class',
-                       \ 'm' : 'class' },
-      \ 'scope2kind' : { 'class' : 'c' },
-      \ 'ctagsbin'   : 'ripper-tags',
-      \ 'ctagsargs'  : ['-f', '-']
-      \ }
-endif
 
 """""""""""""""""""""""
 """ Easy motion
@@ -752,15 +638,6 @@ endif
 " gitgutter
 nmap <Leader>j <Plug>(GitGutterNextHunk)
 nmap <Leader>k <Plug>(GitGutterPrevHunk)
-" Put this in vimrc or a plugin file of your own.
-" After this is configured, :ALEFix will try and fix your JS code with ESLint.
-let g:ale_linter_aliases = {'vue': ['vue', 'javascript']}
-let g:ale_linters = {'vue': ['eslint', 'vls']}
-let g:ale_fixers = {
-\   'javascript': ['eslint'],
-\ 'vue': ['eslint']
-\}
-
 " Set this setting in vimrc if you want to fix files automatically on save.
 " This is off by default.
 let g:ale_fix_on_save = 1
@@ -770,34 +647,6 @@ let g:autoformat_autoindent = 0
 let g:autoformat_retab = 0
 let g:autoformat_remove_trailing_spaces = 0
 
-autocmd FileType html.handlebars let b:autoformat_autoindent=1
-autocmd FileType html let b:autoformat_autoindent=1
-autocmd FileType vue let b:autoformat_autoindent=1
-
-".vimrc
-"map <c-f> :call JsBeautify()<cr>
-" or
-"autocmd FileType javascript noremap <buffer>  <c-f> :call JsBeautify()<cr>
-"" for json
-"autocmd FileType json noremap <buffer> <c-f> :call JsonBeautify()<cr>
-"" for jsx
-"autocmd FileType jsx noremap <buffer> <c-f> :call JsxBeautify()<cr>
-"" for html
-"autocmd FileType html noremap <buffer> <c-f> :call HtmlBeautify()<cr>
-"" for css or scss
-"autocmd FileType css noremap <buffer> <c-f> :call CSSBeautify()<cr>
-
-augroup filetype javascript syntax=javascript
-
-" rufo
-"let g:rufo_auto_formatting = 1
-map <leader>r :Rufo<cr>
-
-set tags=./tags;,./gems.tags;
-
-" ruby-fold
-"let g:ruby_fold_lines_limit = 200
-
 " devicons
 "set guifont=DroidSansMono\ Nerd\ Font:h11
 
@@ -805,22 +654,17 @@ set tags=./tags;,./gems.tags;
 "let g:indentLine_char = '│'
 "let g:indentLine_setColors = 0
 "let g:indentLine_color_term = 239
-"let g:indentLine_concealcursor = 'inc'
-"let g:indentLine_conceallevel = 2
+" let g:indentLine_concealcursor = 'inc'
+" let g:indentLine_conceallevel = 2
 
-let g:indentLine_concealcursor="nc"
-"let g:indentLine_char = '│'
+" let g:indentLine_concealcursor="nc"
+let g:indentLine_char = '┊'
 let g:indentLine_color_gui = '#444444'
-"let g:indentLine_concealcursor=0
+let g:indentLine_concealcursor=0
 "let g:indentLine_bgcolor_gui = '#FF5F00'
 "let g:indentLine_fileTypeExclude=['tex', 'json']
 let g:indentLine_setColors=1
 
-" vue language server 
-"let g:LanguageClient_serverCommands = {
-"    \ 'vue': ['vls']
-"    \ }
-"let ayucolor="mirage"
 let g:palenight_terminal_italics=1
 let g:fzf_colors = { 'hl': ['fg', 'Comment'] }
 
@@ -830,35 +674,10 @@ set t_ZR=[23m
 highlight Comment cterm=italic
 highlight Comment gui=italic
 
-" Fold
-au FileType ruby setlocal foldmethod=indent foldnestmax=4 foldlevelstart=1
-"au FileType go setlocal foldmethod=indent foldnestmax=4 foldlevelstart=1
-
-" Alt 
-" Run a given vim command on the results of alt from a given path.
-" See usage below.
-function! AltCommand(path, vim_command)
-  let l:alternate = system("alt " . a:path)
-  if empty(l:alternate)
-    echo "No alternate file for " . a:path . " exists!"
-  else
-    exec a:vim_command . " " . l:alternate
-  endif
-endfunction
-
-" Find the alternate file for the current path and open it
-nnoremap <leader>. :w<cr>:call AltCommand(expand('%'), ':e')<cr>
-
-" ctags
-" Open the definition in a vertical split
-map <Leader>] :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
-nnoremap <leader>d :call fzf#vim#tags(expand('<cword>'), {'options': '--exact --select-1 --exit-0'})<CR>
-nnoremap <C-p> :call fzf#vim#tags(expand('<cword>'), {'options': '--exact --select-1'})<CR>
-
 " coc highlight
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
 "rust
-let g:rustfmt_autosave = 1
-autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/,$RUST_SRC_PATH/rusty-tags.vi
-autocmd BufWritePost *.rs :silent! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&" | redraw!
+" let g:rustfmt_autosave = 1
+nmap <leader>r <Plug>yankstack_substitute_older_paste
+nmap <leader>R <Plug>yankstack_substitute_newer_paste

@@ -360,7 +360,7 @@ Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'tomtom/tlib_vim'
 Plug 'drewtempelmeyer/palenight.vim'
 
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'cespare/vim-toml'
 
 " Install L9 and avoid a Naming conflict if you've already installed a
@@ -368,22 +368,22 @@ Plug 'cespare/vim-toml'
 Plug 'ascenator/L9', {'name': 'newL9'}
 
 " Autocompletion
-if has('nvim') && has('python3')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-  "Plug 'zchee/deoplete-go', { 'do': 'make'}
-  "Plug 'fishbullet/deoplete-ruby'
-  Plug 'Shougo/neosnippet'
-  Plug 'Shougo/neosnippet-snippets'
-  "Plug 'autozimu/LanguageClient-neovim', {
-  "  \ 'branch': 'next',
-  "  \ 'do': 'bash install.sh',
-  "  \ }
+" if has('nvim') && has('python3')
+  " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+  " "Plug 'zchee/deoplete-go', { 'do': 'make'}
+  " "Plug 'fishbullet/deoplete-ruby'
+  " Plug 'Shougo/neosnippet'
+  " Plug 'Shougo/neosnippet-snippets'
+  " "Plug 'autozimu/LanguageClient-neovim', {
+  " "  \ 'branch': 'next',
+  " "  \ 'do': 'bash install.sh',
+  " "  \ }
 
-else
-  Plug 'Shougo/deoplete.nvim'
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
-endif
+" else
+  " Plug 'Shougo/deoplete.nvim'
+  " Plug 'roxma/nvim-yarp'
+  " Plug 'roxma/vim-hug-neovim-rpc'
+" endif
 
 " Plug 'cakebaker/scss-syntax.vim'
 
@@ -425,7 +425,7 @@ let g:airline#extensions#tabline#buffer_idx_mode = 1
 let g:airline#extensions#ale#enabled = 1
 
 " enable/disable coc integration >
-let g:airline#extensions#coc#enabled = 1
+" let g:airline#extensions#coc#enabled = 1
 
 " Fast moving tab airline
 nmap <leader>1 <Plug>AirlineSelectTab1
@@ -541,29 +541,29 @@ vmap <C-_>   <Plug>NERDCommenterToggle<CR>gv
 
 """""""""""""""""""""""
 """ Deoplete
-let g:deoplete#enable_at_startup=1
-" let g:deoplete#enable_smart_case = 1
-call deoplete#custom#option('auto_complete_delay', 400)
+" let g:deoplete#enable_at_startup=1
+" " let g:deoplete#enable_smart_case = 1
+" call deoplete#custom#option('auto_complete_delay', 400)
 
 
 " Disable deoplete when in multi cursor mode
-function! Multiple_cursors_before()
-    let b:deoplete_disable_auto_complete = 1
-endfunction
-function! Multiple_cursors_after()
-    let b:deoplete_disable_auto_complete = 0
-endfunction
+" function! Multiple_cursors_before()
+    " let b:deoplete_disable_auto_complete = 1
+" endfunction
+" function! Multiple_cursors_after()
+    " let b:deoplete_disable_auto_complete = 0
+" endfunction
 
 set completeopt+=noinsert
 set completeopt+=preview
 
 """""""""""""""""""""""
 """ UtilSnip
-if has('nvim')
-  let g:UltiSnipsExpandTrigger="<tab>"
-  let g:UltiSnipsJumpForwardTrigger="<tab>"
-  let g:UltiSnipsJumpBackwardTrigger="<c-z>"
-endif
+" if has('nvim')
+  " let g:UltiSnipsExpandTrigger="<tab>"
+  " let g:UltiSnipsJumpForwardTrigger="<tab>"
+  " let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+" endif
 
 
 """""""""""""""""""""""
@@ -577,46 +577,46 @@ let g:SuperTabDefaultCompletionType = '<c-n>'
 
 """""""""""""""""""""""
 " Go config (vims-go)
-"map <Leader>] :cnext<CR>
-"map <Leader>[ :cprevious<CR>
-" nnoremap <Esc> :pc<CR> :cclose<CR>
-" autocmd FileType go nmap <leader>b  <Plug>(go-build)
-" autocmd FileType go nmap <leader>r  <Plug>(go-run)
-" let g:go_fmt_command = "goimports"
-" let g:go_fmt_autosave = 1
-" let g:go_snippet_case_type = "camelcase"
-" let g:go_highlight_types = 1
-" let g:go_highlight_structs = 1
-" let g:go_highlight_fields = 1
-" let g:go_highlight_functions = 1
-" let g:go_highlight_methods = 1
-" let g:go_highlight_operators = 1
-" let g:go_highlight_extra_types = 1
-" let g:go_highlight_build_constraints = 1
-" let g:go_metalinter_enabled = ['vet', 'errcheck']
-" let g:go_metalinter_autosave = 1
-" let g:go_metalinter_autosave_enabled = ['vet']
-" let g:syntastic_go_checkers = ['govet', 'errcheck']
-" let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
-" let g:syntastic_aggregate_errors = 1
-" let g:go_list_type = "quickfix"
-" let g:go_auto_type_info = 1
-" set updatetime=100
-" let g:go_auto_sameids = 1
-" au FileType go nmap gi <Plug>(go-install)
-" au FileType go nmap gt <Plug>(go-test)
-" let g:go_def_mode='gopls'
-" let g:go_info_mode='gopls'
+map <Leader>] :cnext<CR>
+map <Leader>[ :cprevious<CR>
+nnoremap <Esc> :pc<CR> :cclose<CR>
+autocmd FileType go nmap <leader>b  <Plug>(go-build)
+autocmd FileType go nmap <leader>r  <Plug>(go-run)
+let g:go_fmt_command = "goimports"
+let g:go_fmt_autosave = 1
+let g:go_snippet_case_type = "camelcase"
+let g:go_highlight_types = 1
+let g:go_highlight_structs = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_extra_types = 1
+let g:go_highlight_build_constraints = 1
+let g:go_metalinter_enabled = ['vet', 'errcheck']
+let g:go_metalinter_autosave = 1
+let g:go_metalinter_autosave_enabled = ['vet']
+let g:syntastic_go_checkers = ['govet', 'errcheck']
+let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
+let g:syntastic_aggregate_errors = 1
+let g:go_list_type = "quickfix"
+let g:go_auto_type_info = 1
+set updatetime=100
+let g:go_auto_sameids = 1
+au FileType go nmap gi <Plug>(go-install)
+au FileType go nmap gt <Plug>(go-test)
+let g:go_def_mode='gopls'
+let g:go_info_mode='gopls'
 
 " Fast import package
 " Install https://github.com/haya14busa/gopkgs & fzf
-" augroup gopkgs
-  " autocmd!
-  " autocmd FileType go command! -buffer Import exe fzf#run({'source': 'gopkgs', 'sink':'GoImport', 'option': 'm+', 'down': 30})
-  " autocmd FileType go command! -buffer Doc exe fzf#run({'source': 'gopkgs', 'sink':'GoImport', 'option': 'm+', 'down': 30})
-" augroup END
+augroup gopkgs
+  autocmd!
+  autocmd FileType go command! -buffer Import exe fzf#run({'source': 'gopkgs', 'sink':'GoImport', 'option': 'm+', 'down': 30})
+  autocmd FileType go command! -buffer Doc exe fzf#run({'source': 'gopkgs', 'sink':'GoImport', 'option': 'm+', 'down': 30})
+augroup END
 
-" map <Leader>i :call fzf#run({'source': 'gopkgs', 'sink':'GoImport', 'option': 'm+', 'down': 30})<CR>
+map <Leader>i :call fzf#run({'source': 'gopkgs', 'sink':'GoImport', 'option': 'm+', 'down': 30})<CR>
 
 
 """""""""""""""""""""""""""""""
@@ -675,7 +675,7 @@ highlight Comment cterm=italic
 highlight Comment gui=italic
 
 " coc highlight
-autocmd CursorHold * silent call CocActionAsync('highlight')
+" autocmd CursorHold * silent call CocActionAsync('highlight')
 
 "rust
 " let g:rustfmt_autosave = 1

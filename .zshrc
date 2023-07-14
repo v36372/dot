@@ -1,11 +1,24 @@
 # If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH=$HOME/bin:/usr/local/bin:$HOME/.cargo/bin:$PATH
 export CLICOLOR=1
 export LSCOLORS=GxFxCxDxBxegedabagaced
-export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin:/usr/local/mysql/bin:/Users/tintnguyen/.fzf/bin
+export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin:/usr/local/mysql/bin:/Users/tintnguyen/.fzf/bin:/Users/v36372/go/bin:/Users/v36372/Library/Python/2.7/bin
+alias python3=/usr/local/opt/python@3.10/bin/python3
+alias t="todo.sh"
+alias ta=AddNewTaskWithPriC
+alias tl="todo.sh listall"
+alias td="todo.sh do"
+alias tr="todo.sh report"
+alias tp="todo.sh pri"
+alias tdel="todo.sh -f del"
+
+function AddNewTaskWithPriC()
+{
+  todo.sh -tAf add "$1" | head -1 | awk '{print $1}' | xargs -t -I {} todo.sh pri {} C
+}
 
 setopt PROMPT_SUBST
-PROMPT='${(%):-%~} '
+PROMPT='%F{red}%n%f:${(%):-%~} '
 
 HISTFILE="$HOME/.zsh_history"
 HISTsIZE=10000000
@@ -27,20 +40,14 @@ setopt HIST_BEEP
 # FZF
 source $HOME/.fzf.zsh
 
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+export PATH="/usr/local/opt/python@3.10/bin:$PATH"
+. $HOME/.cargo/env
 
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/v36372/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/v36372/Downloads/google-cloud-sdk/path.zsh.inc'; fi
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/Users/tintnguyen/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/Users/tintnguyen/miniconda3/etc/profile.d/conda.sh" ]; then
-        . "/Users/tintnguyen/miniconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/Users/tintnguyen/miniconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/v36372/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/v36372/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
 
+export GOTESTS_TEMPLATE=testify

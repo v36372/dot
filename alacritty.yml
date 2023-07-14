@@ -11,14 +11,23 @@
 # check the local terminfo database and use `alacritty` if it is
 # available, otherwise `xterm-256color` is used.
 #TERM: xterm-256color
+env:
+  TERM: xterm-256color
+import:
+  # uncomment the flavour you want below:
+  - ~/.config/alacritty/catppuccin/catppuccin-mocha.yml
+#  - ~/.config/alacritty/catppuccin/catppuccin-macchiato.yml
+#  - ~/.config/alacritty/catppuccin/catppuccin-frappe.yml
+#  - ~/.config/alacritty/catppuccin/catppuccin-latte.yml
+theme: catppuccin-mocha
 window:
   # Window dimensions (changes require restart)
   #
   # Specified in number of columns/lines, not pixels.
   # If both are `0`, this setting is ignored.
   dimensions:
-    columns: 256
-    lines: 128
+    columns: 144
+    lines: 32
 
   # Window position (changes require restart)
   #
@@ -32,8 +41,8 @@ window:
   # Blank space added around the window in pixels. This padding is scaled
   # by DPI and the specified value is always added at both opposing sides.
   padding:
-    x: 10
-    y: 10
+    x: 5
+    y: 5
 
   # Spread additional padding evenly around the terminal content.
   dynamic_padding: false
@@ -47,7 +56,7 @@ window:
   # Values for `decorations` (macOS only):
   #     - transparent: Title bar, transparent background and title bar buttons
   #     - buttonless: Title bar, transparent background, but no title bar buttons
-  decorations: full
+  decorations: buttonless
 
   # When true, alacritty starts maximized.
   #start_maximized: false
@@ -79,39 +88,24 @@ scrolling:
 # change the `it` value in terminfo when altering this setting.
 # Font configuration (changes require restart)
 font:
-
   # Normal (roman) font face
-  normal:
-    # Font family
-    #
-    # Default:
-    #   - (macOS) Menlo
-    #   - (Linux) monospace
-    #   - (Windows) Consolas
-    family: Hack
-    # The `style` can be specified to pick a specific face.
-    #style: Regular
-    # Bold font face
-    #bold:
-    # Font family
-    #
-    # If the bold family is not specified, it will fall back to the
-    # value specified for the normal font.
-    #family: monospace
-    # The `style` can be specified to pick a specific face.
-    #style: Bold
-    # Italic font face
-    #italic:
-    # Font family
-    #
-    # If the italic family is not specified, it will fall back to the
-    # value specified for the normal font.
-    #family: monospace
-    # The `style` can be specified to pick a specific face.
-    #style: Italic
+  size: 12
 
-  # Point size
-  size: 14.0
+  normal:
+    family: JetBrainsMono Nerd Font
+    style: Medium
+
+  bold:
+    family: JetBrainsMono Nerd Font
+    style: Extra Bold
+
+  italic:
+    family: JetBrainsMono Nerd Font
+    style: Medium Italic
+
+  bold_italic:
+    family: JetBrainsMono Nerd Font
+    style: Extra Bold Italic
 
   # Offset is the extra space around each character. `offset.y` can be thought of
   # as modifying the line spacing, and `offset.x` as modifying the letter spacing.
@@ -140,7 +134,6 @@ font:
   #
   # This is a global setting and will require a log out or restart to take
   # effect.
-  use_thin_strokes: true
 
 debug:
   # Display the time it takes to redraw each frame.
@@ -170,33 +163,38 @@ debug:
 draw_bold_text_with_bright_colors: true
 
 # Colors (Tomorrow Night Bright)
+#
 colors:
-  name: Chalk (dark)
-  author: Chris Kempson
+  # Default colors
   primary:
-    background: "#151515"
-    foreground: "#d0d0d0"
-  cursor:
-    text: "#151515"
-    cursor: "#d0d0d0"
+    background: "0x222436"
+    foreground: "0xc8d3f5"
+
+  # Normal colors
   normal:
-    black: "#151515"
-    red: "#fb9fb1"
-    green: "#acc267"
-    yellow: "#ddb26f"
-    blue: "#6fc2ef"
-    magenta: "#e1a3ee"
-    cyan: "#12cfc0"
-    white: "#d0d0d0"
+    black: "0x1b1d2b"
+    red: "0xff757f"
+    green: "0xc3e88d"
+    yellow: "0xffc777"
+    blue: "0x82aaff"
+    magenta: "0xc099ff"
+    cyan: "0x86e1fc"
+    white: "0x828bb8"
+
+  # Bright colors
   bright:
-    black: "#505050"
-    red: "#fb9fb1"
-    green: "#acc267"
-    yellow: "#ddb26f"
-    blue: "#6fc2ef"
-    magenta: "#e1a3ee"
-    cyan: "#12cfc0"
-    white: "#f5f5f5"
+    black: "0x444a73"
+    red: "0xff757f"
+    green: "0xc3e88d"
+    yellow: "0xffc777"
+    blue: "0x82aaff"
+    magenta: "0xc099ff"
+    cyan: "0x86e1fc"
+    white: "0xc8d3f5"
+
+  indexed_colors:
+    - { index: 16, color: "0xff966c" }
+    - { index: 17, color: "0xc53b53" }
 
 # Visual Bell
 #
@@ -222,13 +220,13 @@ colors:
 visual_bell:
   animation: EaseOutExpo
   duration: 0
-  color: '0xffffff'
+  color: "0xffffff"
 
 # Background opacity
 #
 # Window opacity as a floating point number from `0.0` to `1.0`.
 # The value `0.0` is completely transparent and `1.0` is opaque.
-background_opacity: 1.0
+window_opacity: 0.5
 
 # Mouse bindings
 #
@@ -282,7 +280,7 @@ mouse:
     modifiers: None
 
 selection:
-  semantic_escape_chars: ",│`|:\"' ()[]{}<>"
+  semantic_escape_chars: ',│`|:"'' ()[]{}<>'
 
   # When set to `true`, selected text will be copied to the primary clipboard.
   save_to_clipboard: false
@@ -452,28 +450,13 @@ key_bindings:
   - { key: End, mods: Alt, chars: "\e[1;3F" }
   - { key: End, chars: "\eOF", mode: AppCursor }
   - { key: End, chars: "\e[F", mode: ~AppCursor }
-  - {
-      key: PageUp,
-      mods: Shift,
-      action: ScrollPageUp,
-      mode: ~Alt
-    }
+  - { key: PageUp, mods: Shift, action: ScrollPageUp, mode: ~Alt }
   - { key: PageUp, mods: Shift, chars: "\e[5;2~", mode: Alt }
   - { key: PageUp, mods: Control, chars: "\e[5;5~" }
   - { key: PageUp, mods: Alt, chars: "\e[5;3~" }
   - { key: PageUp, chars: "\e[5~" }
-  - {
-      key: PageDown,
-      mods: Shift,
-      action: ScrollPageDown,
-      mode: ~Alt
-    }
-  - {
-      key: PageDown,
-      mods: Shift,
-      chars: "\e[6;2~",
-      mode: Alt
-    }
+  - { key: PageDown, mods: Shift, action: ScrollPageDown, mode: ~Alt }
+  - { key: PageDown, mods: Shift, chars: "\e[6;2~", mode: Alt }
   - { key: PageDown, mods: Control, chars: "\e[6;5~" }
   - { key: PageDown, mods: Alt, chars: "\e[6;3~" }
   - { key: PageDown, chars: "\e[6~" }
@@ -567,6 +550,5 @@ key_bindings:
   - {
       key: N,
       mods: Command,
-      command: { program: "open", args: [ "-nb", "io.alacritty" ] }
+      command: { program: "open", args: ["-nb", "io.alacritty"] },
     }
-theme: Chalk.dark

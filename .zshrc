@@ -12,6 +12,8 @@ alias tr="todo.sh report"
 alias tp="todo.sh pri"
 alias tdel="todo.sh -f del"
 
+alias vim="nvim -u ~/.config/vim/init.lua"
+
 function AddNewTaskWithPriC()
 {
   todo.sh -tAf add "$1" | head -1 | awk '{print $1}' | xargs -t -I {} todo.sh pri {} C
@@ -51,3 +53,6 @@ if [ -f '/Users/v36372/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/User
 if [ -f '/Users/v36372/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/v36372/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
 
 export GOTESTS_TEMPLATE=testify
+
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /usr/local/bin/terraform terraform

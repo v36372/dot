@@ -1,10 +1,8 @@
 [includeIf "gitdir:/Users/tintnguyen/workspace/src/"]
 	path = ~/.gitconfig-personal
-[includeIf "gitdir:/Users/tintnguyen/workspace/axon/"]
-	path = ~/.gitconfig-work
 [core]
 	excludesfile = /Users/tintnguyen/.gitignore_global
-	editor = vim
+	editor = nvim
 	pager = diff-so-fancy | less --tabs=4 -RFX
 [format]
 	pretty = format:%h %s (%an, %ad)
@@ -45,3 +43,8 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+[user]
+	email = tin.nguyen.work@protonmail.com
+	name = v36372
+[init]
+	defaultBranch = master

@@ -1,0 +1,77 @@
+# DOTFILES
+
+Personal Linux (Omarchy) env via GNU Stow. Fish + Neovim + Tmux + Herdr + Ghostty + MPV.
+
+## STRUCTURE
+
+```
+.dotfiles/
+├── dot                     # CLI: stow/doctor
+├── home/.config/
+│   ├── nvim/               # Editor (see nvim AGENTS)
+│   ├── fish/               # Shell (see fish/AGENTS.md)
+│   ├── tmux/               # Prefix C-s, default shell fish
+│   ├── ghostty/            # command = fish
+│   ├── herdr/              # Prefix C-;, default_shell fish
+│   ├── mpv/
+│   ├── git/
+│   └── starship.toml
+├── home/.gitconfig
+└── packages/
+```
+
+## WHERE TO LOOK
+
+| Task | Location |
+|------|----------|
+| Neovim plugin | `home/.config/nvim/lua/plugins/<name>.lua` |
+| Neovim keymap | `home/.config/nvim/lua/config/keymaps.lua` |
+| Neovim option | `home/.config/nvim/lua/config/options.lua` |
+| Shell alias | `home/.config/fish/conf.d/aliases.fish` |
+| Shell function | `home/.config/fish/functions/<name>.fish` |
+| Tmux | `home/.config/tmux/tmux.conf` |
+| Herdr | `home/.config/herdr/config.toml` |
+| Ghostty | `home/.config/ghostty/config` |
+| Git | `home/.gitconfig` |
+
+## CONVENTIONS
+
+- Stow layout: `home/` mirrors `~`
+- Neovim: 1 plugin per file in `lua/plugins/`, returns lazy.nvim spec
+- Keymaps: navigation-first (search, def, back, splits)
+- No neo-tree — use Snacks explorer
+- Fuzzy: Telescope
+
+## ANTI-PATTERNS
+
+- Edit `~/.config/*` real files while stowed (edit through symlink / repo)
+- Re-adding neo-tree / oil as primary explorer without asking
+- Hardcoding machine-specific absolute paths under `/Users/...` or old macOS paths
+- Committing herdr logs/sockets or mpv memo history
+
+## COMMANDS
+
+```bash
+./dot stow
+./dot doctor
+./dot unstow
+```
+
+## NVIM KEY BINDINGS (IMPORTANT)
+
+| Key | Action |
+|-----|--------|
+| `<C-p>` | Find files |
+| `<leader>ss` | Live grep |
+| `<leader>sw` | Word under cursor (project) |
+| `<C-f>` | Buffer search |
+| `<leader>e` | Snacks explorer (reveal file) |
+| `gd` | Definition |
+| `<C-o>` | Jump back |
+| `<leader>gd` / `<leader>gD` | Def in vsplit / hsplit |
+| Telescope/Explorer `<C-v>` / `<C-c>` | Open in vsplit / hsplit |
+| `<C-w>` / `<C-q>` | Save / save+quit |
+
+## THEME
+
+Catppuccin Macchiato (nvim). Ghostty uses Catppuccin + Omarchy theme include.

@@ -1,0 +1,61 @@
+[user]
+  name = Tin Nguyen
+  email = tin.nguyen.work@protonmail.com
+  username = v36372
+[core]
+  editor = nvim
+	excludesfile = /home/v36372/.gitignore_global
+[diff]
+    external = difft
+[format]
+  pretty = format:%h %s (%an, %ad)
+[alias]
+  # `git log` with patches shown with difftastic.
+  dl = -c diff.external=difft log -p --ext-diff
+
+  # Show the most recent commit with difftastic.
+  ds = -c diff.external=difft show --ext-diff
+
+  # `git diff` with difftastic.
+  dft = -c diff.external=difft diff
+  st = status
+  d = diff
+  b = branch
+  p = push
+  pr = pull --rebase
+  pom = pull origin master
+  co = checkout
+  l = log --date-order --graph --pretty=format:'%C(green)%h %Creset%C(yellow)%an%Creset %C(blue bold)%ar%Creset %C(red bold)%d%Creset %s'
+  precommit = diff --cached --diff-algorithm=minimal -w
+  branches = branch -a
+  stashes = stash list
+  unstage = reset -q HEAD --
+  related = "!function git_related() { if git rev-list $1 | grep -q $2 ; then echo \"$2 is ancestor of $1\" ; elif git rev-list $2 | grep -q $1 ; then echo \"$1 is ancestor of $2\" ; else echo \"$1 unrelated to $2\" ; fi  } ; git_related $1 $2"
+  hlog = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)%Creset' --abbrev-commit
+  lg = log --date-order --all --graph --format='%C(green)%h %Creset%C(yellow)%an%Creset %C(blue bold)%ar%Creset %C(red bold)%d%Creset %s'
+[color]
+  ui = true
+[push]
+  default = simple
+[color "diff-highlight"]
+  oldNormal = red bold
+  oldHighlight = red bold 52
+  newNormal = green bold
+  newHighlight = green bold 22
+[color "diff"]
+  meta = 11
+  frag = magenta bold
+  commit = yellow bold
+  old = red bold
+  new = green bold
+  whitespace = red reverse
+[filter "lfs"]
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
+[user]
+  email = tin.nguyen.work@protonmail.com
+  name = v36372
+[init]
+  defaultBranch = master

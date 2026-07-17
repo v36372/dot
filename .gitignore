@@ -1,0 +1,32 @@
+# Editor / OS
+.DS_Store
+*.swp
+*~
+.idea/
+.vscode/
+
+# Lazy lock can be committed if you want pinned plugins; keep ignored for now
+# home/.config/nvim/lazy-lock.json
+
+# Runtime / secrets / logs
+home/.config/herdr/*.log
+home/.config/herdr/*.sock
+home/.config/herdr/session*.json
+home/.config/herdr/release-notes.json
+home/.config/herdr/plugins.json
+home/.config/herdr/plugins/
+home/.config/mpv/memo-history.log
+
+# Python / node junk
+__pycache__/
+*.pyc
+node_modules/
+
+# Backups / temp
+backups/
+tmp/
+.envrc
+.env
+
+# jj
+.jj

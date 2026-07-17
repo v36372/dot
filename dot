@@ -1,0 +1,178 @@
+#!/usr/bin/env bash
+# Minimal dotfiles manager (stow-based), inspired by dmmulroy/.dotfiles
+# Falls back to ln -s if GNU Stow is not installed.
+set -euo pipefail
+
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+export DOTFILES_DIR
+TARGET_DIR="${HOME}"
+PACKAGE_DIR="$DOTFILES_DIR/home"
+
+usage() {
+  cat <<'EOF'
+dot — personal dotfiles helper
+
+Usage:
+  dot stow          Create/update symlinks
+  dot restow        Same as stow
+  dot unstow        Remove managed symlinks
+  dot doctor        Check tools + symlink health
+  dot path          Print repo path
+  dot help          Show this help
+
+Layout:
+  home/             Mirrors ~ and is linked into $HOME
+  packages/         Optional package lists / notes
+EOF
+}
+
+rel_from_home() {
+  # print path relative to PACKAGE_DIR (no leading ./)
+  local abs="$1"
+  echo "${abs#"$PACKAGE_DIR"/}"
+}
+
+link_file() {
+  local src="$1"
+  local rel
+  rel="$(rel_from_home "$src")"
+  local dest="$TARGET_DIR/$rel"
+  local dest_dir
+  dest_dir="$(dirname "$dest")"
+
+  mkdir -p "$dest_dir"
+
+  if [[ -L "$dest" ]]; then
+    local current
+    current="$(readlink "$dest")"
+    if [[ "$current" == "$src" ]]; then
+      echo "  keep  $rel"
+      return 0
+    fi
+    echo "  relink $rel"
+    rm -f "$dest"
+  elif [[ -e "$dest" ]]; then
+    local bak="${dest}.bak.$(date +%s)"
+    echo "  backup $rel -> $bak"
+    mv "$dest" "$bak"
+  else
+    echo "  link  $rel"
+  fi
+
+  ln -s "$src" "$dest"
+}
+
+unlink_file() {
+  local src="$1"
+  local rel
+  rel="$(rel_from_home "$src")"
+  local dest="$TARGET_DIR/$rel"
+
+  if [[ -L "$dest" ]]; then
+    local current
+    current="$(readlink "$dest")"
+    if [[ "$current" == "$src" ]]; then
+      echo "  unlink $rel"
+      rm -f "$dest"
+    else
+      echo "  skip   $rel (points elsewhere)"
+    fi
+  fi
+}
+
+cmd_stow() {
+  if command -v stow >/dev/null 2>&1; then
+    (
+      cd "$DOTFILES_DIR"
+      stow --target="$TARGET_DIR" --restow --verbose=1 home
+    )
+    echo "stowed via GNU Stow: $PACKAGE_DIR -> $TARGET_DIR"
+    return 0
+  fi
+
+  echo "GNU Stow not found; using ln -s fallback"
+  # Skip runtime junk
+  while IFS= read -r -d '' f; do
+    case "$f" in
+      *.log|*.sock) continue ;;
+    esac
+    link_file "$f"
+  done < <(find "$PACKAGE_DIR" -type f -print0)
+
+  echo "linked $PACKAGE_DIR -> $TARGET_DIR"
+}
+
+cmd_unstow() {
+  if command -v stow >/dev/null 2>&1; then
+    (
+      cd "$DOTFILES_DIR"
+      stow --target="$TARGET_DIR" --delete --verbose=1 home
+    )
+    echo "unstowed via GNU Stow"
+    return 0
+  fi
+
+  echo "GNU Stow not found; removing managed symlinks"
+  while IFS= read -r -d '' f; do
+    unlink_file "$f"
+  done < <(find "$PACKAGE_DIR" -type f -print0)
+}
+
+cmd_doctor() {
+  echo "== tools =="
+  for t in nvim tmux fish ghostty herdr stow rg fd fzf starship git; do
+    if command -v "$t" >/dev/null 2>&1; then
+      printf "  ok  %s (%s)\n" "$t" "$(command -v "$t")"
+    else
+      printf "  MISSING  %s\n" "$t"
+    fi
+  done
+
+  echo
+  echo "== key paths =="
+  for p in \
+        .gitconfig \
+    .gitignore_global \
+    .config/fish/config.fish \
+    .config/nvim/init.lua \
+    .config/tmux/tmux.conf \
+    .config/ghostty/config \
+    .config/herdr/config.toml \
+    .config/starship.toml \
+    .config/mpv/mpv.conf
+  do
+    target="$TARGET_DIR/$p"
+    expected="$PACKAGE_DIR/$p"
+    if [[ -L "$target" ]]; then
+      current="$(readlink "$target")"
+      if [[ "$current" == "$expected" ]]; then
+        printf "  ok    %s\n" "$p"
+      else
+        printf "  OTHER %s -> %s\n" "$p" "$current"
+      fi
+    elif [[ -e "$target" ]]; then
+      printf "  FILE  %s (exists, not symlink — will be backed up on stow)\n" "$p"
+    else
+      printf "  miss  %s\n" "$p"
+    fi
+  done
+
+  echo
+  echo "== repo =="
+  echo "  $DOTFILES_DIR"
+}
+
+main() {
+  local cmd="${1:-help}"
+  shift || true
+  case "$cmd" in
+    stow|link|install|restow) cmd_stow "$@" ;;
+    unstow|unlink) cmd_unstow "$@" ;;
+    doctor) cmd_doctor "$@" ;;
+    path) echo "$DOTFILES_DIR" ;;
+    help|-h|--help) usage ;;
+    *) echo "unknown command: $cmd" >&2; usage; exit 1 ;;
+  esac
+}
+
+main "$@"

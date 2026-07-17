@@ -33,6 +33,7 @@ return {
 				-- Used by Snacks.explorer under the hood
 				sources = {
 					explorer = {
+						hidden = true, -- always show dotfiles (no need for H)
 						layout = { preset = "sidebar", preview = false },
 						win = {
 							list = {

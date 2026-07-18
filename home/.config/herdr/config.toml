@@ -12,16 +12,17 @@ shell_mode = "auto"
 new_cwd = "follow"
 
 [theme]
-name = "catppuccin"
+name = "tokyo-night"
 
+auto_switch = false
 [theme.custom]
-# Catppuccin Macchiato-inspired overrides.
-panel_bg = "#24273a"
-accent = "#c6a0f6"
-blue = "#8aadf4"
-green = "#a6da95"
-red = "#ed8796"
-yellow = "#eed49f"
+# Tokyo Night Storm overrides.
+panel_bg = "#24283b"
+accent = "#7aa2f7"
+blue = "#7aa2f7"
+green = "#9ece6a"
+red = "#f7768e"
+yellow = "#e0af68"
 
 [update]
 channel = "stable"
@@ -132,7 +133,7 @@ mouse_scroll_lines = 3
 confirm_close = false
 prompt_new_tab_name = true
 agent_panel_scope = "all"
-accent = "#c6a0f6"
+accent = "#7aa2f7"
 
 show_agent_labels_on_pane_borders = false
 agent_panel_sort = "spaces"

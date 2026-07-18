@@ -3,10 +3,43 @@
 # Falls back to ln -s if GNU Stow is not installed.
 set -euo pipefail
 
-DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 export DOTFILES_DIR
 TARGET_DIR="${HOME}"
 PACKAGE_DIR="$DOTFILES_DIR/home"
+
+resolve_path() {
+  local path="$1"
+
+  if command -v realpath >/dev/null 2>&1; then
+    realpath "$path" 2>/dev/null
+    return
+  fi
+
+  # Portable fallback for systems without realpath. Resolve a final symlink
+  # recursively; cd -P resolves any symlinks in its parent directory.
+  if [[ -L "$path" ]]; then
+    local target
+    target="$(readlink "$path")"
+    if [[ "$target" != /* ]]; then
+      target="$(dirname "$path")/$target"
+    fi
+    resolve_path "$target"
+    return
+  fi
+
+  local dir base
+  dir="$(dirname "$path")"
+  base="$(basename "$path")"
+  (cd -P "$dir" 2>/dev/null && printf '%s/%s\n' "$PWD" "$base")
+}
+
+paths_match() {
+  local actual expected
+  actual="$(resolve_path "$1")" || return 1
+  expected="$(resolve_path "$2")" || return 1
+  [[ "$actual" == "$expected" ]]
+}
 
 usage() {
   cat <<'EOF'
@@ -43,9 +76,7 @@ link_file() {
   mkdir -p "$dest_dir"
 
   if [[ -L "$dest" ]]; then
-    local current
-    current="$(readlink "$dest")"
-    if [[ "$current" == "$src" ]]; then
+    if paths_match "$dest" "$src"; then
       echo "  keep  $rel"
       return 0
     fi
@@ -69,9 +100,7 @@ unlink_file() {
   local dest="$TARGET_DIR/$rel"
 
   if [[ -L "$dest" ]]; then
-    local current
-    current="$(readlink "$dest")"
-    if [[ "$current" == "$src" ]]; then
+    if paths_match "$dest" "$src"; then
       echo "  unlink $rel"
       rm -f "$dest"
     else
@@ -143,13 +172,10 @@ cmd_doctor() {
   do
     target="$TARGET_DIR/$p"
     expected="$PACKAGE_DIR/$p"
-    if [[ -L "$target" ]]; then
-      current="$(readlink "$target")"
-      if [[ "$current" == "$expected" ]]; then
-        printf "  ok    %s\n" "$p"
-      else
-        printf "  OTHER %s -> %s\n" "$p" "$current"
-      fi
+    if [[ -e "$target" ]] && paths_match "$target" "$expected"; then
+      printf "  ok    %s\n" "$p"
+    elif [[ -L "$target" ]]; then
+      printf "  OTHER %s -> %s\n" "$p" "$(readlink "$target")"
     elif [[ -e "$target" ]]; then
       printf "  FILE  %s (exists, not symlink — will be backed up on stow)\n" "$p"
     else

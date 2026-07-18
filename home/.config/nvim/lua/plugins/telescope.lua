@@ -45,10 +45,17 @@ return {
 						"_build",
 						".next",
 						"%.lock",
+						".undodir",
 					},
-					hidden = true,
 					path_display = {
 						"filename_first",
+					},
+				},
+				pickers = {
+					find_files = {
+						hidden = true,
+						-- Dotfiles are symlinked into ~/.config.
+						follow = true,
 					},
 				},
 			})

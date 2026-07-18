@@ -1,6 +1,14 @@
 # Omarchy path marker (used by omarchy-* tools)
 set -gx OMARCHY_PATH "$HOME/.local/share/omarchy"
 
+# Language/tool environments migrated from the previous Zsh setup.
+set -gx BUN_INSTALL "$HOME/.bun"
+set -gx GVM_ROOT "$HOME/.gvm"
+set -gx GOTESTS_TEMPLATE testify
+if not set -q PI_COMMIT_SKILL
+    set -gx PI_COMMIT_SKILL "$HOME/.pi/agent/skills/commit/SKILL.md"
+end
+
 # Bat / prettier man pages when not using nvim manpager
 set -gx BAT_THEME ansi
 set -gx MANROFFOPT -c

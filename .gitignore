@@ -8,6 +8,12 @@
 # Lazy lock can be committed if you want pinned plugins; keep ignored for now
 # home/.config/nvim/lazy-lock.json
 
+# Keep the shareable Pi theme even when ~/.pi is globally ignored.
+!home/.pi/
+!home/.pi/agent/
+!home/.pi/agent/themes/
+!home/.pi/agent/themes/tokyo-night-storm.json
+
 # Runtime / secrets / logs
 home/.config/herdr/*.log
 home/.config/herdr/*.sock

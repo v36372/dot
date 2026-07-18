@@ -55,7 +55,9 @@ return {
 				return ""
 			end
 
-			vim.api.nvim_create_autocmd({ "DirChanged", "BufEnter", "FocusGained" }, {
+			-- VCS info only depends on the working directory. Invalidating this on
+			-- every BufEnter causes synchronous jj/git calls while switching windows.
+			vim.api.nvim_create_autocmd({ "DirChanged", "FocusGained" }, {
 				callback = function()
 					vcs_cache = { result = nil, cwd = nil }
 				end,
@@ -92,7 +94,7 @@ return {
 
 			require("lualine").setup({
 				options = {
-					theme = "catppuccin-macchiato",
+					theme = "tokyonight",
 					globalstatus = true,
 					component_separators = { left = "", right = "" },
 					section_separators = { left = "█", right = "█" },

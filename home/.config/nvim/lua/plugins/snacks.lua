@@ -11,11 +11,6 @@ return {
 			bigfile = { enabled = true },
 			bufdelete = { enabled = true },
 			dim = { enabled = true },
-			-- File explorer (replaces neo-tree / oil)
-			explorer = {
-				enabled = true,
-				replace_netrw = true,
-			},
 			gitbrowse = { enabled = true },
 			indent = {
 				enabled = true,
@@ -28,26 +23,6 @@ return {
 				enabled = true,
 				timeout = 3000,
 				style = "fancy",
-			},
-			picker = {
-				-- Used by Snacks.explorer under the hood
-				sources = {
-					explorer = {
-						hidden = true, -- always show dotfiles (no need for H)
-						layout = { preset = "sidebar", preview = false },
-						win = {
-							list = {
-								keys = {
-									-- Open in splits (your neo-tree muscle memory)
-									["<C-v>"] = { { "tcd", "edit_vsplit" }, mode = { "n", "i" } },
-									["<C-c>"] = { { "tcd", "edit_split" }, mode = { "n", "i" } },
-									["s"] = { { "tcd", "edit_split" }, mode = { "n" } },
-									["v"] = { { "tcd", "edit_vsplit" }, mode = { "n" } },
-								},
-							},
-						},
-					},
-				},
 			},
 			rename = { enabled = true },
 			toggle = { enabled = true },

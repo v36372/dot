@@ -17,6 +17,9 @@ vim.keymap.set({ "i", "v", "n", "s" }, "<C-q>", "<cmd>wq<cr><esc>", { desc = "Sa
 vim.keymap.set("n", "<leader>w", "<cmd>w<cr>", { silent = false, desc = "Save current buffer" })
 vim.keymap.set("n", "<leader>q", "<cmd>q<cr>", { silent = false, desc = "Quit current buffer" })
 
+-- Make :q (and :q!) quit every Neovim window/tab.
+vim.cmd([[cnoreabbrev <expr> q getcmdtype() ==# ':' && getcmdline() ==# 'q' ? 'qall' : 'q']])
+
 -- Insert escape
 vim.keymap.set("i", "jj", "<esc>", { desc = "Exit insert mode (jj)" })
 vim.keymap.set("i", "JJ", "<esc>", { desc = "Exit insert mode (JJ)" })
@@ -87,20 +90,11 @@ vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move selected block u
 vim.keymap.set("n", "<C-c>", "za", { desc = "Toggle fold" })
 
 -- ---------------------------------------------------------------------------
--- File explorer (Snacks explorer — replaces neo-tree)
--- Open current file's directory / reveal current file
+-- File explorer (Neo-tree)
 -- ---------------------------------------------------------------------------
-vim.keymap.set("n", "<leader>e", function()
-	Snacks.explorer({ reveal = true })
-end, { desc = "Explorer: reveal current file" })
-
-vim.keymap.set("n", "<leader>fp", function()
-	Snacks.explorer({ reveal = true })
-end, { desc = "Explorer: reveal current file" })
-
-vim.keymap.set("n", "<leader>E", function()
-	Snacks.explorer()
-end, { desc = "Explorer: project root" })
+vim.keymap.set("n", "<leader>e", "<cmd>Neotree reveal<cr>", { desc = "Explorer: reveal current file" })
+vim.keymap.set("n", "<leader>fp", "<cmd>Neotree reveal<cr>", { desc = "Explorer: reveal current file" })
+vim.keymap.set("n", "<leader>E", "<cmd>Neotree toggle filesystem left dir=.<cr>", { desc = "Explorer: project root" })
 
 -- ---------------------------------------------------------------------------
 -- Search (your hotkeys, Telescope backend)

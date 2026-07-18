@@ -32,8 +32,11 @@ function fvim -d "Fuzzy-find a file and open in nvim"
     end
 end
 
-function open -d "Open path with xdg-open"
-    xdg-open $argv >/dev/null 2>&1 &
+# macOS already provides /usr/bin/open; define this helper only on Linux.
+if command -q xdg-open
+    function open -d "Open path with xdg-open"
+        xdg-open $argv >/dev/null 2>&1 &
+    end
 end
 
 function eff -d "Edit file chosen via fzf"

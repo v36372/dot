@@ -74,4 +74,4 @@ Personal Linux (Omarchy) env via GNU Stow. Fish + Neovim + Tmux + Herdr + Ghostt
 
 ## THEME
 
-Catppuccin Macchiato (nvim). Ghostty uses Catppuccin + Omarchy theme include.
+Tokyo Night Storm across Ghostty, Neovim, Fish, Tmux, Herdr, and Pi.

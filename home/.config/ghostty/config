@@ -6,9 +6,6 @@
   # View options: ghostty +show-config --default --docs
 
   # --- Typography ---
-  # Dynamic theme colors
-  config-file = ?"~/.config/omarchy/current/theme/ghostty.conf"
-
   font-family = "TX-02"
   font-style = Regular
   font-size = 15
@@ -16,8 +13,7 @@
   adjust-cell-height = 2
 
   # --- Theme and Colors ---
-  # Catppuccin with automatic light/dark switching
-  theme = light:Catppuccin Latte,dark:Catppuccin Mocha
+  theme = TokyoNight Storm
 
   # --- Window and Appearance ---
   background-opacity = 0.9
@@ -91,9 +87,6 @@
   # Slowdown mouse scrolling
   mouse-scroll-multiplier = 0.95
 
-# Fix general slowness on hyprland (https://github.com/ghostty-org/ghostty/discussions/3224)
-async-backend = epoll
-
 # --- Shell ---
-# Prefer fish (user-local or system). Login shell may still be bash until chsh.
-command = /home/v36372/.local/bin/fish
+# GUI apps on macOS do not inherit Homebrew's PATH.
+command = /opt/homebrew/bin/fish

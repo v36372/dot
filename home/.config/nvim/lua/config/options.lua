@@ -97,14 +97,13 @@ local treesitter_group = vim.api.nvim_create_augroup("config-treesitter-main", {
 vim.api.nvim_create_autocmd("FileType", {
 	group = treesitter_group,
 	callback = function(args)
-		pcall(vim.treesitter.start, args.buf)
-
-		local filetype = vim.bo[args.buf].filetype
-		if treesitter_indent_disabled_filetypes[filetype] then
+		local has_parser = pcall(vim.treesitter.start, args.buf)
+		if not has_parser then
 			return
 		end
 
-		if not vim.treesitter.get_parser(args.buf, nil, { error = false }) then
+		local filetype = vim.bo[args.buf].filetype
+		if treesitter_indent_disabled_filetypes[filetype] then
 			return
 		end
 

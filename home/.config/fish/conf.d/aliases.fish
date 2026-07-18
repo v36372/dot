@@ -3,6 +3,8 @@ alias c 'clear'
 alias vimdiff 'nvim -d'
 alias v 'nvim'
 alias p 'pi'
+alias piv 'pi --no-context-files'
+alias cc 'claude --dangerously-skip-permissions'
 alias op 'opencode --port'
 alias lg 'lazygit'
 alias ld 'lazydocker'
@@ -17,6 +19,9 @@ if command -q wl-copy
 else if command -q xclip
     alias pbc 'xclip -selection clipboard'
     alias pbp 'xclip -selection clipboard -o'
+else if command -q pbcopy
+    alias pbc 'pbcopy'
+    alias pbp 'pbpaste'
 end
 
 # eza (Omarchy style)

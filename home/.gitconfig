@@ -4,7 +4,7 @@
   username = v36372
 [core]
   editor = nvim
-	excludesfile = /home/v36372/.gitignore_global
+	excludesfile = ~/.gitignore_global
 [diff]
     external = difft
 [format]

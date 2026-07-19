@@ -16,6 +16,7 @@ Style inspired by [dmmulroy/.dotfiles](https://github.com/dmmulroy/.dotfiles): `
 | MPV | `home/.config/mpv` | Full player setup (uosc, scripts, shaders) |
 | Git | `home/.gitconfig` + `home/.config/git` | Aliases + difftastic |
 | Starship | `home/.config/starship.toml` | Prompt |
+| Agent skills | `home/.agents/skills` | Shared skills discovered by Pi and other Agent Skills clients |
 
 ## Quick start
 
@@ -82,6 +83,7 @@ No neo-tree. File browsing is **Snacks explorer**. Fuzzy finding is **Telescope*
 .dotfiles/
 ├── dot                 # helper: stow / doctor
 ├── home/               # stowed into ~
+│   ├── .agents/skills/ # shared Agent Skills
 │   ├── .config/
 │   │   ├── nvim/
 │   │   ├── ghostty/
@@ -103,12 +105,41 @@ No neo-tree. File browsing is **Snacks explorer**. Fuzzy finding is **Telescope*
 ./dot stow      # symlink everything
 ./dot restow    # same (re-stow)
 ./dot unstow    # remove symlinks
+./dot skills-sync # update locked third-party skills
 ./dot doctor    # check tools + links
 ```
+
+## Agent skills
+
+Skills are committed under `home/.agents/skills` and stowed to the shared
+`~/.agents/skills` location. Third-party source metadata lives in
+`home/.agents/.skill-lock.json` and is maintained by the `skills` CLI.
+
+```bash
+./dot skills-sync
+
+git diff -- home/.agents
+```
+
+The sync command updates every skill recorded in the lock, grouping entries by
+their upstream source. Personal skills without lock entries are untouched.
+Review the resulting diff before committing upstream changes.
+
+Add skills from any supported upstream source with the Fish helper:
+
+```fish
+skill-add owner/repository skill-name          # install named skill
+skill-add owner/repository skill-one skill-two # install several
+skill-add owner/repository                     # interactive selector
+```
+
+The helper uses the shared global target and records source metadata in the
+lock. Subsequent `./dot skills-sync` runs include the new skills automatically.
 
 ## Notes
 
 - **Do not edit** `~/.config/*` when stowed — edit files under `~/.dotfiles/home/` (or follow the symlink).
+- Pi discovers the stowed skills directly from `~/.agents/skills`; `~/.pi/agent/skills` is no longer used.
 - Shell is **Fish** (Dillon-style). Ghostty/tmux/herdr start fish; interactive bash execs fish as a bridge.
 - User-local fish may live at `~/.local/bin/fish` until `sudo pacman -S fish` + `chsh`.
 - Hyprland / Omarchy desktop config stays outside this repo (managed by Omarchy).

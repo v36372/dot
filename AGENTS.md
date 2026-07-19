@@ -7,6 +7,7 @@ Personal Linux (Omarchy) env via GNU Stow. Fish + Neovim + Tmux + Herdr + Ghostt
 ```
 .dotfiles/
 ├── dot                     # CLI: stow/doctor
+├── home/.agents/skills/    # Shared Agent Skills (Pi, Codex, etc.)
 ├── home/.config/
 │   ├── nvim/               # Editor (see nvim AGENTS)
 │   ├── fish/               # Shell (see fish/AGENTS.md)
@@ -33,6 +34,7 @@ Personal Linux (Omarchy) env via GNU Stow. Fish + Neovim + Tmux + Herdr + Ghostt
 | Herdr | `home/.config/herdr/config.toml` |
 | Ghostty | `home/.config/ghostty/config` |
 | Git | `home/.gitconfig` |
+| Agent skill | `home/.agents/skills/<name>/SKILL.md` |
 
 ## CONVENTIONS
 
@@ -45,6 +47,7 @@ Personal Linux (Omarchy) env via GNU Stow. Fish + Neovim + Tmux + Herdr + Ghostt
 ## ANTI-PATTERNS
 
 - Edit `~/.config/*` real files while stowed (edit through symlink / repo)
+- Add shared skills under `~/.pi/agent/skills`; use `home/.agents/skills/`
 - Re-adding neo-tree / oil as primary explorer without asking
 - Hardcoding machine-specific absolute paths under `/Users/...` or old macOS paths
 - Committing herdr logs/sockets or mpv memo history
@@ -53,6 +56,7 @@ Personal Linux (Omarchy) env via GNU Stow. Fish + Neovim + Tmux + Herdr + Ghostt
 
 ```bash
 ./dot stow
+./dot skills-sync
 ./dot doctor
 ./dot unstow
 ```

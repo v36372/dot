@@ -49,6 +49,7 @@ Usage:
   dot stow          Create/update symlinks
   dot restow        Same as stow
   dot unstow        Remove managed symlinks
+  dot skills-sync   Update locked third-party skills
   dot doctor        Check tools + symlink health
   dot path          Print repo path
   dot help          Show this help
@@ -147,6 +148,10 @@ cmd_unstow() {
   done < <(find "$PACKAGE_DIR" -type f -print0)
 }
 
+cmd_skills_sync() {
+  "$PACKAGE_DIR/.agents/skills/scripts/sync-skills.sh" "$@"
+}
+
 cmd_doctor() {
   echo "== tools =="
   for t in nvim tmux fish ghostty herdr stow rg fd fzf starship git; do
@@ -160,7 +165,9 @@ cmd_doctor() {
   echo
   echo "== key paths =="
   for p in \
-        .gitconfig \
+    .agents/.skill-lock.json \
+    .agents/skills \
+    .gitconfig \
     .gitignore_global \
     .config/fish/config.fish \
     .config/nvim/init.lua \
@@ -194,6 +201,7 @@ main() {
   case "$cmd" in
     stow|link|install|restow) cmd_stow "$@" ;;
     unstow|unlink) cmd_unstow "$@" ;;
+    skills-sync) cmd_skills_sync "$@" ;;
     doctor) cmd_doctor "$@" ;;
     path) echo "$DOTFILES_DIR" ;;
     help|-h|--help) usage ;;

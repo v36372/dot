@@ -40,6 +40,7 @@ fish/
 | `t` | tmux attach/new |
 | `ff`/`fvim`/`eff` | fzf helpers |
 | `g`/`gst`/… | git + abbrs from `__git.init` |
+| `skill-add` | Install and lock shared upstream skills |
 
 ## NOTES
 

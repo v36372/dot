@@ -8,10 +8,10 @@ return {
 			"folke/tokyonight.nvim",
 		},
 		config = function()
-			local theme = require("tokyonight.colors").setup({ style = "storm" })
+			local colors = require("tokyonight.colors").setup({ style = "storm" })
 
-			vim.api.nvim_set_hl(0, "SpectreSearch", { bg = theme.red, fg = theme.black })
-			vim.api.nvim_set_hl(0, "SpectreReplace", { bg = theme.green, fg = theme.black })
+			vim.api.nvim_set_hl(0, "SpectreSearch", { bg = colors.red, fg = colors.bg })
+			vim.api.nvim_set_hl(0, "SpectreReplace", { bg = colors.green, fg = colors.bg })
 
 			require("spectre").setup({
 				highlight = {
@@ -25,16 +25,6 @@ return {
 						desc = "send all items to quickfix",
 					},
 				},
-				-- replace_engine = {
-				-- 	sed = {
-				-- 		cmd = "sed",
-				-- 		args = {
-				-- 			"-i",
-				-- 			"",
-				-- 			"-E",
-				-- 		},
-				-- 	},
-				-- },
 			})
 		end,
 	},

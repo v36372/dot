@@ -92,12 +92,32 @@ return {
 				return stats
 			end
 
+			-- Transparent statusline so Ghostty opacity shows through.
+			local colors = require("tokyonight.colors").setup({ style = "storm" })
+			local tn = require("lualine.themes.tokyonight")
+			for _, mode in pairs(tn) do
+				for _, section in pairs(mode) do
+					if type(section) == "table" then
+						section.bg = colors.none or "NONE"
+					end
+				end
+			end
+			-- Keep mode indicator readable (section a keeps its fg, transparent bg)
+			tn.normal.a.fg = colors.blue
+			tn.insert.a.fg = colors.green
+			tn.visual.a.fg = colors.magenta
+			tn.replace.a.fg = colors.red
+			tn.command.a.fg = colors.yellow
+			if tn.terminal then
+				tn.terminal.a.fg = colors.green1
+			end
+
 			require("lualine").setup({
 				options = {
-					theme = "tokyonight",
+					theme = tn,
 					globalstatus = true,
 					component_separators = { left = "", right = "" },
-					section_separators = { left = "█", right = "█" },
+					section_separators = { left = "", right = "" },
 				},
 				sections = {
 					lualine_b = {

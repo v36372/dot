@@ -7,33 +7,41 @@ return {
 			require("tokyonight").setup({
 				style = "storm",
 				transparent = true,
-				-- Keep sidebars and floating windows opaque for readability.
+				terminal_colors = true,
 				styles = {
-					sidebars = "dark",
-					floats = "dark",
+					sidebars = "transparent",
+					floats = "transparent",
 				},
 				plugins = {
 					auto = true,
 				},
+				on_highlights = function(hl, c)
+					-- Extra chrome that still paints solid with transparent=true.
+					hl.StatusLine = { fg = c.fg_sidebar, bg = c.none }
+					hl.StatusLineNC = { fg = c.fg_gutter, bg = c.none }
+					hl.Pmenu = { fg = c.fg, bg = c.none }
+					hl.PmenuSbar = { bg = c.none }
+					hl.PmenuThumb = { bg = c.fg_gutter }
+					hl.FloatBorder = { fg = c.border_highlight, bg = c.none }
+					hl.FloatTitle = { fg = c.magenta, bg = c.none }
+
+					-- Telescope.
+					hl.TelescopeNormal = { fg = c.fg, bg = c.none }
+					hl.TelescopeBorder = { fg = c.blue, bg = c.none }
+					hl.TelescopePromptNormal = { bg = c.none }
+					hl.TelescopePromptBorder = { fg = c.blue, bg = c.none }
+					hl.TelescopeResultsNormal = { bg = c.none }
+					hl.TelescopeResultsBorder = { fg = c.blue, bg = c.none }
+					hl.TelescopePreviewNormal = { bg = c.none }
+					hl.TelescopePreviewBorder = { fg = c.blue, bg = c.none }
+					hl.TelescopeTitle = { fg = c.magenta, bg = c.none }
+					hl.TelescopePromptTitle = { fg = c.magenta, bg = c.none }
+					hl.TelescopeResultsTitle = { fg = c.magenta, bg = c.none }
+					hl.TelescopePreviewTitle = { fg = c.magenta, bg = c.none }
+				end,
 			})
 
 			vim.cmd.colorscheme("tokyonight-storm")
-
-			local palette = require("tokyonight.colors").setup({ style = "storm" })
-
-			-- Telescope highlights to match the editor background.
-			vim.api.nvim_set_hl(0, "TelescopeNormal", { bg = palette.bg })
-			vim.api.nvim_set_hl(0, "TelescopeBorder", { fg = palette.blue, bg = palette.bg })
-			vim.api.nvim_set_hl(0, "TelescopePromptNormal", { bg = palette.bg })
-			vim.api.nvim_set_hl(0, "TelescopePromptBorder", { fg = palette.blue, bg = palette.bg })
-			vim.api.nvim_set_hl(0, "TelescopeResultsNormal", { bg = palette.bg })
-			vim.api.nvim_set_hl(0, "TelescopeResultsBorder", { fg = palette.blue, bg = palette.bg })
-			vim.api.nvim_set_hl(0, "TelescopePreviewNormal", { bg = palette.bg })
-			vim.api.nvim_set_hl(0, "TelescopePreviewBorder", { fg = palette.blue, bg = palette.bg })
-			vim.api.nvim_set_hl(0, "TelescopeTitle", { fg = palette.magenta, bg = palette.bg })
-			vim.api.nvim_set_hl(0, "TelescopePromptTitle", { fg = palette.magenta, bg = palette.bg })
-			vim.api.nvim_set_hl(0, "TelescopeResultsTitle", { fg = palette.magenta, bg = palette.bg })
-			vim.api.nvim_set_hl(0, "TelescopePreviewTitle", { fg = palette.magenta, bg = palette.bg })
 
 			-- Keep semantic highlights disabled to avoid noisy server-specific colors.
 			for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do

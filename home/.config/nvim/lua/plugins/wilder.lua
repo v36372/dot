@@ -11,13 +11,13 @@ return {
 		},
 		config = function()
 			local wilder = require("wilder")
-			local palette = require("tokyonight.colors").setup({ style = "storm" })
+			local colors = require("tokyonight.colors").setup({ style = "storm" })
 
 			-- Create highlight groups for the popup menu.
 			local text_highlight =
-				wilder.make_hl("WilderText", { { a = 1 }, { a = 1 }, { foreground = palette.fg } })
+				wilder.make_hl("WilderText", { { a = 1 }, { a = 1 }, { foreground = colors.fg } })
 			local accent_highlight =
-				wilder.make_hl("WilderAccent", { { a = 1 }, { a = 1 }, { foreground = palette.magenta } })
+				wilder.make_hl("WilderAccent", { { a = 1 }, { a = 1 }, { foreground = colors.magenta } })
 
 			-- Enable wilder when pressing :, / or ?
 			wilder.setup({ modes = { ":", "/", "?" } })

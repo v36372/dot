@@ -11,7 +11,6 @@ See `install-fish-system.md`.
 See `herdr-toggle-popup/README.md`.
 
 ```bash
-cd packages/herdr-toggle-popup
-go build -o bin/toggle-popup .
-herdr plugin link "$PWD"
+./dot herdr-plugin    # build + link + seed config
+# also attempted automatically by: ./dot stow
 ```

@@ -13,13 +13,21 @@ Differences from upstream:
 
 ## Install / link
 
+Preferred (from the dotfiles root):
+
 ```bash
-# from this repo
+./dot stow            # configs + best-effort plugin install
+# or explicitly:
+./dot herdr-plugin    # build, link, seed config
+./dot doctor          # verify plugin is linked
+```
+
+Manual:
+
+```bash
 cd packages/herdr-toggle-popup
 go build -o bin/toggle-popup .
 herdr plugin link "$PWD"
-
-# seed runtime config once
 mkdir -p ~/.config/herdr/plugins/config/local.toggle-popup
 cp config/config.toml ~/.config/herdr/plugins/config/local.toggle-popup/config.toml
 ```

@@ -103,11 +103,12 @@ No neo-tree. File browsing is **Snacks explorer**. Fuzzy finding is **Telescope*
 ## Commands
 
 ```bash
-./dot stow      # symlink everything
-./dot restow    # same (re-stow)
-./dot unstow    # remove symlinks
-./dot skills-sync # update locked third-party skills
-./dot doctor    # check tools + links
+./dot stow          # symlink everything (+ best-effort herdr float plugin)
+./dot restow        # same (re-stow)
+./dot unstow        # remove symlinks
+./dot herdr-plugin  # build/link packages/herdr-toggle-popup
+./dot skills-sync   # update locked third-party skills
+./dot doctor        # check tools + links + herdr plugin
 ```
 
 ## Agent skills

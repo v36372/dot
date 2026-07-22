@@ -7,6 +7,8 @@ shell = "fish"
 width = "80%"
 height = "80%"
 
-# scope = "workspace"  # default
-# scope = "directory"
-# scope = "tab"
+# One shared shell across every Herdr workspace.
+scope = "global"
+# scope = "workspace"  # one shell per workspace
+# scope = "directory"  # one shell per focused pane cwd
+# scope = "tab"        # one shell per tab

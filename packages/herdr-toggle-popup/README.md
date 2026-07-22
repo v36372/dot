@@ -50,23 +50,22 @@ description = "Toggle floating terminal (persistent)"
 | `ctrl+l` inside float (after ~0.4s) | hide float; shell stays in tmux |
 | hard reset shell | `tmux -L herdr-toggle-popup kill-server` |
 
-### Scope (why different workspaces get different shells)
+### Scope
 
-Default `scope = "workspace"`: each Herdr workspace has its own persistent tmux shell.
-That is intentional plugin behavior, not a bug.
-
-Herdr's built-in `type = "popup"` keybind is a **session-modal** terminal (one popup UI
-in the Herdr session). It does **not** give you one shared persistent shell across
-workspaces the way this plugin does — this fork keys shells by workspace/tab/directory.
+Default `scope = "global"`: **one** persistent shell shared across every workspace.
 
 | `scope` | Shell identity |
 |---------|----------------|
-| `workspace` (default) | one shell per workspace |
+| `global` (default) | one shell for the whole Herdr session |
+| `workspace` | one shell per workspace |
 | `tab` | one shell per tab |
 | `directory` | one shell per focused pane cwd |
 
-There is no built-in “global one shell everywhere” mode yet; closest is one workspace
-you always open the float from, or kill/recreate sessions when you want a clean slate.
+Changing scope only affects *new* tmux sessions. Reset with:
+
+```bash
+tmux -L herdr-toggle-popup kill-server
+```
 
 ## Config
 
@@ -76,7 +75,8 @@ Runtime config: `~/.config/herdr/plugins/config/local.toggle-popup/config.toml`
 shell = "fish"
 width = "80%"
 height = "80%"
-# scope = "workspace"  # default
+scope = "global"
+# scope = "workspace"
 # scope = "directory"
 # scope = "tab"
 ```

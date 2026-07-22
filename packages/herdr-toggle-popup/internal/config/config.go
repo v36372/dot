@@ -12,7 +12,7 @@ import (
 
 const (
 	configDirEnvVar = "HERDR_PLUGIN_CONFIG_DIR"
-	defaultScope    = "workspace"
+	defaultScope    = "global"
 	defaultWidth    = "80%"
 	defaultHeight   = "80%"
 	defaultShell    = "fish"

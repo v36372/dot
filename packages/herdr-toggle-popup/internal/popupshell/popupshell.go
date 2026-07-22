@@ -28,8 +28,10 @@ const (
 	defaultEntrypoint = "shell"
 	shellBin          = "sh"
 	tmuxBin           = "tmux"
+	scopeGlobal       = "global"
 	scopeDirectory    = "directory"
 	scopeTab          = "tab"
+	scopeWorkspace    = "workspace"
 	workspaceIDEnvVar = "HERDR_WORKSPACE_ID"
 	pluginRootEnvVar  = "HERDR_PLUGIN_ROOT"
 	sessionPrefix     = "herdr-toggle-popup-"
@@ -212,19 +214,14 @@ func tmuxSessionKey(scopeMode, entrypoint string) (key, cwd string, err error) {
 		return "", "", errors.New("could not determine the focused pane's cwd")
 	}
 
-	if scopeMode == scopeDirectory {
+	switch scopeMode {
+	case scopeGlobal, "":
+		// One shell shared across every workspace/tab.
+		return fmt.Sprintf("global:%s", entrypoint), cwd, nil
+	case scopeDirectory:
 		return fmt.Sprintf("directory:%s:%s", cwd, entrypoint), cwd, nil
-	}
-
-	workspaceID := os.Getenv(workspaceIDEnvVar)
-	if workspaceID == "" {
-		workspaceID = herdr.ContextField("workspace_id")
-	}
-	if workspaceID == "" {
-		workspaceID = "default"
-	}
-
-	if scopeMode == scopeTab {
+	case scopeTab:
+		workspaceID := resolveWorkspaceID()
 		tabID := herdr.ContextField("tab_id")
 		if tabID == "" {
 			tabID = os.Getenv("HERDR_TAB_ID")
@@ -233,9 +230,22 @@ func tmuxSessionKey(scopeMode, entrypoint string) (key, cwd string, err error) {
 			tabID = "default"
 		}
 		return fmt.Sprintf("tab:%s:%s:%s", workspaceID, tabID, entrypoint), cwd, nil
+	case scopeWorkspace:
+		return fmt.Sprintf("workspace:%s:%s", resolveWorkspaceID(), entrypoint), cwd, nil
+	default:
+		return fmt.Sprintf("global:%s", entrypoint), cwd, nil
 	}
+}
 
-	return fmt.Sprintf("workspace:%s:%s", workspaceID, entrypoint), cwd, nil
+func resolveWorkspaceID() string {
+	workspaceID := os.Getenv(workspaceIDEnvVar)
+	if workspaceID == "" {
+		workspaceID = herdr.ContextField("workspace_id")
+	}
+	if workspaceID == "" {
+		workspaceID = "default"
+	}
+	return workspaceID
 }
 
 func resolveCwd() string {

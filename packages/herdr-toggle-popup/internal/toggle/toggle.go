@@ -27,8 +27,10 @@ const (
 	// ModeForceOpen behaves like switch but is a distinct, explicit opt-in to stacking popups.
 	ModeForceOpen = "force-open"
 
+	scopeGlobal    = "global"
 	scopeDirectory = "directory"
 	scopeTab       = "tab"
+	scopeWorkspace = "workspace"
 
 	workspaceIDEnvVar = "HERDR_WORKSPACE_ID"
 
@@ -86,6 +88,8 @@ func Run(args []string, stdout, stderr io.Writer) int {
 
 func scopeKeyPrefix(scopeMode, workspaceID string) (string, error) {
 	switch scopeMode {
+	case scopeGlobal:
+		return "global:", nil
 	case scopeDirectory:
 		cwd, err := focusedCwd()
 		if err != nil {
@@ -98,8 +102,12 @@ func scopeKeyPrefix(scopeMode, workspaceID string) (string, error) {
 			return "", err
 		}
 		return fmt.Sprintf("tab:%s:%s:", workspaceID, tabID), nil
-	default:
+	case scopeWorkspace:
 		return fmt.Sprintf("workspace:%s:", workspaceID), nil
+	default:
+		// Unknown values fall back to global so a typo does not silently
+		// create one shell per workspace again.
+		return "global:", nil
 	}
 }
 

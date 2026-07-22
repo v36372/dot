@@ -1,12 +1,14 @@
 [user]
+  # Fallback identity for repos outside work/personal includeIf roots.
+  # Overridden by ~/.gitconfig_work or ~/.gitconfig_personal via includeIf.
   name = Tin Nguyen
   email = tin.nguyen.work@protonmail.com
   username = v36372
 [core]
   editor = nvim
-	excludesfile = ~/.gitignore_global
+  excludesfile = ~/.gitignore_global
 [diff]
-    external = difft
+  external = difft
 [format]
   pretty = format:%h %s (%an, %ad)
 [alias]
@@ -54,8 +56,23 @@
   smudge = git-lfs smudge -- %f
   process = git-lfs filter-process
   required = true
-[user]
-  email = tin.nguyen.work@protonmail.com
-  name = v36372
 [init]
   defaultBranch = master
+
+# Work identity for Sky Mavis / security workspace repos.
+[includeIf "gitdir:~/codes/sm/"]
+  path = ~/.gitconfig_work
+[includeIf "gitdir:~/codes/sm/**"]
+  path = ~/.gitconfig_work
+
+# Personal identity for personal code roots.
+[includeIf "gitdir:~/codes/personal/"]
+  path = ~/.gitconfig_personal
+[includeIf "gitdir:~/codes/personal/**"]
+  path = ~/.gitconfig_personal
+[credential "https://github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential

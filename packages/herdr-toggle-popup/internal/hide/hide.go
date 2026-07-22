@@ -1,4 +1,4 @@
-// Package hide implements the `hide` subcommand used from inside the popup (tmux C-f).
+// Package hide implements the `hide` subcommand used from inside the popup (tmux C-l).
 // Herdr modal popups swallow all keybindings, so the only way to close from inside is a
 // binding that runs in the popup process and calls popup.close over the socket.
 package hide

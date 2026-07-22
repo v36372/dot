@@ -116,14 +116,16 @@ type = "plugin_action"
 command = "vim-herdr-navigation.up"
 description = "Navigate up (Vim/Herdr)"
 
+# ctrl+l is reserved for the float popup (and clears screen in shells).
+# Keep hjkl navigation via alt+l for right.
 [[keys.command]]
-key = "ctrl+l"
+key = "alt+l"
 type = "plugin_action"
 command = "vim-herdr-navigation.right"
 description = "Navigate right (Vim/Herdr)"
 
 [[keys.command]]
-key = "ctrl+f"
+key = "ctrl+l"
 type = "plugin_action"
 command = "local.toggle-popup.toggle-shell"
 description = "Toggle floating terminal (persistent)"

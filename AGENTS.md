@@ -19,6 +19,7 @@ Personal Linux (Omarchy) env via GNU Stow. Fish + Neovim + Tmux + Herdr + Ghostt
 │   └── starship.toml
 ├── home/.gitconfig
 └── packages/
+    └── herdr-toggle-popup/  # local Herdr float popup plugin (not stowed)
 ```
 
 ## WHERE TO LOOK
@@ -32,6 +33,7 @@ Personal Linux (Omarchy) env via GNU Stow. Fish + Neovim + Tmux + Herdr + Ghostt
 | Shell function | `home/.config/fish/functions/<name>.fish` |
 | Tmux | `home/.config/tmux/tmux.conf` |
 | Herdr | `home/.config/herdr/config.toml` |
+| Herdr float popup plugin | `packages/herdr-toggle-popup/` |
 | Ghostty | `home/.config/ghostty/config` |
 | Git | `home/.gitconfig` |
 | Agent skill | `home/.agents/skills/<name>/SKILL.md` |

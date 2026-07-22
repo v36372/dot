@@ -1,0 +1,5 @@
+[[keys.command]]
+key = "ctrl+f"
+type = "plugin_action"
+command = "local.toggle-popup.toggle-shell"
+description = "Toggle floating terminal"

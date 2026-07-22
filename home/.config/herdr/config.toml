@@ -122,6 +122,12 @@ type = "plugin_action"
 command = "vim-herdr-navigation.right"
 description = "Navigate right (Vim/Herdr)"
 
+[[keys.command]]
+key = "ctrl+f"
+type = "plugin_action"
+command = "local.toggle-popup.toggle-shell"
+description = "Toggle floating terminal (persistent)"
+
 [ui]
 sidebar_width = 32
 sidebar_min_width = 18
@@ -132,10 +138,9 @@ mouse_scroll_lines = 3
 # Close panes/tabs without prompting.
 confirm_close = false
 prompt_new_tab_name = true
-agent_panel_scope = "all"
 accent = "#7aa2f7"
 
-show_agent_labels_on_pane_borders = false
+show_agent_labels_on_pane_borders = true
 agent_panel_sort = "spaces"
 [ui.toast]
 delivery = "herdr"
@@ -166,6 +171,7 @@ pane_history = true
 allow_nested = false
 kitty_graphics = true
 
+switch_ascii_input_source_in_prefix = false
 [advanced]
 # Scrollback limit is byte-based.
 scrollback_limit_bytes = 52428800

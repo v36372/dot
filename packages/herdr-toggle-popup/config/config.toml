@@ -1,0 +1,12 @@
+# Interactive shell for the persistent float session.
+# Not $SHELL: macOS login shell is often still zsh.
+shell = "fish"
+
+# Float size for local.toggle-popup.
+# Percentages match Herdr popup sizing (e.g. "80%"), or integer cell counts.
+width = "80%"
+height = "80%"
+
+# scope = "workspace"  # default
+# scope = "directory"
+# scope = "tab"

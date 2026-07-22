@@ -1,0 +1,26 @@
+id = "local.toggle-popup"
+name = "Toggle Popup (local float)"
+version = "0.5.0-local"
+min_herdr_version = "0.7.4"
+platforms = ["macos", "linux"]
+
+[[build]]
+command = ["sh", "scripts/build.sh"]
+
+[[actions]]
+id = "toggle-shell"
+title = "Toggle popup shell"
+contexts = ["workspace", "tab", "pane"]
+command = ["./bin/toggle-popup", "toggle", "shell"]
+
+[[panes]]
+id = "shell"
+title = "Popup Shell"
+placement = "popup"
+width = "80%"
+height = "80%"
+command = ["sh", "-c", "exec \"$HERDR_PLUGIN_ROOT/bin/toggle-popup\" popup-shell shell"]
+
+[[events]]
+on = "tab.focused"
+command = ["./bin/toggle-popup", "on-tab-focused"]

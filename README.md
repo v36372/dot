@@ -13,6 +13,7 @@ Style inspired by [dmmulroy/.dotfiles](https://github.com/dmmulroy/.dotfiles): `
 | Ghostty | `home/.config/ghostty` | Starts fish |
 | Tmux | `home/.config/tmux` | `C-s` prefix; default shell fish |
 | Herdr | `home/.config/herdr` | Workspace/tab/pane manager (fish shell) |
+| Herdr float popup | `packages/herdr-toggle-popup` | Local plugin: persistent 80% float (`ctrl+f`) |
 | MPV | `home/.config/mpv` | Full player setup (uosc, scripts, shaders) |
 | Git | `home/.gitconfig` + `home/.config/git` | Aliases + difftastic |
 | Starship | `home/.config/starship.toml` | Prompt |

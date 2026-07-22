@@ -70,6 +70,15 @@
   path = ~/.gitconfig_personal
 [includeIf "gitdir:~/codes/personal/**"]
   path = ~/.gitconfig_personal
+
+# Seamless personal GitHub access without remembering a special remote host.
+# Rewrites only v36372/* URLs to the SSH host that uses ~/.ssh/personal.
+# Work repos (other owners) keep default github.com → work key.
+[url "git@github-v36372:"]
+  insteadOf = git@github.com:v36372/
+  insteadOf = https://github.com/v36372/
+  insteadOf = ssh://git@github.com/v36372/
+
 [credential "https://github.com"]
 	helper = 
 	helper = !/opt/homebrew/bin/gh auth git-credential

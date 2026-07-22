@@ -123,7 +123,7 @@ command = "vim-herdr-navigation.right"
 description = "Navigate right (Vim/Herdr)"
 
 [[keys.command]]
-key = "super+j"
+key = "ctrl+o"
 type = "plugin_action"
 command = "local.toggle-popup.toggle-shell"
 description = "Toggle floating terminal (persistent)"

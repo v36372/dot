@@ -180,7 +180,7 @@ func runToggleLocked(
 func hidePopup(ctx context.Context, store *state.Store, client *herdr.Client, stderr io.Writer, key string) int {
 	// Always mark hidden first. Modal popups can already be gone (Escape, process exit)
 	// while our registry still says visible; treating close as best-effort keeps the next
-	// ctrl+l on the open path instead of looping on failed closes.
+	// ctrl+o on the open path instead of looping on failed closes.
 	if err := store.SetHidden(key, true); err != nil {
 		_, _ = fmt.Fprintf(stderr, "toggle: %v\n", err)
 		return 1

@@ -8,7 +8,7 @@ Differences from upstream:
 - default size `80%` × `80%`
 - default shell is **fish** (config `shell = "fish"`), not `$SHELL` / zsh
 - injects workspace/tab/cwd env so the popup shell stays alive
-- in-popup `ctrl+l` hide bind (Herdr modals swallow outer keybinds)
+- in-popup `ctrl+o` hide bind (Herdr modals swallow outer keybinds)
 - private low-latency tmux server for shell persistence
 
 ## Install / link
@@ -36,7 +36,7 @@ Keybinding lives in `home/.config/herdr/config.toml`:
 
 ```toml
 [[keys.command]]
-key = "ctrl+l"
+key = "ctrl+o"
 type = "plugin_action"
 command = "local.toggle-popup.toggle-shell"
 description = "Toggle floating terminal (persistent)"
@@ -46,8 +46,8 @@ description = "Toggle floating terminal (persistent)"
 
 | Action | Result |
 |--------|--------|
-| `ctrl+l` outside float | open 80% float |
-| `ctrl+l` inside float (after ~0.4s) | hide float; shell stays in tmux |
+| `ctrl+o` outside float | open 80% float |
+| `ctrl+o` inside float (after ~0.4s) | hide float; shell stays in tmux |
 | hard reset shell | `tmux -L herdr-toggle-popup kill-server` |
 
 ### Scope

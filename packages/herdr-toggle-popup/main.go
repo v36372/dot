@@ -28,7 +28,7 @@ const usage = `Usage: toggle-popup <command>
 
 Commands:
   toggle           Toggle the popup pane
-  hide             Hide the open popup (used from inside via C-l)
+  hide             Hide the open popup (used from inside via C-o)
   on-tab-focused   Handle a tab-focused event
   popup-shell      Run the shell inside the popup pane
   doctor           Print safe diagnostics for support
@@ -66,7 +66,7 @@ func newRootCmd(stdout, stderr io.Writer) *cobra.Command {
 
 	root.AddCommand(
 		newDispatchCmd(cmdToggle, "Toggle the popup pane", toggle.Run),
-		newDispatchCmd(cmdHide, "Hide the open popup (used from inside via C-l)", hide.Run),
+		newDispatchCmd(cmdHide, "Hide the open popup (used from inside via C-o)", hide.Run),
 		newDispatchCmd(cmdOnTabFocused, "Handle a tab-focused event", ontabfocused.Run),
 		newDispatchCmd(cmdPopupShell, "Run the shell inside the popup pane", popupshell.Run),
 		newDoctorCmd(),

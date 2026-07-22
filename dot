@@ -244,7 +244,7 @@ cmd_herdr_plugin() {
     echo "  config  miss (no $config_src)" >&2
   fi
 
-  echo "  ok      $plugin_id linked; ctrl+f toggles float"
+  echo "  ok      $plugin_id linked; ctrl+o toggles float"
 }
 
 cmd_doctor() {

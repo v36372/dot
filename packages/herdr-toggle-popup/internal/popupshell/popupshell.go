@@ -37,7 +37,7 @@ const (
 	sessionPrefix     = "herdr-toggle-popup-"
 	sessionHashBytes  = 16
 	tmuxSocketName    = "herdr-toggle-popup"
-	// Delay before enabling the in-popup C-l hide bind so the keystroke that opened
+	// Delay before enabling the in-popup C-o hide bind so the keystroke that opened
 	// the float cannot race into the new client and immediately close it.
 	hideBindDelay = 400 * time.Millisecond
 )
@@ -60,10 +60,10 @@ fi
 "$tmux" -L herdr-toggle-popup -f "$conf" set-option -t "$session" status off 2>/dev/null || true
 "$tmux" -L herdr-toggle-popup -f "$conf" set-option -s escape-time 0 2>/dev/null || true
 
-# Install hide bind after a short delay so the opening ctrl+l cannot race-close us.
+# Install hide bind after a short delay so the opening ctrl+o cannot race-close us.
 (
   sleep 0.4
-  "$tmux" -L herdr-toggle-popup -f "$conf" bind-key -n C-l run-shell -b "$hide_cmd" 2>/dev/null || true
+  "$tmux" -L herdr-toggle-popup -f "$conf" bind-key -n C-o run-shell -b "$hide_cmd" 2>/dev/null || true
 ) >/dev/null 2>&1 &
 
 exec "$tmux" -L herdr-toggle-popup -f "$conf" attach-session -t "$session"

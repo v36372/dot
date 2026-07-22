@@ -18,7 +18,7 @@
   # --- Window and Appearance ---
   # Opacity applies to the window background; cells=true also tints painted cells
   # (nvim/tmux) so transparency is visible even when apps set a bg color.
-  background-opacity = 0.8
+  background-opacity = 0.78
   background-opacity-cells = true
   background-blur = 20
   macos-titlebar-style = transparent
@@ -48,7 +48,7 @@
   clipboard-paste-bracketed-safe = true
 
   # --- Shell Integration ---
-  shell-integration = detect
+  shell-integration = fish
 
   # --- Keybindings ---
   # Tabs
@@ -94,4 +94,5 @@
 async-backend = epoll
 
 # --- Shell ---
-command = fish
+# Homebrew installs Fish in /opt/homebrew/bin; Arch installs it in /usr/bin.
+command = direct:/usr/bin/env PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin fish --login

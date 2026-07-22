@@ -73,8 +73,9 @@
 
 # Seamless personal GitHub access without remembering a special remote host.
 # Rewrites only v36372/* URLs to the SSH host that uses ~/.ssh/personal.
+# Keep the owner path (v36372/) so the remote stays v36372/repo.git.
 # Work repos (other owners) keep default github.com → work key.
-[url "git@github-v36372:"]
+[url "git@github-v36372:v36372/"]
   insteadOf = git@github.com:v36372/
   insteadOf = https://github.com/v36372/
   insteadOf = ssh://git@github.com/v36372/

@@ -46,18 +46,18 @@ usage() {
 dot — personal dotfiles helper
 
 Usage:
-  dot stow            Create/update symlinks (+ best-effort herdr plugin)
-  dot restow          Same as stow
-  dot unstow          Remove managed symlinks
-  dot herdr-plugin    Build/link local Herdr float popup plugin
-  dot skills-sync     Update locked third-party skills
-  dot doctor          Check tools + symlink health
-  dot path            Print repo path
-  dot help            Show this help
+  dot stow          Create/update symlinks
+  dot restow        Same as stow
+  dot unstow        Remove managed symlinks
+  dot add-skill     Vendor upstream skills into home/.agents
+  dot skills-sync   Update locked third-party skills
+  dot doctor        Check tools + symlink health
+  dot path          Print repo path
+  dot help          Show this help
 
 Layout:
-  home/               Mirrors ~ and is linked into $HOME
-  packages/           Optional packages (herdr-toggle-popup, notes)
+  home/             Mirrors ~ and is linked into $HOME
+  packages/         Optional package lists / notes
 EOF
 }
 
@@ -118,21 +118,19 @@ cmd_stow() {
       stow --target="$TARGET_DIR" --restow --verbose=1 home
     )
     echo "stowed via GNU Stow: $PACKAGE_DIR -> $TARGET_DIR"
-  else
-    echo "GNU Stow not found; using ln -s fallback"
-    # Skip runtime junk
-    while IFS= read -r -d '' f; do
-      case "$f" in
-        *.log|*.sock) continue ;;
-      esac
-      link_file "$f"
-    done < <(find "$PACKAGE_DIR" -type f -print0)
-
-    echo "linked $PACKAGE_DIR -> $TARGET_DIR"
+    return 0
   fi
 
-  # packages/ is not stowed; install the local Herdr float plugin when possible.
-  cmd_herdr_plugin --best-effort
+  echo "GNU Stow not found; using ln -s fallback"
+  # Skip runtime junk
+  while IFS= read -r -d '' f; do
+    case "$f" in
+      *.log|*.sock) continue ;;
+    esac
+    link_file "$f"
+  done < <(find "$PACKAGE_DIR" -type f -print0)
+
+  echo "linked $PACKAGE_DIR -> $TARGET_DIR"
 }
 
 cmd_unstow() {
@@ -151,109 +149,19 @@ cmd_unstow() {
   done < <(find "$PACKAGE_DIR" -type f -print0)
 }
 
+cmd_add_skill() {
+  "$PACKAGE_DIR/.agents/skills/scripts/add-skill.sh" "$@"
+}
+
 cmd_skills_sync() {
   "$PACKAGE_DIR/.agents/skills/scripts/sync-skills.sh" "$@"
 }
 
-find_go() {
-  if command -v go >/dev/null 2>&1; then
-    command -v go
-    return 0
-  fi
-  local candidate
-  for candidate in /usr/local/go/bin/go /opt/homebrew/bin/go "$HOME"/.local/bin/go; do
-    if [[ -x "$candidate" ]]; then
-      echo "$candidate"
-      return 0
-    fi
-  done
-  return 1
-}
-
-# Build, link, and seed packages/herdr-toggle-popup.
-# Usage: cmd_herdr_plugin [--best-effort]
-cmd_herdr_plugin() {
-  local best_effort=0
-  if [[ "${1:-}" == "--best-effort" ]]; then
-    best_effort=1
-  fi
-
-  local plugin_dir="$DOTFILES_DIR/packages/herdr-toggle-popup"
-  local plugin_id="local.toggle-popup"
-  local config_src="$plugin_dir/config/config.toml"
-  local config_dst="$TARGET_DIR/.config/herdr/plugins/config/$plugin_id/config.toml"
-  local binary="$plugin_dir/bin/toggle-popup"
-
-  if [[ ! -d "$plugin_dir" ]]; then
-    if [[ "$best_effort" -eq 1 ]]; then
-      echo "herdr-plugin: skip (missing $plugin_dir)"
-      return 0
-    fi
-    echo "herdr-plugin: missing $plugin_dir" >&2
-    return 1
-  fi
-
-  local missing=()
-  command -v herdr >/dev/null 2>&1 || missing+=("herdr")
-  command -v tmux >/dev/null 2>&1 || missing+=("tmux")
-  local go_bin=""
-  if ! go_bin="$(find_go)"; then
-    missing+=("go")
-  fi
-
-  if [[ "${#missing[@]}" -gt 0 ]]; then
-    if [[ "$best_effort" -eq 1 ]]; then
-      echo "herdr-plugin: skip (missing: ${missing[*]}). Later: ./dot herdr-plugin"
-      return 0
-    fi
-    echo "herdr-plugin: missing required tools: ${missing[*]}" >&2
-    return 1
-  fi
-
-  echo "== herdr-plugin =="
-  echo "  source  $plugin_dir"
-
-  mkdir -p "$plugin_dir/bin"
-  echo "  build   $binary"
-  (
-    cd "$plugin_dir"
-    "$go_bin" build -o bin/toggle-popup .
-  )
-
-  if [[ ! -x "$binary" ]]; then
-    echo "herdr-plugin: build failed (no binary at $binary)" >&2
-    return 1
-  fi
-
-  # Re-link so the plugin root always points at this checkout.
-  local existing
-  existing="$(herdr plugin list 2>/dev/null || true)"
-  if [[ "$existing" == *"$plugin_id"* ]]; then
-    herdr plugin unlink "$plugin_id" >/dev/null 2>&1 || true
-  fi
-  echo "  link    $plugin_id"
-  herdr plugin link "$plugin_dir" >/dev/null
-
-  mkdir -p "$(dirname "$config_dst")"
-  if [[ -f "$config_dst" ]]; then
-    echo "  config  keep $config_dst"
-  elif [[ -f "$config_src" ]]; then
-    cp "$config_src" "$config_dst"
-    echo "  config  seed $config_dst"
-  else
-    echo "  config  miss (no $config_src)" >&2
-  fi
-
-  echo "  ok      $plugin_id linked; ctrl+o toggles float"
-}
-
 cmd_doctor() {
   echo "== tools =="
-  for t in nvim tmux fish ghostty herdr stow rg fd fzf starship git go; do
+  for t in nvim tmux fish ghostty herdr stow rg fd fzf starship git; do
     if command -v "$t" >/dev/null 2>&1; then
       printf "  ok  %s (%s)\n" "$t" "$(command -v "$t")"
-    elif [[ "$t" == "go" ]] && find_go >/dev/null 2>&1; then
-      printf "  ok  go (%s)\n" "$(find_go)"
     else
       printf "  MISSING  %s\n" "$t"
     fi
@@ -288,45 +196,6 @@ cmd_doctor() {
   done
 
   echo
-  echo "== herdr float plugin =="
-  local plugin_dir="$DOTFILES_DIR/packages/herdr-toggle-popup"
-  local plugin_id="local.toggle-popup"
-  local binary="$plugin_dir/bin/toggle-popup"
-  local config_dst="$TARGET_DIR/.config/herdr/plugins/config/$plugin_id/config.toml"
-
-  if [[ -d "$plugin_dir" ]]; then
-    printf "  ok    source %s\n" "$plugin_dir"
-  else
-    printf "  miss  source %s\n" "$plugin_dir"
-  fi
-  if [[ -x "$binary" ]]; then
-    printf "  ok    binary %s\n" "$binary"
-  else
-    printf "  miss  binary (run: ./dot herdr-plugin)\n"
-  fi
-  if [[ -f "$config_dst" ]]; then
-    printf "  ok    config %s\n" "$config_dst"
-  else
-    printf "  miss  config (run: ./dot herdr-plugin)\n"
-  fi
-  if command -v herdr >/dev/null 2>&1; then
-    # Capture full list first: `grep -q` + pipefail races with herdr writing to a closed pipe.
-    local plugin_list
-    plugin_list="$(herdr plugin list 2>/dev/null || true)"
-    if [[ "$plugin_list" == *"$plugin_id"* ]]; then
-      if [[ "$plugin_list" == *"local:$plugin_dir"* ]]; then
-        printf "  ok    linked %s -> %s\n" "$plugin_id" "$plugin_dir"
-      else
-        printf "  WARN  %s linked elsewhere; re-run: ./dot herdr-plugin\n" "$plugin_id"
-      fi
-    else
-      printf "  miss  linked plugin (run: ./dot herdr-plugin)\n"
-    fi
-  else
-    printf "  miss  herdr (install herdr, then: ./dot herdr-plugin)\n"
-  fi
-
-  echo
   echo "== repo =="
   echo "  $DOTFILES_DIR"
 }
@@ -337,7 +206,7 @@ main() {
   case "$cmd" in
     stow|link|install|restow) cmd_stow "$@" ;;
     unstow|unlink) cmd_unstow "$@" ;;
-    herdr-plugin) cmd_herdr_plugin "$@" ;;
+    add-skill) cmd_add_skill "$@" ;;
     skills-sync) cmd_skills_sync "$@" ;;
     doctor) cmd_doctor "$@" ;;
     path) echo "$DOTFILES_DIR" ;;

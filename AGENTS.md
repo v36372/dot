@@ -58,6 +58,7 @@ Personal Linux (Omarchy) env via GNU Stow. Fish + Neovim + Tmux + Herdr + Ghostt
 
 ```bash
 ./dot stow
+./dot add-skill <repo> <skills-dir-path> [skill-name ...]
 ./dot skills-sync
 ./dot doctor
 ./dot unstow

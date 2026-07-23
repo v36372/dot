@@ -1,7 +1,7 @@
 [user]
   # Fallback identity for repos outside work/personal includeIf roots.
   # Overridden by ~/.gitconfig_work or ~/.gitconfig_personal via includeIf.
-  name = Tin Nguyen
+  name = v36372
   email = tin.nguyen.work@protonmail.com
   username = v36372
 [core]
@@ -64,21 +64,6 @@
   path = ~/.gitconfig_work
 [includeIf "gitdir:~/codes/sm/**"]
   path = ~/.gitconfig_work
-
-# Personal identity for personal code roots.
-[includeIf "gitdir:~/codes/personal/"]
-  path = ~/.gitconfig_personal
-[includeIf "gitdir:~/codes/personal/**"]
-  path = ~/.gitconfig_personal
-
-# Seamless personal GitHub access without remembering a special remote host.
-# Rewrites only v36372/* URLs to the SSH host that uses ~/.ssh/personal.
-# Keep the owner path (v36372/) so the remote stays v36372/repo.git.
-# Work repos (other owners) keep default github.com → work key.
-[url "git@github-v36372:v36372/"]
-  insteadOf = git@github.com:v36372/
-  insteadOf = https://github.com/v36372/
-  insteadOf = ssh://git@github.com/v36372/
 
 [credential "https://github.com"]
 	helper = 

@@ -46,18 +46,19 @@ usage() {
 dot — personal dotfiles helper
 
 Usage:
-  dot stow          Create/update symlinks
+  dot stow          Create/update symlinks (+ best-effort herdr float plugin)
   dot restow        Same as stow
   dot unstow        Remove managed symlinks
+  dot herdr-plugin  Build/link packages/herdr-toggle-popup
   dot add-skill     Vendor upstream skills into home/.agents
   dot skills-sync   Update locked third-party skills
-  dot doctor        Check tools + symlink health
+  dot doctor        Check tools + symlink health + herdr plugin
   dot path          Print repo path
   dot help          Show this help
 
 Layout:
   home/             Mirrors ~ and is linked into $HOME
-  packages/         Optional package lists / notes
+  packages/         Optional package lists / notes (herdr-toggle-popup lives here)
 EOF
 }
 
@@ -111,6 +112,117 @@ unlink_file() {
   fi
 }
 
+HERDR_TOGGLE_POPUP_DIR="$DOTFILES_DIR/packages/herdr-toggle-popup"
+HERDR_TOGGLE_POPUP_BIN="$HERDR_TOGGLE_POPUP_DIR/bin/toggle-popup"
+HERDR_TOGGLE_POPUP_CONFIG_SRC="$HERDR_TOGGLE_POPUP_DIR/config/config.toml"
+HERDR_TOGGLE_POPUP_CONFIG_DIR="$TARGET_DIR/.config/herdr/plugins/config/local.toggle-popup"
+HERDR_TOGGLE_POPUP_CONFIG_DEST="$HERDR_TOGGLE_POPUP_CONFIG_DIR/config.toml"
+HERDR_TOGGLE_POPUP_ID="local.toggle-popup"
+
+herdr_toggle_popup_linked() {
+  command -v herdr >/dev/null 2>&1 || return 1
+  herdr plugin list 2>/dev/null | grep -Fq "$HERDR_TOGGLE_POPUP_ID"
+}
+
+ensure_herdr_toggle_popup_bin() {
+  local src_mtime bin_mtime
+
+  if [[ -x "$HERDR_TOGGLE_POPUP_BIN" ]]; then
+    # Rebuild when any tracked source is newer than the binary.
+    src_mtime="$(find "$HERDR_TOGGLE_POPUP_DIR" \
+      \( -name '*.go' -o -name 'go.mod' -o -name 'go.sum' -o -name 'herdr-plugin.toml' \) \
+      -printf '%T@\n' 2>/dev/null | sort -n | tail -1)"
+    bin_mtime="$(stat -c '%Y' "$HERDR_TOGGLE_POPUP_BIN" 2>/dev/null || echo 0)"
+    if [[ -n "$src_mtime" ]]; then
+      src_mtime="${src_mtime%.*}"
+      if (( src_mtime <= bin_mtime )); then
+        return 0
+      fi
+    else
+      return 0
+    fi
+  fi
+
+  if ! command -v go >/dev/null 2>&1; then
+    echo "  skip  herdr-toggle-popup build (go not found)"
+    return 1
+  fi
+
+  echo "  build herdr-toggle-popup"
+  mkdir -p "$(dirname "$HERDR_TOGGLE_POPUP_BIN")"
+  (
+    cd "$HERDR_TOGGLE_POPUP_DIR"
+    go build -o bin/toggle-popup .
+  )
+}
+
+seed_herdr_toggle_popup_config() {
+  mkdir -p "$HERDR_TOGGLE_POPUP_CONFIG_DIR"
+  if [[ -e "$HERDR_TOGGLE_POPUP_CONFIG_DEST" ]]; then
+    echo "  keep  plugins/config/local.toggle-popup/config.toml"
+    return 0
+  fi
+  if [[ ! -f "$HERDR_TOGGLE_POPUP_CONFIG_SRC" ]]; then
+    echo "  miss  $HERDR_TOGGLE_POPUP_CONFIG_SRC" >&2
+    return 1
+  fi
+  cp "$HERDR_TOGGLE_POPUP_CONFIG_SRC" "$HERDR_TOGGLE_POPUP_CONFIG_DEST"
+  echo "  seed  plugins/config/local.toggle-popup/config.toml"
+}
+
+# Build binary, link local plugin, seed runtime config.
+# Best-effort when called from stow: missing herdr/go prints a skip, not a hard fail.
+cmd_herdr_plugin() {
+  local strict="${1:-1}"
+  local ok=0
+
+  echo "== herdr-toggle-popup =="
+
+  if [[ ! -d "$HERDR_TOGGLE_POPUP_DIR" ]]; then
+    echo "  miss  $HERDR_TOGGLE_POPUP_DIR"
+    [[ "$strict" == "1" ]] && return 1
+    return 0
+  fi
+
+  if ! ensure_herdr_toggle_popup_bin; then
+    if [[ ! -x "$HERDR_TOGGLE_POPUP_BIN" ]]; then
+      echo "  fail  binary missing: $HERDR_TOGGLE_POPUP_BIN"
+      [[ "$strict" == "1" ]] && return 1
+      return 0
+    fi
+  fi
+
+  if ! command -v herdr >/dev/null 2>&1; then
+    echo "  skip  herdr plugin link (herdr not found)"
+    seed_herdr_toggle_popup_config || true
+    [[ "$strict" == "1" ]] && return 1
+    return 0
+  fi
+
+  if herdr_toggle_popup_linked; then
+    # Re-link keeps plugins.json in sync if the package path moved.
+    echo "  link  $HERDR_TOGGLE_POPUP_ID (refresh)"
+  else
+    echo "  link  $HERDR_TOGGLE_POPUP_ID"
+  fi
+  if ! herdr plugin link "$HERDR_TOGGLE_POPUP_DIR" >/dev/null; then
+    echo "  fail  herdr plugin link"
+    [[ "$strict" == "1" ]] && return 1
+    return 0
+  fi
+
+  seed_herdr_toggle_popup_config || ok=1
+
+  if herdr_toggle_popup_linked && [[ -x "$HERDR_TOGGLE_POPUP_BIN" ]]; then
+    echo "  ok    ctrl+o -> $HERDR_TOGGLE_POPUP_ID.toggle-shell"
+  else
+    echo "  warn  plugin not fully installed"
+    ok=1
+  fi
+
+  [[ "$ok" -eq 0 ]]
+}
+
 cmd_stow() {
   if command -v stow >/dev/null 2>&1; then
     (
@@ -118,19 +230,21 @@ cmd_stow() {
       stow --target="$TARGET_DIR" --restow --verbose=1 home
     )
     echo "stowed via GNU Stow: $PACKAGE_DIR -> $TARGET_DIR"
-    return 0
+  else
+    echo "GNU Stow not found; using ln -s fallback"
+    # Skip runtime junk
+    while IFS= read -r -d '' f; do
+      case "$f" in
+        *.log|*.sock) continue ;;
+      esac
+      link_file "$f"
+    done < <(find "$PACKAGE_DIR" -type f -print0)
+
+    echo "linked $PACKAGE_DIR -> $TARGET_DIR"
   fi
 
-  echo "GNU Stow not found; using ln -s fallback"
-  # Skip runtime junk
-  while IFS= read -r -d '' f; do
-    case "$f" in
-      *.log|*.sock) continue ;;
-    esac
-    link_file "$f"
-  done < <(find "$PACKAGE_DIR" -type f -print0)
-
-  echo "linked $PACKAGE_DIR -> $TARGET_DIR"
+  # Non-strict: configs still land even if herdr/go are missing on a fresh box.
+  cmd_herdr_plugin 0 || true
 }
 
 cmd_unstow() {
@@ -159,7 +273,7 @@ cmd_skills_sync() {
 
 cmd_doctor() {
   echo "== tools =="
-  for t in nvim tmux fish ghostty herdr stow rg fd fzf starship git; do
+  for t in nvim tmux fish ghostty herdr stow rg fd fzf starship git go; do
     if command -v "$t" >/dev/null 2>&1; then
       printf "  ok  %s (%s)\n" "$t" "$(command -v "$t")"
     else
@@ -196,6 +310,36 @@ cmd_doctor() {
   done
 
   echo
+  echo "== herdr float plugin =="
+  if [[ -x "$HERDR_TOGGLE_POPUP_BIN" ]]; then
+    printf "  ok    binary %s\n" "$HERDR_TOGGLE_POPUP_BIN"
+  else
+    printf "  miss  binary %s (run: ./dot herdr-plugin)\n" "$HERDR_TOGGLE_POPUP_BIN"
+  fi
+
+  if [[ -f "$HERDR_TOGGLE_POPUP_CONFIG_DEST" ]]; then
+    printf "  ok    config %s\n" "$HERDR_TOGGLE_POPUP_CONFIG_DEST"
+  else
+    printf "  miss  config %s\n" "$HERDR_TOGGLE_POPUP_CONFIG_DEST"
+  fi
+
+  if ! command -v herdr >/dev/null 2>&1; then
+    printf "  miss  herdr CLI\n"
+  elif herdr_toggle_popup_linked; then
+    printf "  ok    linked as %s\n" "$HERDR_TOGGLE_POPUP_ID"
+  else
+    printf "  miss  not linked (run: ./dot herdr-plugin)\n"
+  fi
+
+  if command -v herdr >/dev/null 2>&1 && [[ -f "$TARGET_DIR/.config/herdr/config.toml" ]]; then
+    if grep -Fq 'local.toggle-popup.toggle-shell' "$TARGET_DIR/.config/herdr/config.toml"; then
+      printf "  ok    keybind ctrl+o -> local.toggle-popup.toggle-shell\n"
+    else
+      printf "  miss  keybind for local.toggle-popup.toggle-shell in config.toml\n"
+    fi
+  fi
+
+  echo
   echo "== repo =="
   echo "  $DOTFILES_DIR"
 }
@@ -206,6 +350,7 @@ main() {
   case "$cmd" in
     stow|link|install|restow) cmd_stow "$@" ;;
     unstow|unlink) cmd_unstow "$@" ;;
+    herdr-plugin) cmd_herdr_plugin 1 "$@" ;;
     add-skill) cmd_add_skill "$@" ;;
     skills-sync) cmd_skills_sync "$@" ;;
     doctor) cmd_doctor "$@" ;;

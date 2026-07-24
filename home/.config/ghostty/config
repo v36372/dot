@@ -48,7 +48,7 @@
   clipboard-paste-bracketed-safe = true
 
   # --- Shell Integration ---
-  shell-integration = fish
+  #shell-integration = /usr/bin/fish
 
   # --- Keybindings ---
   # Tabs
@@ -95,4 +95,4 @@ async-backend = epoll
 
 # --- Shell ---
 # Homebrew installs Fish in /opt/homebrew/bin; Arch installs it in /usr/bin.
-command = direct:/usr/bin/env PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin fish --login
+#command = direct:/usr/bin/env PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin fish --login

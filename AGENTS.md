@@ -12,7 +12,7 @@ Personal Linux (Omarchy) env via GNU Stow. Fish + Neovim + Tmux + Herdr + Ghostt
 │   ├── nvim/               # Editor (see nvim AGENTS)
 │   ├── fish/               # Shell (see fish/AGENTS.md)
 │   ├── tmux/               # Prefix C-s, default shell fish
-│   ├── ghostty/            # command = fish
+│   ├── ghostty/            # command = fish; shaders/
 │   ├── herdr/              # Prefix C-;, default_shell fish
 │   ├── mpv/
 │   ├── git/
@@ -34,7 +34,7 @@ Personal Linux (Omarchy) env via GNU Stow. Fish + Neovim + Tmux + Herdr + Ghostt
 | Tmux | `home/.config/tmux/tmux.conf` |
 | Herdr | `home/.config/herdr/config.toml` |
 | Herdr float popup plugin | `packages/herdr-toggle-popup/` |
-| Ghostty | `home/.config/ghostty/config` |
+| Ghostty | `home/.config/ghostty/config`, `home/.config/ghostty/shaders/` |
 | Git | `home/.gitconfig` |
 | Agent skill | `home/.agents/skills/<name>/SKILL.md` |
 

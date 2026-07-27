@@ -64,6 +64,12 @@
   path = ~/.gitconfig_work
 [includeIf "gitdir:~/codes/sm/**"]
   path = ~/.gitconfig_work
+#
+# Work identity for Sky Mavis / security workspace repos.
+[includeIf "gitdir:~/codes/personal/"]
+  path = ~/.gitconfig_personal
+[includeIf "gitdir:~/codes/personal/**"]
+  path = ~/.gitconfig_personal
 
 [credential "https://github.com"]
 	helper = 

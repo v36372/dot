@@ -150,6 +150,31 @@ for key, entry in repo_lock["skills"].items():
     print(f"  refreshed {folder}")
 PY
 
+# Upstreams sometimes use a display label even though skill names only allow
+# lowercase letters, numbers, and hyphens. Use the already-valid folder name.
+python3 - "$REPO_SKILLS" <<'PY'
+import re
+import sys
+from pathlib import Path
+
+skills_dir = Path(sys.argv[1])
+valid_name = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+
+for skill_md in sorted(skills_dir.glob("*/SKILL.md")):
+    text = skill_md.read_text(encoding="utf-8")
+    match = re.search(r"(?m)^name:\s*(.+?)\s*$", text)
+    if not match or valid_name.fullmatch(match.group(1)):
+        continue
+
+    folder_name = skill_md.parent.name
+    if not valid_name.fullmatch(folder_name):
+        raise SystemExit(f"error: invalid skill folder name: {folder_name}")
+
+    text = text[:match.start(1)] + folder_name + text[match.end(1):]
+    skill_md.write_text(text, encoding="utf-8")
+    print(f"  normalized {folder_name} metadata name")
+PY
+
 echo
 echo "Syncing repo agents -> ~/.agents (repo is source of truth)..."
 mkdir -p "$HOME/.agents/skills"

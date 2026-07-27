@@ -1,7 +1,6 @@
 ---
 name: how
 description: "Use for \"how does X work\", code walkthroughs before changing something, and placement / ownership / layering questions (\"where should this live\", \"which package owns this\", \"is this the right layer\"). Explains subsystem architecture, runtime flow, onboarding mental models. Can critique architecture. Use why for motivation."
-disable-model-invocation: true
 ---
 
 # How
@@ -46,7 +45,7 @@ The right decomposition depends on the question. Use your judgment. Narrow quest
 Spawn all explorers in a single message:
 
 - `subagent_type`: `generalPurpose`
-- `model`: resolve the configured `how explorer` role per `~/.cursor/rules/pstack-models.mdc`. Pass a real slug as `model`. Omit `model` for `inherit-parent`/`auto`. If the role line is absent, default to `grok-4.5-fast-xhigh`.
+- `model`: your configured how-explorer model (default `grok-4.5-fast-xhigh`)
 - `readonly`: `true`
 
 Each explorer gets the same base prompt from `references/explorer-prompt.md` plus a specific exploration angle naming its slice. Each explorer should:
@@ -65,7 +64,7 @@ Then proceed to Step 3.
 Spawn a single Task subagent that explores and explains in one pass:
 
 - `subagent_type`: `generalPurpose`
-- `model`: resolve the configured `how explainer` role per `~/.cursor/rules/pstack-models.mdc`. Pass a real slug as `model`. Omit `model` for `inherit-parent`/`auto`. If the role line is absent, default to `claude-fable-5-thinking-max`.
+- `model`: your configured how-explainer model (default `claude-fable-5-thinking-max`)
 - `readonly`: `true`
 
 The agent does its own exploration (Glob, Grep, Read) and writes the explanation directly. Read `references/explainer-prompt.md` for the communication style and output format. Same structure, just no explorer findings as input.
@@ -77,7 +76,7 @@ Proceed to Step 4.
 Once all explorers return, spawn a single Task subagent to synthesize their findings into one coherent explanation:
 
 - `subagent_type`: `generalPurpose`
-- `model`: resolve the configured `how explainer` role per `~/.cursor/rules/pstack-models.mdc`. Pass a real slug as `model`. Omit `model` for `inherit-parent`/`auto`. If the role line is absent, default to `claude-fable-5-thinking-max`.
+- `model`: your configured how-explainer model (default `claude-fable-5-thinking-max`)
 - `readonly`: `true`
 
 The explainer gets all explorers' findings and writes the human-facing explanation (output format below). Read `references/explainer-prompt.md` for the full prompt template. The explainer reconciles overlapping findings, resolves contradictions, and weaves the slices into a unified picture.
@@ -110,11 +109,11 @@ Run the full explain flow above (Steps 1-4). You must understand the architectur
 
 ### Step 2. Spawn Critics
 
-After the explanation is complete, spawn one architectural critic per entry in your configured `how critics` list, all in a single message. If the role line is absent, use defaults `claude-fable-5-thinking-max`, `gpt-5.6-sol-max`, `grok-4.5-fast-xhigh`.
+After the explanation is complete, spawn one architectural critic per model in your configured how-critics list (defaults `claude-fable-5-thinking-max`, `gpt-5.6-sol-max`, `grok-4.5-fast-xhigh`, `claude-opus-5-thinking-xhigh`), all in a single message.
 
 For each critic:
 - `subagent_type`: `generalPurpose`
-- `model`: resolve that `how critics` entry per `~/.cursor/rules/pstack-models.mdc`. Pass a real slug as `model`. Omit `model` for `inherit-parent`/`auto`. Real slugs are minimum reasoning levels, and the lead should escalate them when the architecture warrants deeper analysis.
+- `model`: one model from the configured how-critics list. These are minimum reasoning levels. The lead should escalate any model when the architecture warrants deeper analysis.
 - `readonly`: `true`
 
 Read `references/critic-prompt.md` for the prompt template. Each critic gets:

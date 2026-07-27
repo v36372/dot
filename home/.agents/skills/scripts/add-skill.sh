@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
-# Add upstream skills into this repo's home/.agents tree (source of truth),
-# then sync them out to ~/.agents.
+# Vendor one upstream skill into this repo's home/.agents tree (source of truth),
+# then sync it out to ~/.agents.
 #
 # Usage:
-#   add-skill.sh <owner/repo|url|path> <skills-dir-path> [skill-name ...]
+#   add-skill.sh <github-skill-url>
+#
+# The URL must point at the directory that contains SKILL.md (GitHub tree page),
+# or at SKILL.md itself (blob page).
 #
 # Examples:
-#   add-skill.sh cursor/plugins pstack/skills
-#   add-skill.sh cursor/plugins pstack/skills how why
+#   ./dot add-skill https://github.com/IgorWarzocha/howaboua-pi-stuff/tree/main/packages/pi-skill-omarchy-help/skills/omarchy-help
+#   ./dot add-skill https://github.com/cursor/plugins/tree/main/pstack/skills/how
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd -P)"
@@ -21,41 +24,21 @@ SKILLS_AGENT="${SKILLS_AGENT:-cline}"
 
 usage() {
   cat <<'EOF'
-Usage: add-skill <repo> <skills-dir-path> [skill-name ...]
+Usage: add-skill <github-skill-url>
 
-  repo             owner/repo, git URL, or local path
-  skills-dir-path  directory within the source that contains skill folders
-  skill-name       optional folder or frontmatter name; omit to add all
+  github-skill-url  GitHub tree URL of the skill directory (contains SKILL.md),
+                    or blob URL of SKILL.md itself.
 
 Examples:
-  ./dot add-skill cursor/plugins pstack/skills
-  ./dot add-skill cursor/plugins pstack/skills how
-  ./dot add-skill mattpocock/skills skills/engineering code-review
+  ./dot add-skill https://github.com/IgorWarzocha/howaboua-pi-stuff/tree/main/packages/pi-skill-omarchy-help/skills/omarchy-help
+  ./dot add-skill https://github.com/cursor/plugins/tree/main/pstack/skills/how
+  ./dot add-skill https://github.com/mattpocock/skills/blob/main/skills/engineering/code-review/SKILL.md
 EOF
 }
 
 die() {
   echo "error: $*" >&2
   exit 1
-}
-
-normalize_dir() {
-  local p="${1%/}"
-  p="${p#./}"
-  printf '%s\n' "$p"
-}
-
-is_github_slug() {
-  [[ "$1" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]]
-}
-
-github_slug_from_url() {
-  local url="$1"
-  if [[ "$url" =~ github\.com[:/]([^/]+)/([^/.]+)(\.git)?$ ]]; then
-    printf '%s/%s\n' "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}"
-    return 0
-  fi
-  return 1
 }
 
 # Mirror skills CLI sanitizeName(): folder name under ~/.agents/skills.
@@ -90,63 +73,70 @@ print(value)
 PY
 }
 
-# Materialize source/skills_dir locally; print absolute root path.
-materialize_skills_root() {
-  local source="$1"
-  local skills_dir="$2"
+# Parse a GitHub skill URL into: owner repo ref skill_path cli_source
+# Prints: owner\trepo\tref\tskill_path\tcli_source
+parse_github_skill_url() {
+  python3 - "$1" <<'PY'
+import re
+import sys
 
-  if [[ -d "$source" ]]; then
-    local root
-    root="$(cd "$source" && pwd -P)"
-    [[ -d "$root/$skills_dir" ]] || die "skills dir not found: $root/$skills_dir"
-    printf '%s\n' "$root"
-    return 0
-  fi
+raw = sys.argv[1].strip()
+url = raw.rstrip("/")
 
-  command -v git >/dev/null 2>&1 || die "git is required to discover skills from $source"
-  local tmp_clone git_url
-  tmp_clone="$(mktemp -d "${TMPDIR:-/tmp}/dot-add-skill-src.XXXXXX")"
-  MATERIALIZE_TMP="$tmp_clone"
-  git_url="$source"
-  if is_github_slug "$source"; then
-    git_url="https://github.com/${source}.git"
-  fi
-  git clone --depth 1 --filter=blob:none --sparse "$git_url" "$tmp_clone" >/dev/null 2>&1 \
-    || die "failed to clone $git_url"
-  (
-    cd "$tmp_clone"
-    git sparse-checkout set "$skills_dir" >/dev/null 2>&1 || true
-  )
-  [[ -d "$tmp_clone/$skills_dir" ]] || die "skills dir not found after clone: $skills_dir"
-  printf '%s\n' "$tmp_clone"
-}
+# Blob URL of SKILL.md → treat parent dir as the skill.
+blob = re.match(
+    r"^https?://github\.com/([^/]+)/([^/]+)/blob/([^/]+)/(.+)/SKILL\.md$",
+    url,
+    re.IGNORECASE,
+)
+if blob:
+    owner, repo, ref, skill_path = blob.groups()
+    repo = re.sub(r"\.git$", "", repo)
+    cli_source = f"https://github.com/{owner}/{repo}/tree/{ref}/{skill_path}"
+    print(f"{owner}\t{repo}\t{ref}\t{skill_path}\t{cli_source}")
+    raise SystemExit(0)
 
-# Print "folder\tcli_name\trel_path" lines for direct children of skills_dir.
-discover_skills() {
-  local root="$1"
-  local skills_dir="$2"
-  local base="$root/$skills_dir"
-  local skill_md skill_dir folder cli_name rel
+# Tree URL of the skill directory.
+tree = re.match(
+    r"^https?://github\.com/([^/]+)/([^/]+)/tree/([^/]+)/(.+)$",
+    url,
+    re.IGNORECASE,
+)
+if tree:
+    owner, repo, ref, skill_path = tree.groups()
+    repo = re.sub(r"\.git$", "", repo)
+    skill_path = skill_path.rstrip("/")
+    if skill_path.lower().endswith("/skill.md"):
+        skill_path = skill_path[: -len("/SKILL.md")]
+    if not skill_path:
+        raise SystemExit("error: URL does not include a skill directory path")
+    cli_source = f"https://github.com/{owner}/{repo}/tree/{ref}/{skill_path}"
+    print(f"{owner}\t{repo}\t{ref}\t{skill_path}\t{cli_source}")
+    raise SystemExit(0)
 
-  while IFS= read -r -d '' skill_md; do
-    skill_dir="$(dirname "$skill_md")"
-    folder="$(basename "$skill_dir")"
-    cli_name="$(frontmatter_name "$skill_md")"
-    if [[ -z "$cli_name" ]]; then
-      cli_name="$folder"
-    fi
-    rel="${skill_dir#"$root"/}"
-    # Only direct skill folders: <skills_dir>/<folder>/SKILL.md
-    if [[ "$rel" != "$skills_dir/$folder" ]]; then
-      continue
-    fi
-    printf '%s\t%s\t%s\n' "$folder" "$cli_name" "$rel"
-  done < <(find "$base" -mindepth 2 -maxdepth 2 -type f -name SKILL.md -print0 | sort -z)
+# Shorthand: owner/repo/path/to/skill (no ref; default branch).
+short = re.match(r"^([^/]+)/([^/]+)/(.+)$", url)
+if short and "://" not in url and not url.startswith("."):
+    owner, repo, skill_path = short.groups()
+    repo = re.sub(r"\.git$", "", repo)
+    skill_path = skill_path.rstrip("/")
+    if skill_path.lower().endswith("/skill.md"):
+        skill_path = skill_path[: -len("/SKILL.md")]
+    if not skill_path:
+        raise SystemExit("error: shorthand URL missing skill directory path")
+    cli_source = f"{owner}/{repo}/{skill_path}"
+    print(f"{owner}\t{repo}\t\t{skill_path}\t{cli_source}")
+    raise SystemExit(0)
+
+raise SystemExit(
+    "error: expected a GitHub tree/blob URL pointing at a skill directory\n"
+    "  e.g. https://github.com/owner/repo/tree/main/path/to/skill"
+)
+PY
 }
 
 sync_repo_agents_to_home() {
   mkdir -p "$HOME/.agents/skills"
-  # Lock + readme: prefer replacing with copies from the repo (SoT).
   if [[ -f "$REPO_LOCK" ]]; then
     if [[ -L "$HOME/.agents/.skill-lock.json" ]]; then
       rm -f "$HOME/.agents/.skill-lock.json"
@@ -160,7 +150,6 @@ sync_repo_agents_to_home() {
     cp -f "$REPO_AGENTS/README.md" "$HOME/.agents/README.md"
   fi
 
-  # Sync skill trees that exist in the repo (skip scripts helper dir).
   local skill_dir skill_name
   for skill_dir in "$REPO_SKILLS"/*/; do
     [[ -d "$skill_dir" ]] || continue
@@ -176,15 +165,21 @@ sync_repo_agents_to_home() {
 case "${1:-}" in
   -h|--help) usage; exit 0 ;;
 esac
-[[ $# -ge 2 ]] || die "skills-dir-path is required"$'\n'"$(usage)"
+[[ $# -eq 1 ]] || die "expected a single GitHub skill URL"$'\n'"$(usage)"
 
-SOURCE="$1"
-SKILLS_DIR="$(normalize_dir "$2")"
-shift 2
-REQUESTED_SKILLS=("$@")
+SKILL_URL="$1"
 
 [[ -d "$REPO_SKILLS" ]] || die "repo skills dir missing: $REPO_SKILLS"
 [[ -f "$REPO_LOCK" ]] || die "repo skill lock missing: $REPO_LOCK"
+
+set +e
+PARSED="$(parse_github_skill_url "$SKILL_URL" 2>&1)"
+parse_status=$?
+set -e
+[[ $parse_status -eq 0 ]] || die "$PARSED"
+IFS=$'\t' read -r OWNER REPO REF SKILL_PATH CLI_SOURCE <<<"$PARSED"
+FOLDER="$(basename "$SKILL_PATH")"
+GIT_URL="https://github.com/${OWNER}/${REPO}.git"
 
 MATERIALIZE_TMP=""
 cleanup_materialize() {
@@ -194,48 +189,32 @@ cleanup_materialize() {
 }
 trap cleanup_materialize EXIT
 
-SOURCE_ROOT="$(materialize_skills_root "$SOURCE" "$SKILLS_DIR")"
-mapfile -t DISCOVERED < <(discover_skills "$SOURCE_ROOT" "$SKILLS_DIR")
-[[ ${#DISCOVERED[@]} -gt 0 ]] || die "no skills discovered under $SKILLS_DIR"
+command -v git >/dev/null 2>&1 || die "git is required"
+MATERIALIZE_TMP="$(mktemp -d "${TMPDIR:-/tmp}/dot-add-skill-src.XXXXXX")"
+clone_args=(--depth 1 --filter=blob:none --sparse)
+if [[ -n "$REF" ]]; then
+  clone_args+=(--branch "$REF")
+fi
+git clone "${clone_args[@]}" "$GIT_URL" "$MATERIALIZE_TMP" >/dev/null 2>&1 \
+  || die "failed to clone $GIT_URL${REF:+ (@ $REF)}"
+(
+  cd "$MATERIALIZE_TMP"
+  git sparse-checkout set "$SKILL_PATH" >/dev/null 2>&1 || true
+)
 
-declare -A FOLDER_TO_CLI=()
-declare -A LOOKUP_TO_FOLDER=()
-DISCOVERED_FOLDERS=()
-for row in "${DISCOVERED[@]}"; do
-  folder="${row%%$'\t'*}"
-  rest="${row#*$'\t'}"
-  cli_name="${rest%%$'\t'*}"
-  FOLDER_TO_CLI["$folder"]="$cli_name"
-  DISCOVERED_FOLDERS+=("$folder")
-  LOOKUP_TO_FOLDER["$folder"]="$folder"
-  LOOKUP_TO_FOLDER["${folder,,}"]="$folder"
-  LOOKUP_TO_FOLDER["$cli_name"]="$folder"
-  LOOKUP_TO_FOLDER["${cli_name,,}"]="$folder"
-done
+SKILL_MD="$MATERIALIZE_TMP/$SKILL_PATH/SKILL.md"
+[[ -f "$SKILL_MD" ]] || die "SKILL.md not found at $SKILL_PATH (from $SKILL_URL)"
 
-SELECTED_FOLDERS=()
-if [[ ${#REQUESTED_SKILLS[@]} -eq 0 ]]; then
-  SELECTED_FOLDERS=("${DISCOVERED_FOLDERS[@]}")
-else
-  for req in "${REQUESTED_SKILLS[@]}"; do
-    folder="${LOOKUP_TO_FOLDER[$req]:-}"
-    if [[ -z "$folder" ]]; then
-      folder="${LOOKUP_TO_FOLDER[${req,,}]:-}"
-    fi
-    [[ -n "$folder" ]] || die "skill '$req' not found under $SKILLS_DIR"$'\n'"available: ${DISCOVERED_FOLDERS[*]}"
-    SELECTED_FOLDERS+=("$folder")
-  done
+CLI_NAME="$(frontmatter_name "$SKILL_MD")"
+if [[ -z "$CLI_NAME" ]]; then
+  CLI_NAME="$FOLDER"
 fi
 
-SELECTED_CLI_NAMES=()
-for folder in "${SELECTED_FOLDERS[@]}"; do
-  SELECTED_CLI_NAMES+=("${FOLDER_TO_CLI[$folder]}")
-done
-
-echo "Source:       $SOURCE"
-echo "Skills dir:   $SKILLS_DIR"
-echo "Installing:   ${SELECTED_FOLDERS[*]}"
-echo "Repo target:  $REPO_SKILLS"
+echo "Source URL:  $SKILL_URL"
+echo "CLI source:  $CLI_SOURCE"
+echo "Skill path:  $SKILL_PATH"
+echo "Installing:  $FOLDER (cli name: $CLI_NAME)"
+echo "Repo target: $REPO_SKILLS"
 echo
 
 TMP_HOME="$(mktemp -d "${TMPDIR:-/tmp}/dot-add-skill-home.XXXXXX")"
@@ -251,42 +230,39 @@ mkdir -p "$NPM_CACHE_DIR"
 
 # skills CLI resolves global skills + lock via homedir(); keep XDG_STATE_HOME out
 # so the lock stays under $HOME/.agents/.skill-lock.json.
-# Pass frontmatter/install names — folder names miss skills like "Poteto Mode".
+# Pass the skill-dir URL so discovery is scoped past well-known roots like .pi/skills.
 env -u XDG_STATE_HOME \
   HOME="$TMP_HOME" \
   NPM_CONFIG_CACHE="$NPM_CACHE_DIR" \
-  npx --yes "skills@$SKILLS_CLI_VERSION" add "$SOURCE" \
+  npx --yes "skills@$SKILLS_CLI_VERSION" add "$CLI_SOURCE" \
     --global \
     --agent "$SKILLS_AGENT" \
-    --skill "${SELECTED_CLI_NAMES[@]}" \
+    --skill "$CLI_NAME" \
+    --full-depth \
     --yes
 
-# Merge installed skill folders into the repo.
-for folder in "${SELECTED_FOLDERS[@]}"; do
-  cli_name="${FOLDER_TO_CLI[$folder]}"
-  src="$TMP_HOME/.agents/skills/$folder"
-  if [[ ! -d "$src" ]]; then
-    sanitized="$(sanitize_name "$cli_name")"
-    src="$TMP_HOME/.agents/skills/$sanitized"
-  fi
-  [[ -d "$src" ]] || die "skills CLI did not install: $folder (cli name: $cli_name)"
-  dest="$REPO_SKILLS/$folder"
-  rm -rf "$dest"
-  mkdir -p "$dest"
-  cp -a "$src/." "$dest/"
-  echo "  vendored $folder -> home/.agents/skills/$folder"
-done
+src="$TMP_HOME/.agents/skills/$FOLDER"
+if [[ ! -d "$src" ]]; then
+  src="$TMP_HOME/.agents/skills/$(sanitize_name "$CLI_NAME")"
+fi
+[[ -d "$src" ]] || die "skills CLI did not install: $FOLDER (cli name: $CLI_NAME)"
 
-# Merge lock entries by skillPath folder match (lock keys may be display names).
-python3 - "$TMP_HOME/.agents/.skill-lock.json" "$REPO_LOCK" "$SKILLS_DIR" "${SELECTED_FOLDERS[@]}" <<'PY'
+dest="$REPO_SKILLS/$FOLDER"
+rm -rf "$dest"
+mkdir -p "$dest"
+cp -a "$src/." "$dest/"
+echo "  vendored $FOLDER -> home/.agents/skills/$FOLDER"
+
+# Merge lock entry by skillPath / folder match (lock keys may be display names).
+python3 - "$TMP_HOME/.agents/.skill-lock.json" "$REPO_LOCK" "$SKILL_PATH" "$FOLDER" <<'PY'
 import json
 import sys
 from pathlib import Path
 
 tmp_lock_path = Path(sys.argv[1])
 repo_lock_path = Path(sys.argv[2])
-skills_dir = sys.argv[3].rstrip("/")
-selected_folders = sys.argv[4:]
+skill_path = sys.argv[3].rstrip("/")
+folder = sys.argv[4]
 
 tmp_lock = json.loads(tmp_lock_path.read_text())
 repo_lock = json.loads(repo_lock_path.read_text())
@@ -295,27 +271,27 @@ if "skills" not in repo_lock or not isinstance(repo_lock["skills"], dict):
     raise SystemExit("error: invalid repo skill lock: missing skills object")
 
 tmp_skills = tmp_lock.get("skills", {})
-for folder in selected_folders:
-    suffixes = (
-        f"{skills_dir}/{folder}/SKILL.md",
-        f"{folder}/SKILL.md",
-    )
-    matched_key = None
-    matched_entry = None
-    for key, entry in tmp_skills.items():
-        path = (entry.get("skillPath") or "").replace("\\", "/")
-        if any(path.endswith(suffix) or path == suffix for suffix in suffixes):
-            matched_key = key
-            matched_entry = entry
-            break
-        if key == folder or key.lower() == folder.lower():
-            matched_key = key
-            matched_entry = entry
-            break
-    if matched_entry is None:
-        raise SystemExit(f"error: skill lock missing entry for folder {folder}")
-    repo_lock["skills"][matched_key] = matched_entry
+suffixes = (
+    f"{skill_path}/SKILL.md",
+    f"{folder}/SKILL.md",
+)
+matched_entry = None
+matched_key = None
+for key, entry in tmp_skills.items():
+    path = (entry.get("skillPath") or "").replace("\\", "/")
+    if any(path.endswith(suffix) or path == suffix for suffix in suffixes):
+        matched_key = key
+        matched_entry = entry
+        break
+    if key == folder or key.lower() == folder.lower():
+        matched_key = key
+        matched_entry = entry
+        break
 
+if matched_entry is None:
+    raise SystemExit(f"error: skill lock missing entry for {folder} ({skill_path})")
+
+repo_lock["skills"][matched_key] = matched_entry
 repo_lock["skills"] = dict(sorted(repo_lock["skills"].items()))
 if "dismissed" not in repo_lock:
     repo_lock["dismissed"] = {}
@@ -328,5 +304,5 @@ echo "Syncing repo agents -> ~/.agents (repo is source of truth)..."
 sync_repo_agents_to_home
 
 echo
-echo "Added ${#SELECTED_FOLDERS[@]} skill(s) to home/.agents and ~/.agents"
+echo "Added $FOLDER to home/.agents and ~/.agents"
 echo "Review: git -C \"$DOTFILES_ROOT\" diff -- home/.agents"

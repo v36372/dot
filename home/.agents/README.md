@@ -12,14 +12,14 @@ Run `./dot skills-sync` from the dotfiles repository to update every skill in
 the lock, regardless of its upstream source. Personal skills without lock
 entries are untouched. Review `git diff -- home/.agents` before committing.
 
-Vendor new upstream skills with path filtering:
+Vendor one upstream skill by pasting its GitHub skill-directory URL:
 
 ```bash
-./dot add-skill cursor/plugins pstack/skills           # all skills under path
-./dot add-skill cursor/plugins pstack/skills how why   # named skills only
+./dot add-skill https://github.com/owner/repo/tree/main/path/to/skill
+./dot add-skill https://github.com/owner/repo/blob/main/path/to/skill/SKILL.md
 ```
 
-Or from Fish: `skill-add <source> <skills-dir-path> [skill-name ...]`.
+Or from Fish: `skill-add <github-skill-url>`.
 
 `home/.agents` is the source of truth; `add-skill` writes there, updates
 `.skill-lock.json`, then syncs out to `~/.agents`.

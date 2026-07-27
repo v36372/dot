@@ -13,7 +13,7 @@ Style inspired by [dmmulroy/.dotfiles](https://github.com/dmmulroy/.dotfiles): `
 | Ghostty | `home/.config/ghostty` | Starts fish |
 | Tmux | `home/.config/tmux` | `C-s` prefix; default shell fish |
 | Herdr | `home/.config/herdr` | Workspace/tab/pane manager (fish shell) |
-| Herdr float popup | `packages/herdr-toggle-popup` | Local plugin: persistent 80% float (`ctrl+o`) |
+| Herdr float popup | `packages/herdr-toggle-popup` | Local plugin: persistent 80% float (`ctrl+n`) |
 | MPV | `home/.config/mpv` | Full player setup (uosc, scripts, shaders) |
 | Git | `home/.gitconfig` + `home/.config/git` | Aliases + difftastic |
 | Starship | `home/.config/starship.toml` | Prompt |
@@ -127,16 +127,16 @@ The sync command updates every skill recorded in the lock, grouping entries by
 their upstream source. Personal skills without lock entries are untouched.
 Review the resulting diff before committing upstream changes.
 
-Add skills from any supported upstream source with the Fish helper:
+Add a skill by pasting the GitHub URL of its skill directory (or SKILL.md):
 
-```fish
-skill-add owner/repository skill-name          # install named skill
-skill-add owner/repository skill-one skill-two # install several
-skill-add owner/repository                     # interactive selector
+```bash
+./dot add-skill https://github.com/owner/repo/tree/main/path/to/skill
+# or: skill-add https://github.com/owner/repo/tree/main/path/to/skill
 ```
 
-The helper uses the shared global target and records source metadata in the
-lock. Subsequent `./dot skills-sync` runs include the new skills automatically.
+The helper vendors into `home/.agents`, records source metadata in the lock,
+and syncs out to `~/.agents`. Subsequent `./dot skills-sync` runs include the
+new skill automatically.
 
 ## Notes
 

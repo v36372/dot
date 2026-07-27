@@ -50,7 +50,7 @@ Usage:
   dot restow        Same as stow
   dot unstow        Remove managed symlinks
   dot herdr-plugin  Build/link packages/herdr-toggle-popup
-  dot add-skill     Vendor upstream skills into home/.agents
+  dot add-skill     Vendor one skill from a GitHub skill-dir URL
   dot skills-sync   Update locked third-party skills
   dot doctor        Check tools + symlink health + herdr plugin
   dot path          Print repo path
@@ -214,7 +214,7 @@ cmd_herdr_plugin() {
   seed_herdr_toggle_popup_config || ok=1
 
   if herdr_toggle_popup_linked && [[ -x "$HERDR_TOGGLE_POPUP_BIN" ]]; then
-    echo "  ok    ctrl+o -> $HERDR_TOGGLE_POPUP_ID.toggle-shell"
+    echo "  ok    ctrl+n -> $HERDR_TOGGLE_POPUP_ID.toggle-shell"
   else
     echo "  warn  plugin not fully installed"
     ok=1
@@ -333,7 +333,7 @@ cmd_doctor() {
 
   if command -v herdr >/dev/null 2>&1 && [[ -f "$TARGET_DIR/.config/herdr/config.toml" ]]; then
     if grep -Fq 'local.toggle-popup.toggle-shell' "$TARGET_DIR/.config/herdr/config.toml"; then
-      printf "  ok    keybind ctrl+o -> local.toggle-popup.toggle-shell\n"
+      printf "  ok    keybind ctrl+n -> local.toggle-popup.toggle-shell\n"
     else
       printf "  miss  keybind for local.toggle-popup.toggle-shell in config.toml\n"
     fi

@@ -4,13 +4,14 @@
 // Requires Node 22+ (built-in WebSocket).
 //
 // Per-tab persistent daemon: page commands go through a daemon that holds
-// the CDP session open. Chrome's "Allow debugging" modal fires once per
-// daemon (= once per tab). Daemons auto-exit after 20min idle.
+// the CDP session open. Chrome may show an "Allow debugging" modal for a
+// newly attached tab. Daemons auto-exit after 20min idle.
 
 import { readFileSync, writeFileSync, unlinkSync, existsSync, mkdirSync } from 'fs';
 import { homedir } from 'os';
 import { resolve } from 'path';
 import { spawn } from 'child_process';
+import http from 'http';
 import net from 'net';
 
 const TIMEOUT = 15000;
@@ -35,7 +36,32 @@ function sockPath(targetId) {
     : resolve(RUNTIME_DIR, `cdp-${targetId}.sock`);
 }
 
-function getWsUrl() {
+async function getJson(url, timeout = 2000) {
+  return new Promise((resolve, reject) => {
+    const req = http.get(url, { timeout }, (res) => {
+      let body = '';
+      res.setEncoding('utf8');
+      res.on('data', chunk => { body += chunk; });
+      res.on('end', () => {
+        if (res.statusCode < 200 || res.statusCode >= 300) {
+          reject(new Error(`HTTP ${res.statusCode} from ${url}`));
+          return;
+        }
+        try { resolve(JSON.parse(body)); } catch (err) { reject(err); }
+      });
+    });
+    req.on('timeout', () => req.destroy(new Error(`Timeout fetching ${url}`)));
+    req.on('error', reject);
+  });
+}
+
+async function probeDebugPort(port, host = process.env.CDP_HOST || '127.0.0.1') {
+  const version = await getJson(`http://${host}:${port}/json/version`);
+  if (!version.webSocketDebuggerUrl) throw new Error(`No webSocketDebuggerUrl from ${host}:${port}`);
+  return version.webSocketDebuggerUrl;
+}
+
+async function getWsUrl() {
   const home = homedir();
   // macOS: ~/Library/Application Support/<name>/DevToolsActivePort
   const macBrowsers = [
@@ -79,12 +105,27 @@ function getWsUrl() {
       ];
     }) : []),
   ].filter(Boolean);
-  const portFile = candidates.find(p => existsSync(p));
-  if (!portFile) throw new Error('No DevToolsActivePort found. Enable remote debugging at chrome://inspect/#remote-debugging');
-  const lines = readFileSync(portFile, 'utf8').trim().split('\n');
-  if (lines.length < 2 || !lines[0] || !lines[1]) throw new Error(`Invalid DevToolsActivePort file: ${portFile}`);
   const host = process.env.CDP_HOST || '127.0.0.1';
-  return `ws://${host}:${lines[0]}${lines[1]}`;
+
+  // Prefer the fixed debugging port used by this workstation's Chromium setup.
+  // This gives agents deterministic one-shot access to the logged-in browser.
+  const ports = [process.env.CDP_PORT || '9222'];
+  const errors = [];
+  for (const port of ports) {
+    try { return await probeDebugPort(port, host); }
+    catch (err) { errors.push(`${host}:${port} ${err.message}`); }
+  }
+
+  // Fallback for browsers that expose a dynamic debugging port through
+  // DevToolsActivePort instead of the fixed 9222 endpoint.
+  const portFile = candidates.find(p => existsSync(p));
+  if (portFile) {
+    const lines = readFileSync(portFile, 'utf8').trim().split('\n');
+    if (lines.length < 2 || !lines[0] || !lines[1]) throw new Error(`Invalid DevToolsActivePort file: ${portFile}`);
+    return `ws://${host}:${lines[0]}${lines[1]}`;
+  }
+
+  throw new Error(`CDP HTTP discovery failed and no DevToolsActivePort found. Enable remote debugging or set CDP_PORT/CDP_PORT_FILE. Tried: ${errors.join('; ')}`);
 }
 
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
@@ -129,8 +170,9 @@ class CDP {
       this.#ws.onmessage = (ev) => {
         const msg = JSON.parse(ev.data);
         if (msg.id && this.#pending.has(msg.id)) {
-          const { resolve, reject } = this.#pending.get(msg.id);
+          const { resolve, reject, timer } = this.#pending.get(msg.id);
           this.#pending.delete(msg.id);
+          clearTimeout(timer);
           if (msg.error) reject(new Error(msg.error.message));
           else resolve(msg.result);
         } else if (msg.method && this.#eventHandlers.has(msg.method)) {
@@ -145,16 +187,22 @@ class CDP {
   send(method, params = {}, sessionId) {
     const id = ++this.#id;
     return new Promise((resolve, reject) => {
-      this.#pending.set(id, { resolve, reject });
-      const msg = { id, method, params };
-      if (sessionId) msg.sessionId = sessionId;
-      this.#ws.send(JSON.stringify(msg));
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         if (this.#pending.has(id)) {
           this.#pending.delete(id);
           reject(new Error(`Timeout: ${method}`));
         }
       }, TIMEOUT);
+      this.#pending.set(id, { resolve, reject, timer });
+      const msg = { id, method, params };
+      if (sessionId) msg.sessionId = sessionId;
+      try {
+        this.#ws.send(JSON.stringify(msg));
+      } catch (error) {
+        clearTimeout(timer);
+        this.#pending.delete(id);
+        reject(error);
+      }
     });
   }
 
@@ -209,6 +257,18 @@ class CDP {
 async function getPages(cdp) {
   const { targetInfos } = await cdp.send('Target.getTargets');
   return targetInfos.filter(t => t.type === 'page' && !t.url.startsWith('chrome://'));
+}
+
+async function waitForOpenedTarget(cdp, targetId, requestedUrl, timeout = 5000) {
+  if (requestedUrl === 'about:blank') return { targetId, title: requestedUrl, url: requestedUrl };
+  const deadline = Date.now() + timeout;
+  let targetInfo = { targetId, title: requestedUrl, url: requestedUrl };
+  while (Date.now() < deadline) {
+    ({ targetInfo } = await cdp.send('Target.getTargetInfo', { targetId }));
+    if (targetInfo.url && targetInfo.url !== 'about:blank') return targetInfo;
+    await sleep(100);
+  }
+  throw new Error(`New tab did not begin navigating to ${requestedUrl}`);
 }
 
 function formatPageList(pages) {
@@ -298,7 +358,7 @@ async function evalStr(cdp, sid, expression) {
   return typeof val === 'object' ? JSON.stringify(val, null, 2) : String(val ?? '');
 }
 
-async function shotStr(cdp, sid, filePath, targetId) {
+async function getDpr(cdp, sid) {
   // Get device scale factor so we can report coordinate mapping
   let dpr = 1;
   try {
@@ -320,12 +380,12 @@ async function shotStr(cdp, sid, filePath, targetId) {
       if (parsed > 0) dpr = parsed;
     } catch {}
   }
+  return dpr;
+}
 
-  const { data } = await cdp.send('Page.captureScreenshot', { format: 'png' }, sid);
-  const out = filePath || resolve(RUNTIME_DIR, `screenshot-${(targetId || 'unknown').slice(0, 8)}.png`);
-  writeFileSync(out, Buffer.from(data, 'base64'));
-
+function screenshotReport(out, dpr, extraLines = []) {
   const lines = [out];
+  lines.push(...extraLines);
   lines.push(`Screenshot saved. Device pixel ratio (DPR): ${dpr}`);
   lines.push(`Coordinate mapping:`);
   lines.push(`  Screenshot pixels → CSS pixels (for CDP Input events): divide by ${dpr}`);
@@ -334,6 +394,50 @@ async function shotStr(cdp, sid, filePath, targetId) {
     lines.push(`  On this ${dpr}x display: CSS px = screenshot px / ${dpr} ≈ screenshot px × ${Math.round(100/dpr)/100}`);
   }
   return lines.join('\n');
+}
+
+async function shotStr(cdp, sid, filePath, targetId) {
+  const dpr = await getDpr(cdp, sid);
+  const { data } = await cdp.send('Page.captureScreenshot', { format: 'png' }, sid);
+  const out = filePath || resolve(RUNTIME_DIR, `screenshot-${(targetId || 'unknown').slice(0, 8)}.png`);
+  writeFileSync(out, Buffer.from(data, 'base64'));
+  return screenshotReport(out, dpr);
+}
+
+async function shotElementStr(cdp, sid, selector, filePath, targetId) {
+  if (!selector) throw new Error('CSS selector required');
+  const padding = 10;
+  const expr = `
+    (function() {
+      const el = document.querySelector(${JSON.stringify(selector)});
+      if (!el) return { ok: false, error: 'Element not found: ' + ${JSON.stringify(selector)} };
+      el.scrollIntoView({ block: 'center', inline: 'center' });
+      const r = el.getBoundingClientRect();
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const x = Math.max(0, r.left - ${padding});
+      const y = Math.max(0, r.top - ${padding});
+      const right = Math.min(vw, r.right + ${padding});
+      const bottom = Math.min(vh, r.bottom + ${padding});
+      return {
+        ok: true,
+        tag: el.tagName,
+        width: Math.max(1, right - x),
+        height: Math.max(1, bottom - y),
+        clip: { x, y, width: Math.max(1, right - x), height: Math.max(1, bottom - y), scale: 1 }
+      };
+    })()
+  `;
+  const result = JSON.parse(await evalStr(cdp, sid, expr));
+  if (!result.ok) throw new Error(result.error);
+  const dpr = await getDpr(cdp, sid);
+  const { data } = await cdp.send('Page.captureScreenshot', { format: 'png', clip: result.clip }, sid);
+  const out = filePath || resolve(RUNTIME_DIR, `screenshot-${(targetId || 'unknown').slice(0, 8)}-element.png`);
+  writeFileSync(out, Buffer.from(data, 'base64'));
+  return screenshotReport(out, dpr, [
+    `Element screenshot saved for selector: ${selector}`,
+    `Clip: ${Math.round(result.width)}×${Math.round(result.height)} CSS px, including ${padding}px padding`
+  ]);
 }
 
 async function htmlStr(cdp, sid, selector) {
@@ -407,17 +511,44 @@ async function clickStr(cdp, sid, selector) {
   if (!selector) throw new Error('CSS selector required');
   const expr = `
     (function() {
-      const el = document.querySelector(${JSON.stringify(selector)});
-      if (!el) return { ok: false, error: 'Element not found: ' + ${JSON.stringify(selector)} };
+      const selector = ${JSON.stringify(selector)};
+      const matches = document.querySelectorAll(selector);
+      if (matches.length === 0) return { ok: false, error: 'Element not found: ' + selector };
+      if (matches.length > 1) return { ok: false, error: 'Selector matched ' + matches.length + ' elements: ' + selector };
+      const el = matches[0];
       el.scrollIntoView({ block: 'center' });
+      const rect = el.getBoundingClientRect();
+      const style = getComputedStyle(el);
+      const disabled = el.matches(':disabled') || el.getAttribute('aria-disabled') === 'true';
+      const hidden = rect.width <= 0 || rect.height <= 0 || style.display === 'none' ||
+        style.visibility === 'hidden' || style.visibility === 'collapse' ||
+        style.pointerEvents === 'none' || Number(style.opacity) === 0 ||
+        el.closest('[inert]') !== null;
+      if (hidden) return { ok: false, error: 'Element is not visible or interactable: ' + selector };
+      if (disabled) return { ok: false, error: 'Element is disabled: ' + selector };
+
+      const textInputTypes = new Set(['text', 'search', 'email', 'url', 'tel', 'password', 'number']);
+      const textControl = el.tagName === 'TEXTAREA' || el.isContentEditable ||
+        (el.tagName === 'INPUT' && textInputTypes.has((el.type || 'text').toLowerCase()));
+      if (textControl) {
+        el.focus({ preventScroll: true });
+        if (document.activeElement !== el) {
+          return { ok: false, error: 'Element could not receive focus: ' + selector };
+        }
+      }
       el.click();
-      return { ok: true, tag: el.tagName, text: el.textContent.trim().substring(0, 80) };
+      return {
+        ok: true,
+        tag: el.tagName,
+        text: el.textContent.trim().substring(0, 80),
+        focused: document.activeElement === el
+      };
     })()
   `;
   const result = await evalStr(cdp, sid, expr);
   const r = JSON.parse(result);
   if (!r.ok) throw new Error(r.error);
-  return `Clicked <${r.tag}> "${r.text}"`;
+  return `Clicked <${r.tag}> "${r.text}"${r.focused ? ' and focused it' : ''}`;
 }
 
 // Click at CSS pixel coordinates using Input.dispatchMouseEvent
@@ -436,8 +567,56 @@ async function clickXyStr(cdp, sid, x, y) {
 // Type text using Input.insertText (works in cross-origin iframes, unlike eval)
 async function typeStr(cdp, sid, text) {
   if (text == null || text === '') throw new Error('text required');
+  const focusState = JSON.parse(await evalStr(cdp, sid, `
+    (() => {
+      const el = document.activeElement;
+      if (!el || el === document.body || el === document.documentElement) {
+        return { ok: false, error: 'No editable element is focused' };
+      }
+      const tag = el.tagName;
+      const inputTypes = new Set(['text', 'search', 'email', 'url', 'tel', 'password', 'number']);
+      const input = tag === 'INPUT' && inputTypes.has((el.type || 'text').toLowerCase());
+      const textarea = tag === 'TEXTAREA';
+      const contentEditable = el.isContentEditable;
+      const iframe = tag === 'IFRAME';
+      if (!input && !textarea && !contentEditable && !iframe) {
+        return { ok: false, error: 'Focused <' + tag + '> is not editable' };
+      }
+      if ((input || textarea) && (el.disabled || el.readOnly)) {
+        return { ok: false, error: 'Focused <' + tag + '> is disabled or read-only' };
+      }
+      return {
+        ok: true,
+        tag,
+        iframe,
+        inspectable: !iframe,
+        before: input || textarea ? el.value : contentEditable ? el.textContent : null
+      };
+    })()
+  `));
+  if (!focusState.ok) throw new Error(focusState.error);
+
   await cdp.send('Input.insertText', { text }, sid);
-  return `Typed ${text.length} characters`;
+  if (!focusState.inspectable) {
+    return `Sent ${text.length} characters to focused <${focusState.tag}>; cross-origin result is not inspectable`;
+  }
+
+  const after = JSON.parse(await evalStr(cdp, sid, `
+    (() => {
+      const el = document.activeElement;
+      if (!el) return { focused: false, value: null };
+      const tag = el.tagName;
+      const value = tag === 'INPUT' || tag === 'TEXTAREA' ? el.value : el.isContentEditable ? el.textContent : null;
+      return { focused: true, tag, value };
+    })()
+  `));
+  if (!after.focused || after.tag !== focusState.tag) {
+    throw new Error('Focus changed while typing; input result could not be verified');
+  }
+  if (after.value === focusState.before) {
+    throw new Error(`Input.insertText completed but focused <${focusState.tag}> did not change`);
+  }
+  return `Typed ${text.length} characters into focused <${focusState.tag}>`;
 }
 
 // Load-more: repeatedly click a button/selector until it disappears
@@ -488,7 +667,7 @@ async function runDaemon(targetId) {
 
   const cdp = new CDP();
   try {
-    await cdp.connect(getWsUrl());
+    await cdp.connect(await getWsUrl());
   } catch (e) {
     process.stderr.write(`Daemon: cannot connect to Chrome: ${e.message}\n`);
     process.exit(1);
@@ -552,6 +731,7 @@ async function runDaemon(targetId) {
         case 'snap': case 'snapshot': result = await snapshotStr(cdp, sessionId, true); break;
         case 'eval': result = await evalStr(cdp, sessionId, args[0]); break;
         case 'shot': case 'screenshot': result = await shotStr(cdp, sessionId, args[0], targetId); break;
+        case 'shotel': case 'screenshot-element': case 'elementshot': result = await shotElementStr(cdp, sessionId, args[0], args[1], targetId); break;
         case 'html': result = await htmlStr(cdp, sessionId, args[0]); break;
         case 'nav': case 'navigate': result = await navStr(cdp, sessionId, args[0]); break;
         case 'net': case 'network': result = await netStr(cdp, sessionId); break;
@@ -565,7 +745,10 @@ async function runDaemon(targetId) {
       }
       return { ok: true, result: result ?? '' };
     } catch (e) {
-      return { ok: false, error: e.message };
+      const error = e.message.startsWith('Timeout:')
+        ? `${e.message}. Chrome may be waiting for "Allow debugging" approval, or the tab may be sleeping.`
+        : e.message;
+      return { ok: false, error };
     }
   }
 
@@ -728,19 +911,20 @@ Usage: cdp <command> [args]
   snap  <target>                    Accessibility tree snapshot
   eval  <target> <expr>             Evaluate JS expression
   shot  <target> [file]             Screenshot (default: screenshot-<target>.png in runtime dir); prints coordinate mapping
+  shotel <target> <selector> [file]  Screenshot one element/div by CSS selector, with hardcoded 10px padding
   html  <target> [selector]         Get HTML (full page or CSS selector)
   nav   <target> <url>              Navigate to URL and wait for load completion
   net   <target>                    Network performance entries
-  click   <target> <selector>       Click an element by CSS selector
+  click   <target> <selector>       Click one visible element by unique CSS selector
   clickxy <target> <x> <y>          Click at CSS pixel coordinates (see coordinate note below)
-  type    <target> <text>           Type text at current focus via Input.insertText
+  type    <target> <text>           Type at verified editable focus via Input.insertText
                                     Works in cross-origin iframes unlike eval-based approaches
   loadall <target> <selector> [ms]  Repeatedly click a "load more" button until it disappears
                                     Optional interval in ms between clicks (default 1500)
   evalraw <target> <method> [json]  Send a raw CDP command; returns JSON result
                                     e.g. evalraw <t> "DOM.getDocument" '{}'
   open  [url]                       Open a new tab (default: about:blank)
-                                    Note: each new tab triggers a fresh "Allow debugging?" prompt
+                                    Chrome may show an "Allow debugging?" prompt on first access
   stop  [target]                    Stop daemon(s)
 
 <target> is a unique targetId prefix from "cdp list". If a prefix is ambiguous,
@@ -769,13 +953,13 @@ DAEMON IPC (for advanced use / scripting)
     Request:  {"id":<number>, "cmd":"<command>", "args":["arg1","arg2",...]}
     Response: {"id":<number>, "ok":true,  "result":"<string>"}
            or {"id":<number>, "ok":false, "error":"<message>"}
-  Commands mirror the CLI: snap, eval, shot, html, nav, net, click, clickxy,
+  Commands mirror the CLI: snap, eval, shot, shotel, html, nav, net, click, clickxy,
   type, loadall, evalraw, stop. Use evalraw to send arbitrary CDP methods.
   The socket disappears after 20 min of inactivity or when the tab closes.
 `;
 
 const NEEDS_TARGET = new Set([
-  'snap','snapshot','eval','shot','screenshot','html','nav','navigate',
+  'snap','snapshot','eval','shot','screenshot','shotel','screenshot-element','elementshot','html','nav','navigate',
   'net','network','click','clickxy','type','loadall','evalraw',
 ]);
 
@@ -791,23 +975,11 @@ async function main() {
 
   if (cmd === 'list' || cmd === 'ls') {
     const cdp = new CDP();
-    await cdp.connect(getWsUrl());
+    await cdp.connect(await getWsUrl());
     const pages = await getPages(cdp);
-    writeFileSync(PAGES_CACHE, JSON.stringify(pages), { mode: 0o600 });
-    if (pages.length === 0) {
-      // Distinguish "connected but no debuggable tabs" from a real failure,
-      // so callers don't mistake an empty list for a broken connection.
-      const { targetInfos } = await cdp.send('Target.getTargets');
-      const internal = targetInfos.filter(t => t.type === 'page' && t.url.startsWith('chrome://'));
-      const reason = internal.length
-        ? `all ${internal.length} open page(s) are internal chrome:// URLs, which are excluded from debugging.`
-        : 'no page tabs are open.';
-      console.log(`No debuggable tabs found (connected to Chrome OK, but ${reason})`);
-      console.log('Open a regular http(s):// page, or run:  cdp open <url>');
-    } else {
-      console.log(formatPageList(pages));
-    }
     cdp.close();
+    writeFileSync(PAGES_CACHE, JSON.stringify(pages), { mode: 0o600 });
+    console.log(formatPageList(pages));
     setTimeout(() => process.exit(0), 100);
     return;
   }
@@ -816,17 +988,18 @@ async function main() {
   if (cmd === 'open') {
     const url = args[0] || 'about:blank';
     const cdp = new CDP();
-    await cdp.connect(getWsUrl());
+    await cdp.connect(await getWsUrl());
     const { targetId } = await cdp.send('Target.createTarget', { url });
-    // Refresh cache; new tab may not appear in getTargets immediately, so add it manually
+    const openedTarget = await waitForOpenedTarget(cdp, targetId, url);
+    // Refresh cache; new tab may not appear in getTargets immediately, so add it manually.
     const pages = await getPages(cdp);
     if (!pages.some(p => p.targetId === targetId)) {
-      pages.push({ targetId, title: url, url });
+      pages.push(openedTarget);
     }
     cdp.close();
     writeFileSync(PAGES_CACHE, JSON.stringify(pages), { mode: 0o600 });
     console.log(`Opened new tab: ${targetId.slice(0, 8)}  ${url}`);
-    console.log('Note: this tab will need "Allow debugging?" approval on first access.');
+    console.log('Note: Chrome may request "Allow debugging?" approval on first access.');
     return;
   }
 

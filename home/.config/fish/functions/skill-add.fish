@@ -1,16 +1,16 @@
-function skill-add -d "Vendor upstream skills into the shared agents lock"
+function skill-add -d "Vendor one upstream skill from a GitHub skill-dir URL"
     if test (count $argv) -eq 0
-        echo "Usage: skill-add <owner/repo|url|path> <skills-dir-path> [skill-name ...]" >&2
-        echo "Example: skill-add cursor/plugins pstack/skills how" >&2
+        echo "Usage: skill-add <github-skill-url>" >&2
+        echo "Example: skill-add https://github.com/owner/repo/tree/main/path/to/skill" >&2
         return 2
     end
 
     switch $argv[1]
         case -h --help
-            echo "Usage: skill-add <owner/repo|url|path> <skills-dir-path> [skill-name ...]"
+            echo "Usage: skill-add <github-skill-url>"
             echo
-            echo "Wraps ./dot add-skill. skills-dir-path filters which skill folders"
-            echo "are considered; omit skill names to vendor every match."
+            echo "Wraps ./dot add-skill. Pass a GitHub tree URL of the skill directory"
+            echo "(the folder that contains SKILL.md), or a blob URL of SKILL.md."
             return 0
     end
 

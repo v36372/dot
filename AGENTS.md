@@ -59,7 +59,7 @@ Personal Linux (Omarchy) env via GNU Stow. Fish + Neovim + Tmux + Herdr + Ghostt
 ```bash
 ./dot stow           # symlinks + best-effort herdr float plugin
 ./dot herdr-plugin   # build/link packages/herdr-toggle-popup only
-./dot add-skill <repo> <skills-dir-path> [skill-name ...]
+./dot add-skill <github-skill-url>
 ./dot skills-sync
 ./dot doctor         # tools + links + herdr float plugin
 ./dot unstow

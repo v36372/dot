@@ -30,9 +30,9 @@
   window-theme = auto
 
   # --- Cursor ---
-  cursor-style = bar
+  cursor-style = block
   cursor-style-blink = true
-  cursor-opacity = 0.8
+  cursor-opacity = 0.5
 
   # --- Shaders ---
   # Paths relative to this config file. Order = pipeline order.

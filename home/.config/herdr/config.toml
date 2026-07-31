@@ -141,7 +141,18 @@ prompt_new_tab_name = true
 accent = "#7aa2f7"
 
 show_agent_labels_on_pane_borders = true
-agent_panel_sort = "priority"
+agent_panel_sort = "spaces"
+
+# Session title on the primary line (display_agent from auto-session-title),
+# underlying kind on the next line via the $kind metadata token. Untitled
+# agents still show their kind on the primary line.
+# Herdr's default agent/custom token style is dim; set dim=false so fg/bold win.
+[ui.sidebar.agents]
+rows = [
+  ["state_icon", { token = "agent", bold = true, dim = false, fg = "#7aa2f7" }],
+  [{ token = "$kind", dim = true }],
+]
+
 [ui.toast]
 delivery = "herdr"
 delay_seconds = 1

@@ -1,6 +1,7 @@
 ---
 name: chrome-cdp
 description: "Chrome CDP inspection/control: rendered pages, authenticated tabs, navigation, interaction, DOM/accessibility state, network, screenshots. Use when browser-rendered evidence or existing browser state matters."
+disable-model-invocation: true
 ---
 
 # Chrome CDP

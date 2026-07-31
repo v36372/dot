@@ -1,6 +1,7 @@
 ---
 name: adversarial-qa
 description: "Adversarial code QA via executable counterexamples. Use for adversarial review passes, patch breaking, edge cases, invariants, differential checks, regression-test validation, mutation testing, or fuzzing."
+disable-model-invocation: true
 ---
 
 # Adversarial QA

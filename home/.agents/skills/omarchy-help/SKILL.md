@@ -1,6 +1,7 @@
 ---
 name: omarchy-help
 description: "Omarchy workstation maintenance: Hyprland, Waybar, Walker, Mako, terminals, themes, keybindings, displays, updates, packages, devices, audio. Use for user/system troubleshooting; not Omarchy development."
+disable-model-invocation: true
 ---
 
 # Omarchy Help

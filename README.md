@@ -103,13 +103,22 @@ No neo-tree. File browsing is **Snacks explorer**. Fuzzy finding is **Telescope*
 ## Commands
 
 ```bash
-./dot stow          # symlink everything (+ best-effort herdr float plugin)
-./dot restow        # same (re-stow)
-./dot unstow        # remove symlinks
+./dot stow                 # symlink everything (+ best-effort herdr float plugin)
+./dot stow fish            # symlink only Fish
+./dot stow agents          # symlink only shared agent skills
+./dot stow fish nvim tmux  # symlink several parts
+./dot unstow fish          # remove only Fish symlinks
+./dot components           # list selectable parts
 ./dot herdr-plugin  # build/link packages/herdr-toggle-popup
 ./dot skills-sync   # update locked third-party skills
 ./dot doctor        # check tools + links + herdr plugin
 ```
+
+Selectable parts are `agents`, `fish`, `ghostty`, `git`, `herdr`, `mpv`,
+`nvim`, `pi`, `starship`, and `tmux`. `skills` and `agent-skills` are aliases
+for `agents`. With no part, `stow`, `restow`, and `unstow` still operate on
+the complete suite. The Herdr popup plugin is attempted only when `herdr` is
+selected (or when stowing everything).
 
 ## Agent skills
 

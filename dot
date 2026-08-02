@@ -46,9 +46,10 @@ usage() {
 dot — personal dotfiles helper
 
 Usage:
-  dot stow          Create/update symlinks (+ best-effort herdr float plugin)
-  dot restow        Same as stow
-  dot unstow        Remove managed symlinks
+  dot stow [PART...]    Create/update all or selected symlinks
+  dot restow [PART...]  Same as stow
+  dot unstow [PART...]  Remove all or selected managed symlinks
+  dot components        List selectable config parts
   dot herdr-plugin  Build/link packages/herdr-toggle-popup
   dot add-skill     Vendor one skill from a GitHub skill-dir URL
   dot skills-sync   Update locked third-party skills
@@ -59,7 +60,158 @@ Usage:
 Layout:
   home/             Mirrors ~ and is linked into $HOME
   packages/         Optional package lists / notes (herdr-toggle-popup lives here)
+
+Parts:
+  agents fish ghostty git herdr mpv nvim pi starship tmux
+
+Examples:
+  dot stow fish
+  dot stow agents fish
+  dot unstow nvim
 EOF
+}
+
+COMPONENTS=(agents fish ghostty git herdr mpv nvim pi starship tmux)
+SELECT_ALL=0
+SELECTED_COMPONENTS=()
+SELECTED_PATHS=()
+
+component_paths() {
+  case "$1" in
+    agents) printf '%s\n' .agents ;;
+    fish) printf '%s\n' .config/fish ;;
+    ghostty) printf '%s\n' .config/ghostty ;;
+    git) printf '%s\n' .config/git .gitconfig .gitconfig_personal .gitignore_global ;;
+    herdr) printf '%s\n' .config/herdr ;;
+    mpv) printf '%s\n' .config/mpv ;;
+    nvim) printf '%s\n' .config/nvim ;;
+    pi) printf '%s\n' .pi ;;
+    starship) printf '%s\n' .config/starship.toml ;;
+    tmux) printf '%s\n' .config/tmux ;;
+  esac
+}
+
+canonical_component() {
+  case "$1" in
+    agents|agent-skills|skills) echo agents ;;
+    fish|ghostty|git|herdr|mpv|nvim|pi|starship|tmux) echo "$1" ;;
+    *) return 1 ;;
+  esac
+}
+
+select_components() {
+  local requested=("$@") component canonical path
+  SELECT_ALL=0
+  SELECTED_COMPONENTS=()
+  SELECTED_PATHS=()
+
+  if [[ "${#requested[@]}" -eq 0 ]]; then
+    SELECT_ALL=1
+    requested=("${COMPONENTS[@]}")
+  fi
+
+  for component in "${requested[@]}"; do
+    if [[ "$component" == all ]]; then
+      SELECT_ALL=1
+      requested=("${COMPONENTS[@]}")
+      SELECTED_COMPONENTS=()
+      SELECTED_PATHS=()
+      break
+    fi
+  done
+
+  for component in "${requested[@]}"; do
+    canonical="$(canonical_component "$component")" || {
+      echo "unknown part: $component" >&2
+      echo "available parts: ${COMPONENTS[*]}" >&2
+      return 1
+    }
+
+    case " ${SELECTED_COMPONENTS[*]-} " in
+      *" $canonical "*) continue ;;
+    esac
+
+    SELECTED_COMPONENTS+=("$canonical")
+    for path in $(component_paths "$canonical"); do
+      SELECTED_PATHS+=("$path")
+    done
+  done
+}
+
+component_selected() {
+  local wanted="$1" component
+  [[ "$SELECT_ALL" -eq 1 ]] && return 0
+  for component in "${SELECTED_COMPONENTS[@]}"; do
+    [[ "$component" == "$wanted" ]] && return 0
+  done
+  return 1
+}
+
+path_selected() {
+  local rel="$1" root
+  [[ "$SELECT_ALL" -eq 1 ]] && return 0
+  for root in "${SELECTED_PATHS[@]}"; do
+    [[ "$rel" == "$root" || "$rel" == "$root/"* ]] && return 0
+  done
+  return 1
+}
+
+stow_filter_args() {
+  local allowed="" path escaped ancestor
+
+  [[ "$SELECT_ALL" -eq 1 ]] && return 0
+  for path in "${SELECTED_PATHS[@]}"; do
+    escaped="$(printf '%s' "$path" | sed 's/[][\\.^$*+?(){}|]/\\&/g')"
+    [[ -n "$allowed" ]] && allowed+="|"
+    allowed+="$escaped(?:/.*)?"
+
+    ancestor="$path"
+    while [[ "$ancestor" == */* ]]; do
+      ancestor="${ancestor%/*}"
+      escaped="$(printf '%s' "$ancestor" | sed 's/[][\\.^$*+?(){}|]/\\&/g')"
+      allowed+="|$escaped"
+    done
+  done
+
+  printf '%s\n' "--ignore=^(?!(?:$allowed)\$).*"
+}
+
+# Stow folds whole directories into one symlink unless their target directory
+# already exists. Keep component roots real so later selective unstows are safe.
+prepare_stow_dirs() {
+  local root src part current src_current dest_current
+
+  for root in "${SELECTED_PATHS[@]}"; do
+    src="$PACKAGE_DIR/$root"
+    [[ -d "$src" ]] || continue
+
+    current=""
+    src_current="$PACKAGE_DIR"
+    dest_current="$TARGET_DIR"
+    IFS='/' read -r -a parts <<< "$root"
+    for part in "${parts[@]}"; do
+      [[ -z "$part" ]] && continue
+      current="${current:+$current/}$part"
+      src_current="$src_current/$part"
+      dest_current="$dest_current/$part"
+
+      if [[ -L "$dest_current" ]] && paths_match "$dest_current" "$src_current"; then
+        if [[ "$current" != "$root" && "$SELECT_ALL" -ne 1 ]]; then
+          echo "cannot select only ${SELECTED_COMPONENTS[*]} while $current links the full suite" >&2
+          echo "run './dot stow' once to unfold the old layout, then retry" >&2
+          return 1
+        fi
+        echo "  unfold $current"
+        rm -f "$dest_current"
+        mkdir -p "$dest_current"
+      elif [[ ! -e "$dest_current" ]]; then
+        mkdir -p "$dest_current"
+      elif [[ ! -d "$dest_current" ]]; then
+        echo "target is not a directory: $dest_current" >&2
+        return 1
+      fi
+    done
+  done
 }
 
 rel_from_home() {
@@ -78,11 +230,14 @@ link_file() {
 
   mkdir -p "$dest_dir"
 
+  # A parent directory may itself be a Stow symlink. In that case $dest is a
+  # regular file reached through the link, but it already resolves to $src.
+  if [[ -e "$dest" || -L "$dest" ]] && paths_match "$dest" "$src"; then
+    echo "  keep  $rel"
+    return 0
+  fi
+
   if [[ -L "$dest" ]]; then
-    if paths_match "$dest" "$src"; then
-      echo "  keep  $rel"
-      return 0
-    fi
     echo "  relink $rel"
     rm -f "$dest"
   elif [[ -e "$dest" ]]; then
@@ -224,16 +379,28 @@ cmd_herdr_plugin() {
 }
 
 cmd_stow() {
+  select_components "$@"
+  prepare_stow_dirs
+
   if command -v stow >/dev/null 2>&1; then
+    local filter_args=()
+    while IFS= read -r arg; do
+      [[ -n "$arg" ]] && filter_args+=("$arg")
+    done < <(stow_filter_args)
     (
       cd "$DOTFILES_DIR"
-      stow --target="$TARGET_DIR" --restow --verbose=1 home
+      if [[ "$SELECT_ALL" -eq 1 ]]; then
+        stow --target="$TARGET_DIR" --restow --verbose=1 home
+      else
+        stow --target="$TARGET_DIR" --restow --verbose=1 "${filter_args[@]}" home
+      fi
     )
-    echo "stowed via GNU Stow: $PACKAGE_DIR -> $TARGET_DIR"
+    echo "stowed via GNU Stow: ${SELECTED_COMPONENTS[*]}"
   else
     echo "GNU Stow not found; using ln -s fallback"
     # Skip runtime junk
     while IFS= read -r -d '' f; do
+      path_selected "$(rel_from_home "$f")" || continue
       case "$f" in
         *.log|*.sock) continue ;;
       esac
@@ -244,21 +411,32 @@ cmd_stow() {
   fi
 
   # Non-strict: configs still land even if herdr/go are missing on a fresh box.
-  cmd_herdr_plugin 0 || true
+  component_selected herdr && cmd_herdr_plugin 0 || true
 }
 
 cmd_unstow() {
+  select_components "$@"
+
   if command -v stow >/dev/null 2>&1; then
+    local filter_args=()
+    while IFS= read -r arg; do
+      [[ -n "$arg" ]] && filter_args+=("$arg")
+    done < <(stow_filter_args)
     (
       cd "$DOTFILES_DIR"
-      stow --target="$TARGET_DIR" --delete --verbose=1 home
+      if [[ "$SELECT_ALL" -eq 1 ]]; then
+        stow --target="$TARGET_DIR" --delete --verbose=1 home
+      else
+        stow --target="$TARGET_DIR" --delete --verbose=1 "${filter_args[@]}" home
+      fi
     )
-    echo "unstowed via GNU Stow"
+    echo "unstowed via GNU Stow: ${SELECTED_COMPONENTS[*]}"
     return 0
   fi
 
   echo "GNU Stow not found; removing managed symlinks"
   while IFS= read -r -d '' f; do
+    path_selected "$(rel_from_home "$f")" || continue
     unlink_file "$f"
   done < <(find "$PACKAGE_DIR" -type f -print0)
 }
@@ -353,6 +531,7 @@ main() {
     herdr-plugin) cmd_herdr_plugin 1 "$@" ;;
     add-skill) cmd_add_skill "$@" ;;
     skills-sync) cmd_skills_sync "$@" ;;
+    components) printf '%s\n' "${COMPONENTS[@]}" ;;
     doctor) cmd_doctor "$@" ;;
     path) echo "$DOTFILES_DIR" ;;
     help|-h|--help) usage ;;

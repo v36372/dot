@@ -104,6 +104,16 @@
       "installedAt": "2026-07-23T05:23:53.745Z",
       "updatedAt": "2026-07-23T05:23:53.745Z"
     },
+    "google-workspace": {
+      "source": "mitsuhiko/agent-stuff",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/mitsuhiko/agent-stuff.git",
+      "ref": "main",
+      "skillPath": "skills/google-workspace/SKILL.md",
+      "skillFolderHash": "287104845862894551aa46a0c318c78262a58cc7",
+      "installedAt": "2026-08-05T03:48:34.726Z",
+      "updatedAt": "2026-08-05T03:48:34.726Z"
+    },
     "grill-me": {
       "source": "mattpocock/skills",
       "sourceType": "github",

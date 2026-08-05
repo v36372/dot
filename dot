@@ -276,24 +276,18 @@ HERDR_TOGGLE_POPUP_ID="local.toggle-popup"
 
 herdr_toggle_popup_linked() {
   command -v herdr >/dev/null 2>&1 || return 1
-  herdr plugin list 2>/dev/null | grep -Fq "$HERDR_TOGGLE_POPUP_ID"
+  [[ "$(herdr plugin list 2>/dev/null)" == *"$HERDR_TOGGLE_POPUP_ID"* ]]
 }
 
 ensure_herdr_toggle_popup_bin() {
-  local src_mtime bin_mtime
+  local newer_source
 
   if [[ -x "$HERDR_TOGGLE_POPUP_BIN" ]]; then
     # Rebuild when any tracked source is newer than the binary.
-    src_mtime="$(find "$HERDR_TOGGLE_POPUP_DIR" \
+    newer_source="$(find "$HERDR_TOGGLE_POPUP_DIR" \
       \( -name '*.go' -o -name 'go.mod' -o -name 'go.sum' -o -name 'herdr-plugin.toml' \) \
-      -printf '%T@\n' 2>/dev/null | sort -n | tail -1)"
-    bin_mtime="$(stat -c '%Y' "$HERDR_TOGGLE_POPUP_BIN" 2>/dev/null || echo 0)"
-    if [[ -n "$src_mtime" ]]; then
-      src_mtime="${src_mtime%.*}"
-      if (( src_mtime <= bin_mtime )); then
-        return 0
-      fi
-    else
+      -newer "$HERDR_TOGGLE_POPUP_BIN" -print -quit 2>/dev/null)"
+    if [[ -z "$newer_source" ]]; then
       return 0
     fi
   fi

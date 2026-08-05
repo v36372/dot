@@ -156,6 +156,44 @@ path_selected() {
   return 1
 }
 
+# Repo moves leave target symlinks pointing at the old package path. GNU Stow
+# treats those as "not owned" and aborts --restow; drop them so stow can relink.
+reclaim_stale_node() {
+  local dest="$1" src="$2" child base
+  local -a children
+
+  if [[ -L "$dest" ]]; then
+    if paths_match "$dest" "$src"; then
+      return 0
+    fi
+    echo "  reclaim ${dest#"$TARGET_DIR"/}"
+    rm -f "$dest"
+    return 0
+  fi
+
+  [[ -d "$src" && -d "$dest" ]] || return 0
+
+  children=()
+  while IFS= read -r -d '' child; do
+    children+=("$child")
+  done < <(find "$src" -mindepth 1 -maxdepth 1 -print0 2>/dev/null)
+
+  for child in "${children[@]+"${children[@]}"}"; do
+    base="${child##*/}"
+    reclaim_stale_node "$dest/$base" "$child"
+  done
+}
+
+reclaim_stale_links() {
+  local root src dest
+  for root in "${SELECTED_PATHS[@]}"; do
+    src="$PACKAGE_DIR/$root"
+    dest="$TARGET_DIR/$root"
+    [[ -e "$src" || -L "$src" ]] || continue
+    reclaim_stale_node "$dest" "$src"
+  done
+}
+
 stow_filter_args() {
   local allowed="" path escaped ancestor
 
@@ -374,6 +412,7 @@ cmd_herdr_plugin() {
 
 cmd_stow() {
   select_components "$@"
+  reclaim_stale_links
   prepare_stow_dirs
 
   if command -v stow >/dev/null 2>&1; then
@@ -410,6 +449,9 @@ cmd_stow() {
 
 cmd_unstow() {
   select_components "$@"
+  # Allow unstow after a repo move: delete stale owned-looking links first so
+  # GNU Stow does not abort on "existing target is not owned by stow".
+  reclaim_stale_links
 
   if command -v stow >/dev/null 2>&1; then
     local filter_args=()

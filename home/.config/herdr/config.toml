@@ -79,8 +79,9 @@ zoom = "prefix+z"
 # Pane navigation; Vim/Neovim-aware navigation owns the direct chords.
 # Prefix bindings remain available as an escape hatch from any pane.
 focus_pane_left = "prefix+h"
-focus_pane_down = "prefix+j"
-focus_pane_up = "prefix+k"
+# prefix+j / prefix+k used for floating terminal open/close intent.
+# focus_pane_down = "prefix+j"
+# focus_pane_up = "prefix+k"
 focus_pane_right = "prefix+l"
 cycle_pane_next = "prefix+tab"
 cycle_pane_previous = "prefix+shift+tab"
@@ -98,6 +99,18 @@ navigate_pane_right = "l"
 
 # vim-herdr-navigation forwards these chords into Vim/Neovim when focused;
 # otherwise it focuses the adjacent Herdr pane.
+# Floating terminal (prefix+t is new_tab).
+# Open: prefix+j. Close: exit / ctrl+d.
+# Built-in popups swallow all input (including prefix), so a close keybinding
+# cannot fire while the float is focused.
+[[keys.command]]
+key = "prefix+j"
+type = "popup"
+command = "exec \"${SHELL:-fish}\""
+description = "open floating terminal"
+width = "80%"
+height = "80%"
+
 [[keys.command]]
 key = "ctrl+h"
 type = "plugin_action"
@@ -133,6 +146,7 @@ sidebar_width = 32
 sidebar_min_width = 18
 sidebar_max_width = 36
 mouse_capture = true
+copy_on_select = true
 right_click_passthrough_modifier = "ctrl"
 mouse_scroll_lines = 3
 # Close panes/tabs without prompting.

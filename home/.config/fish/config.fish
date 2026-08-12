@@ -7,8 +7,10 @@ set -gx VISUAL nvim
 set -gx SUDO_EDITOR nvim
 set -gx MANPAGER 'nvim +Man!'
 
-# Prefer native Apple Silicon Homebrew tools over stale Intel Homebrew installs
-fish_add_path --global --move --path /opt/homebrew/bin
+# Prefer native Apple Silicon Homebrew when present (no-op on Linux).
+if test -d /opt/homebrew/bin
+    fish_add_path --global --move --path /opt/homebrew/bin
+end
 
-# Ensure user-local fish data/bin are first (user-local install path)
+# Ensure user-local bins are first (common on Linux + custom installs)
 fish_add_path --global --move --path "$HOME/.local/bin"

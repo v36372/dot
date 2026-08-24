@@ -66,6 +66,16 @@
       "installedAt": "2026-07-27T15:26:55.783Z",
       "updatedAt": "2026-07-27T15:26:55.783Z"
     },
+    "clean": {
+      "source": "OutThisLife/brooklyn-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/OutThisLife/brooklyn-skills.git",
+      "ref": "main",
+      "skillPath": "skills/clean/SKILL.md",
+      "skillFolderHash": "bcb27fa471a531842b79c296e9b15415c845a923",
+      "installedAt": "2026-08-11T03:59:34.278Z",
+      "updatedAt": "2026-08-11T03:59:34.278Z"
+    },
     "code-review": {
       "source": "mattpocock/skills",
       "sourceType": "github",

@@ -28,19 +28,11 @@ Style inspired by [dmmulroy/.dotfiles](https://github.com/dmmulroy/.dotfiles): `
 git clone https://github.com/v36372/dot.git ~/.dotfiles
 cd ~/.dotfiles
 
-# backup anything that would be overwritten, then:
+# existing conflicts are moved to timestamped .bak files
 ./dot stow
 
 # optional: put `dot` on PATH
 ln -sf ~/.dotfiles/dot ~/.local/bin/dot
-```
-
-If stow refuses because a real file already exists:
-
-```bash
-# example: backup existing nvim and re-stow
-mv ~/.config/nvim ~/.config/nvim.bak.$(date +%s)
-./dot stow
 ```
 
 ## Neovim

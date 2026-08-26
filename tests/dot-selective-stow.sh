@@ -10,8 +10,15 @@ HOME="$TARGET" "$ROOT/dot" stow fish >/dev/null
 [[ ! -e "$TARGET/.config/nvim" ]]
 [[ ! -e "$TARGET/.agents" ]]
 
+mkdir -p "$TARGET/.agents"
+printf 'local lock\n' > "$TARGET/.agents/.skill-lock.json"
+printf 'local readme\n' > "$TARGET/.agents/README.md"
 HOME="$TARGET" "$ROOT/dot" stow skills >/dev/null
 [[ -L "$TARGET/.agents/.skill-lock.json" ]]
+lock_backups=("$TARGET"/.agents/.skill-lock.json.bak.*)
+[[ "${#lock_backups[@]}" -eq 1 && "$(cat "${lock_backups[0]}")" == "local lock" ]]
+[[ ! -L "$TARGET/.agents/README.md" ]]
+[[ "$(cat "$TARGET/.agents/README.md")" == "local readme" ]]
 
 HOME="$TARGET" "$ROOT/dot" unstow fish >/dev/null
 [[ ! -e "$TARGET/.config/fish/config.fish" ]]
@@ -28,5 +35,6 @@ HOME="$TARGET" "$ROOT/dot" stow agents >/dev/null
 [[ -L "$TARGET/.agents/skills" ]]
 [[ "$(readlink -f "$TARGET/.agents/skills")" == "$(readlink -f "$ROOT/home/.agents/skills")" ]]
 [[ "$(readlink -f "$TARGET/.agents/.skill-lock.json")" == "$(readlink -f "$ROOT/home/.agents/.skill-lock.json")" ]]
+[[ "$(readlink "$TARGET/.agents/README.md")" == /tmp/old-dotfiles-agents-readme ]]
 
 echo "selective stow checks passed"

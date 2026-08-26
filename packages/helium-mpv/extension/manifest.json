@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Play Stream in mpv",
+  "description": "Detect HLS, DASH, and FLV streams in the current tab and open them in mpv.",
+  "version": "0.1.0",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAm9ibXMIyLDtzcopTapzSg7wah/Yy7iRCIiaJUItQDR1XlZ64STvW/EV95LEN/fvgHFU7u7Y970YxRQWUp/kx1TZ06bnpyQb0s1c4bp371WgGjMNcWlnBrNLLkY0ffVsxW9XYQAH5AwnonDZHG/JxT4Fgbi8MH05h9H6hZ5fRnXa+bxA0kVAvqN9ZRvDk7mOVP/fVwEemkdlJR6zVHa8VMaYjETJeCSuYpVNfrkdiNkJf+XVLb8Q1fh3i+bSz1dMpOcdkbfagueFzwYfA5QqFtMczQbriqqX47E9llJ7FBky+/QEB8Nh64cezhjUnv9FXbFywzdKJ7RNShNsE5RZLywIDAQAB",
+  "permissions": [
+    "nativeMessaging",
+    "storage",
+    "tabs",
+    "webRequest"
+  ],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Play stream in mpv"
+  }
+}

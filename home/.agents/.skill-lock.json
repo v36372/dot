@@ -6,9 +6,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/cursor/plugins.git",
       "skillPath": "pstack/skills/poteto-mode/SKILL.md",
-      "skillFolderHash": "5510a7e864cce1a585399a9d5a8d8d022b67bfea",
+      "skillFolderHash": "9e74ac33c126b46ac355e126d7c153e7f9ee9d8a",
       "installedAt": "2026-07-23T05:23:53.746Z",
-      "updatedAt": "2026-08-23T13:59:50.380Z"
+      "updatedAt": "2026-08-28T17:19:21.440Z"
     },
     "adversarial-qa": {
       "source": "IgorWarzocha/howaboua-pi-stuff",
@@ -62,9 +62,9 @@
       "sourceUrl": "https://github.com/IgorWarzocha/howaboua-pi-stuff.git",
       "ref": "main",
       "skillPath": "packages/pi-skill-chrome-cdp/skills/chrome-cdp/SKILL.md",
-      "skillFolderHash": "22dcbc0be30f334b8352870fa15f8c54f529d95d",
+      "skillFolderHash": "97c5876de2e7d4c1746e39273898e4a55c83d0d7",
       "installedAt": "2026-07-27T15:26:55.783Z",
-      "updatedAt": "2026-07-27T15:26:55.783Z"
+      "updatedAt": "2026-08-28T17:19:31.732Z"
     },
     "clean": {
       "source": "OutThisLife/brooklyn-skills",
@@ -233,9 +233,9 @@
       "sourceUrl": "https://github.com/dmmulroy/anti-slop.git",
       "ref": "main",
       "skillPath": "skills/install-anti-slop/SKILL.md",
-      "skillFolderHash": "b903a7ac2c823d473a4b0046834fccbab0bc75ee4fda8be4f81efa895d475b01",
+      "skillFolderHash": "31c294c983ea89bc585041cb43ec651b2df684a1",
       "installedAt": "2026-08-16T12:46:51.747Z",
-      "updatedAt": "2026-08-23T14:03:05.912Z"
+      "updatedAt": "2026-08-28T17:19:52.350Z"
     },
     "interrogate": {
       "source": "cursor/plugins",
@@ -261,9 +261,9 @@
       "sourceUrl": "https://github.com/IgorWarzocha/howaboua-pi-stuff.git",
       "ref": "main",
       "skillPath": "packages/pi-skill-omarchy-help/skills/omarchy-help/SKILL.md",
-      "skillFolderHash": "b70e063cd543018ab1efd5706f8fa4b0ad9b7177",
+      "skillFolderHash": "6dba2dbae0c2784e9ac0af24312cc76d89183b3b",
       "installedAt": "2026-07-27T12:39:21.422Z",
-      "updatedAt": "2026-07-27T12:47:19.097Z"
+      "updatedAt": "2026-08-28T17:19:43.544Z"
     },
     "preflight": {
       "source": "ogulcancelik/agent-skills",
@@ -496,9 +496,9 @@
       "sourceUrl": "https://github.com/humanlayer/skills.git",
       "ref": "main",
       "skillPath": "plugins/show-me/skills/show-me/SKILL.md",
-      "skillFolderHash": "de32a72f802801f08a84641b467f2c6306d35a58ce5e59ea607ac3a993a18c91",
+      "skillFolderHash": "0bdb821a21e793a4f6f82a7078c052154447e5cc",
       "installedAt": "2026-08-12T17:36:38.325Z",
-      "updatedAt": "2026-08-23T14:03:07.881Z"
+      "updatedAt": "2026-08-28T17:19:54.888Z"
     },
     "show-me-your-work": {
       "source": "cursor/plugins",
@@ -541,9 +541,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/mattpocock/skills.git",
       "skillPath": "skills/engineering/to-tickets/SKILL.md",
-      "skillFolderHash": "bf5e6ebcb4f1272de0c188d5b3901f265a03d1fa9935a21a7a56938e21e2e761",
+      "skillFolderHash": "b32c94e5a51c24ee9c41fcb7fe9ea9fff9af6369",
       "installedAt": "2026-07-19T04:26:53.468Z",
-      "updatedAt": "2026-08-23T14:03:00.585Z"
+      "updatedAt": "2026-08-28T17:19:46.412Z"
     },
     "typescript-best-practices": {
       "source": "cursor/plugins",
@@ -568,9 +568,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/mattpocock/skills.git",
       "skillPath": "skills/engineering/wayfinder/SKILL.md",
-      "skillFolderHash": "fa790eb4255b13d24d7e33ff4891ccd3d621558cc0ab87ae226777538ea16a8f",
+      "skillFolderHash": "8ec0462658381bd1606d3f9db14ffc67df6a2a43",
       "installedAt": "2026-07-19T04:26:53.468Z",
-      "updatedAt": "2026-08-23T14:03:03.430Z"
+      "updatedAt": "2026-08-28T17:19:48.990Z"
     },
     "why": {
       "source": "cursor/plugins",

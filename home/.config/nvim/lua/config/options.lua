@@ -94,11 +94,62 @@ local treesitter_indent_disabled_filetypes = {
 
 local treesitter_group = vim.api.nvim_create_augroup("config-treesitter-main", { clear = true })
 
+-- Retry treesitter attach after a transient failure (e.g. parsers still being
+-- installed right after a Lazy update). Without this, a swallowed start error
+-- leaves the buffer silently unhighlighted for the whole session.
+local function retry_treesitter_start(buffnr)
+	local ready = function()
+		return vim.api.nvim_buf_is_valid(buffnr) and vim.treesitter.highlighter.active[buffnr] ~= nil
+	end
+
+	local retry_group = vim.api.nvim_create_augroup("config-treesitter-retry-" .. buffnr, { clear = true })
+	vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+		group = retry_group,
+		buffer = buffnr,
+		once = true,
+		callback = function()
+			vim.api.nvim_del_augroup_by_id(retry_group)
+			if not ready() then
+				pcall(vim.treesitter.start, buffnr)
+			end
+		end,
+	})
+
+	for _, delay in ipairs({ 5000, 30000 }) do
+		vim.defer_fn(function()
+			if not ready() then
+				pcall(vim.treesitter.start, buffnr)
+			end
+		end, delay)
+	end
+end
+
+-- Some load paths (restored / RPC-loaded buffers) skip filetype detection,
+-- leaving a named buffer with an empty filetype. That silently kills both
+-- treesitter and legacy syntax highlighting. Re-detect on entry when missing.
+vim.api.nvim_create_autocmd("BufEnter", {
+	group = treesitter_group,
+	callback = function(args)
+		local bo = vim.bo[args.buf]
+		if bo.filetype ~= "" or bo.buftype ~= "" then
+			return
+		end
+		if vim.api.nvim_buf_get_name(args.buf) == "" then
+			return
+		end
+		local ok, ft = pcall(vim.filetype.match, { buf = args.buf })
+		if ok and type(ft) == "string" then
+			vim.bo[args.buf].filetype = ft -- fires FileType; starts treesitter + ftplugins
+		end
+	end,
+})
+
 vim.api.nvim_create_autocmd("FileType", {
 	group = treesitter_group,
 	callback = function(args)
-		local has_parser = pcall(vim.treesitter.start, args.buf)
-		if not has_parser then
+		local start_ok = pcall(vim.treesitter.start, args.buf)
+		if not start_ok then
+			retry_treesitter_start(args.buf)
 			return
 		end
 

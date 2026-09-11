@@ -90,11 +90,17 @@ vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move selected block u
 vim.keymap.set("n", "<C-c>", "za", { desc = "Toggle fold" })
 
 -- ---------------------------------------------------------------------------
--- File explorer (Neo-tree)
+-- File explorer (Snacks)
 -- ---------------------------------------------------------------------------
-vim.keymap.set("n", "<leader>e", "<cmd>Neotree reveal<cr>", { desc = "Explorer: reveal current file" })
-vim.keymap.set("n", "<leader>fp", "<cmd>Neotree reveal<cr>", { desc = "Explorer: reveal current file" })
-vim.keymap.set("n", "<leader>E", "<cmd>Neotree toggle filesystem left dir=.<cr>", { desc = "Explorer: project root" })
+vim.keymap.set("n", "<leader>e", function()
+	Snacks.explorer()
+end, { desc = "Explorer: toggle" })
+vim.keymap.set("n", "<leader>fp", function()
+	Snacks.explorer()
+end, { desc = "Explorer: toggle" })
+vim.keymap.set("n", "<leader>E", function()
+	Snacks.explorer({ cwd = vim.uv.cwd() })
+end, { desc = "Explorer: project root" })
 
 -- ---------------------------------------------------------------------------
 -- Search (your hotkeys, Telescope backend)

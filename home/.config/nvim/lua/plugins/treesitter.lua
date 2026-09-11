@@ -4,6 +4,7 @@ local parser_languages = {
 	"cpp",
 	"css",
 	"go",
+	"hcl",
 	"html",
 	"javascript",
 	"json",

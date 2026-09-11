@@ -34,7 +34,7 @@ function __pi.commit -d "Commit with pi" -a mode
         --no-prompt-templates \
         --no-themes \
         --no-context-files \
-        --model "openai-codex/gpt-5.4-mini:off" \
+        --model "openai-codex/gpt-5.6-luna:off" \
         --skill "$PI_COMMIT_SKILL" \
         "/skill:commit $prompt" \
         </dev/null

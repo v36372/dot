@@ -11,6 +11,7 @@ return {
 			bigfile = { enabled = true },
 			bufdelete = { enabled = true },
 			dim = { enabled = true },
+			explorer = { enabled = true },
 			gitbrowse = { enabled = true },
 			indent = {
 				enabled = true,
@@ -23,6 +24,22 @@ return {
 				enabled = true,
 				timeout = 3000,
 				style = "fancy",
+			},
+			picker = {
+				sources = {
+					explorer = {
+						win = {
+							list = {
+								keys = {
+									["<C-v>"] = "edit_vsplit",
+									["<C-c>"] = "edit_split",
+									["s"] = "edit_split",
+									["v"] = "edit_vsplit",
+								},
+							},
+						},
+					},
+				},
 			},
 			rename = { enabled = true },
 			toggle = { enabled = true },

@@ -42,6 +42,7 @@ return {
 			formatters_by_ft = {
 				astro = { "oxfmt", "biome", "prettierd", stop_after_first = true },
 				javascript = { "oxfmt", "biome", "prettierd", stop_after_first = true },
+				odin = { "odinfmt" },
 				typescript = { "oxfmt", "biome", "prettierd", stop_after_first = true },
 				typescriptreact = { "oxfmt", "biome", "prettierd", stop_after_first = true },
 				svelte = { "oxfmt", "prettierd", stop_after_first = true },

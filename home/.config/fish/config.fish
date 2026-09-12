@@ -14,3 +14,8 @@ end
 
 # Ensure user-local bins are first (common on Linux + custom installs)
 fish_add_path --global --move --path "$HOME/.local/bin"
+
+# Added by LM Studio CLI (lms)
+set -gx PATH $PATH /home/v36372/.lmstudio/bin
+# End of LM Studio CLI section
+

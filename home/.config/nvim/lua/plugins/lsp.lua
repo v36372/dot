@@ -63,6 +63,9 @@ return {
 						syntaxDocumentation = { enable = true },
 					},
 				},
+				ols = {
+					manual_install = true,
+				},
 				sqls = {},
 				tailwindcss = {
 					filetypes = { "typescriptreact", "javascriptreact", "html", "svelte", "astro" },
@@ -91,10 +94,9 @@ return {
 				stylua = {},
 			}
 
-			local manually_installed_servers = { "ocamllsp" }
 			local mason_tools_to_install = vim.tbl_keys(vim.tbl_deep_extend("force", {}, servers, formatters))
 			local ensure_installed = vim.tbl_filter(function(name)
-				return not vim.tbl_contains(manually_installed_servers, name)
+				return not (servers[name] and servers[name].manual_install)
 			end, mason_tools_to_install)
 
 			require("mason-tool-installer").setup({

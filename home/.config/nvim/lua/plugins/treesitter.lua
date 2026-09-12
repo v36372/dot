@@ -11,6 +11,7 @@ local parser_languages = {
 	"lua",
 	"markdown",
 	"markdown_inline",
+	"odin",
 	"python",
 	"rust",
 	"svelte",

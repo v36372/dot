@@ -12,7 +12,7 @@ shell_mode = "auto"
 new_cwd = "follow"
 
 [theme]
-name = "tokyo-night"
+name = "one-dark"
 
 auto_switch = false
 [theme.custom]
@@ -161,6 +161,7 @@ agent_panel_sort = "spaces"
 # underlying kind on the next line via the $kind metadata token. Untitled
 # agents still show their kind on the primary line.
 # Herdr's default agent/custom token style is dim; set dim=false so fg/bold win.
+status_indicators = "symbols"
 [ui.sidebar.agents]
 rows = [
   ["state_icon", { token = "agent", bold = true, dim = false, fg = "#7aa2f7" }],

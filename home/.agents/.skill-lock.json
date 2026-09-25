@@ -279,10 +279,11 @@
       "source": "ogulcancelik/agent-skills",
       "sourceType": "github",
       "sourceUrl": "https://github.com/ogulcancelik/agent-skills.git",
+      "ref": "main",
       "skillPath": "skills/preflight/SKILL.md",
-      "skillFolderHash": "4f4a739dbe3b7e3816321163ce5bba3730f629d9",
+      "skillFolderHash": "fe614fea75fa20e6b2c7879c9a8319fb38fa962f",
       "installedAt": "2026-07-19T06:46:38.353Z",
-      "updatedAt": "2026-07-19T06:46:38.353Z"
+      "updatedAt": "2026-09-25T04:23:04.065Z"
     },
     "principle-boundary-discipline": {
       "source": "cursor/plugins",
@@ -581,6 +582,16 @@
       "skillFolderHash": "8ec0462658381bd1606d3f9db14ffc67df6a2a43",
       "installedAt": "2026-07-19T04:26:53.468Z",
       "updatedAt": "2026-08-28T17:19:48.990Z"
+    },
+    "web-search": {
+      "source": "ogulcancelik/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/ogulcancelik/agent-skills.git",
+      "ref": "main",
+      "skillPath": "skills/web-search/SKILL.md",
+      "skillFolderHash": "e350810feb83f4e1450597c8560a5156bdbfb61d",
+      "installedAt": "2026-09-25T04:23:45.187Z",
+      "updatedAt": "2026-09-25T04:23:45.187Z"
     },
     "why": {
       "source": "cursor/plugins",

@@ -1,6 +1,7 @@
 ---
 name: ghidra
 description: "Reverse engineer binaries using Ghidra's headless analyzer. Decompile executables, extract functions, strings, symbols, and analyze call graphs without GUI."
+disable-model-invocation: true
 ---
 
 # Ghidra Headless Analysis Skill

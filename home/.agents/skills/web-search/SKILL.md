@@ -3,6 +3,7 @@ name: web-search
 description: Search the internet with Google or DuckDuckGo, inspect results, and extract selected pages as readable Markdown. Use when answers require current web sources, JavaScript-rendered pages, or browser access that can handle bot protection. Prefer dedicated tools such as GitHub CLI for GitHub data and curl for direct files or simple URLs.
 license: MIT
 compatibility: Requires Node.js 20.19+, Bun for dependency installation, network access, and a local Chromium-family browser.
+disable-model-invocation: true
 ---
 
 # Web Search

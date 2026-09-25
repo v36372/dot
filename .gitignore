@@ -15,6 +15,7 @@
 !home/.pi/agent/themes/tokyo-night-storm.json
 
 # Runtime / secrets / logs
+home/.agents/skills/synced/
 home/.config/herdr/*.log
 home/.config/herdr/*.sock
 home/.config/herdr/session*.json

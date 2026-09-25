@@ -1,6 +1,7 @@
 ---
 name: google-workspace
 description: "Access Google Workspace APIs (Drive, Docs, Calendar, Gmail, Sheets, Slides, Chat, People) via local helper scripts without MCP. Handles OAuth login and direct API calls."
+disable-model-invocation: true
 ---
 
 # Google Workspace

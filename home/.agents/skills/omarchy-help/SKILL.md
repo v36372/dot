@@ -1,6 +1,7 @@
 ---
 name: omarchy-help
 description: "Read before changing, diagnosing, maintaining, or recovering an Omarchy workstation."
+disable-model-invocation: true
 ---
 
 1. Identify the requested outcome and affected layer. Inspect only the relevant config, process, device, service, or log.

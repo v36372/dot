@@ -2,6 +2,7 @@
 name: preflight
 description: Use fresh-context specialists to challenge regression risk before implementation, then verify the smallest correct change. Use only when the user says "preflight," asks for a risk gate, or explicitly requests this workflow. Never auto-invoke it.
 license: MIT
+disable-model-invocation: true
 ---
 
 # Preflight

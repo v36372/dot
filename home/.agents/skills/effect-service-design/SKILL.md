@@ -1,6 +1,7 @@
 ---
 name: effect-service-design
 description: Design Effect services. Use when designing a new Effect service module or auditing an existing codebase for service, Layer, and composition improvements.
+disable-model-invocation: true
 ---
 
 # Effect Service Design

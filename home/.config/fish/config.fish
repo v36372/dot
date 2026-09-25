@@ -4,6 +4,7 @@ set fish_greeting
 # Core editor settings
 set -gx EDITOR nvim
 set -gx VISUAL nvim
+set -gx OMARCHY_PATH /usr/share/omarchy
 set -gx SUDO_EDITOR nvim
 set -gx MANPAGER 'nvim +Man!'
 

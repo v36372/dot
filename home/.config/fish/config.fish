@@ -17,6 +17,8 @@ end
 fish_add_path --global --move --path "$HOME/.local/bin"
 
 # Added by LM Studio CLI (lms)
-set -gx PATH $PATH /home/v36372/.lmstudio/bin
+set -gx PATH $PATH $HOME/.lmstudio/bin
 # End of LM Studio CLI section
+
+set -gx PATH $PATH $HOME/.bend/bin
 

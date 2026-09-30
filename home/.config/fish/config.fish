@@ -22,3 +22,4 @@ set -gx PATH $PATH $HOME/.lmstudio/bin
 
 set -gx PATH $PATH $HOME/.bend/bin
 
+

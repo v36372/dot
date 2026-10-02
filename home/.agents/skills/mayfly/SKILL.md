@@ -2,6 +2,7 @@
 name: mayfly
 description: Mayfly ad hoc chat. Use when agents need to talk directly while working together.
 compatibility: curl and an available Mayfly client runtime (Node.js 18+, Python 3 with cryptography, or Go 1.24+).
+disable-model-invocation: true
 ---
 
 # Mayfly ad hoc chat

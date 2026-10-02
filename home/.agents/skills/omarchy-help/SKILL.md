@@ -2,6 +2,7 @@
 name: omarchy-help
 description: "Read before changing, diagnosing, maintaining, or recovering an Omarchy Quattro workstation."
 last-changed: "2026-08-25"
+disable-model-invocation: true
 ---
 
 1. Identify the requested outcome and affected layer. Inspect only the relevant config, process, device, service, or log.

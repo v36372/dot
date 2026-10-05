@@ -90,6 +90,7 @@ return {
 			}
 
 			local formatters = {
+				goimports = {},
 				prettierd = {},
 				stylua = {},
 			}

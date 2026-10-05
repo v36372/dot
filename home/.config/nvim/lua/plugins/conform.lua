@@ -40,6 +40,7 @@ return {
 				}
 			end,
 			formatters_by_ft = {
+				go = { "goimports" },
 				astro = { "oxfmt", "biome", "prettierd", stop_after_first = true },
 				javascript = { "oxfmt", "biome", "prettierd", stop_after_first = true },
 				odin = { "odinfmt" },

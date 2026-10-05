@@ -55,6 +55,38 @@ cleanup() {
 trap cleanup EXIT
 
 mkdir -p "$TMP_HOME/.agents/skills"
+
+# Treat a missing vendored folder as an intentional removal: drop its lock
+# entry before running `skills update`, otherwise upstream restores it.
+python3 - "$LOCK_FILE" "$REPO_SKILLS" <<'PY'
+import json
+import re
+import sys
+from pathlib import Path
+
+lock_path = Path(sys.argv[1])
+skills_dir = Path(sys.argv[2])
+lock = json.loads(lock_path.read_text())
+
+def sanitize(name: str) -> str:
+    n = re.sub(r"[^a-z0-9._]+", "-", name.lower())
+    n = re.sub(r"^[.\\-]+|[.\\-]+$", "", n)
+    return n[:255] or "unnamed-skill"
+
+removed = []
+for key, entry in list(lock.get("skills", {}).items()):
+    path = (entry.get("skillPath") or "").replace("\\", "/")
+    folder = Path(path).parent.name if path.lower().endswith("/skill.md") else sanitize(key)
+    if not any((skills_dir / name).is_dir() for name in (folder, sanitize(key), key)):
+        removed.append(key)
+        del lock["skills"][key]
+
+if removed:
+    lock_path.write_text(json.dumps(lock, indent=2) + "\n")
+    for name in sorted(removed):
+        print(f"  removed lock entry for deleted skill: {name}")
+PY
+
 cp -f "$LOCK_FILE" "$TMP_HOME/.agents/.skill-lock.json"
 
 # Seed currently vendored locked skills so `skills update` can refresh them.

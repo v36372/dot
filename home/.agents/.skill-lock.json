@@ -113,6 +113,16 @@
       "installedAt": "2026-07-19T04:26:53.465Z",
       "updatedAt": "2026-08-23T14:02:45.677Z"
     },
+    "effect": {
+      "source": "kitlangton/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/kitlangton/skills.git",
+      "ref": "main",
+      "skillPath": "skills/effect/SKILL.md",
+      "skillFolderHash": "d2bec0241d82f55260ab775ccc964d1497ad23d7",
+      "installedAt": "2026-10-05T05:26:27.422Z",
+      "updatedAt": "2026-10-05T05:26:27.422Z"
+    },
     "figure-it-out": {
       "source": "cursor/plugins",
       "sourceType": "github",

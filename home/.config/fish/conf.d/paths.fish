@@ -2,7 +2,6 @@
 fish_add_path --global --path "$HOME/.local/bin"
 fish_add_path --global --path "$HOME/bin"
 fish_add_path --global --path "$HOME/go/bin"
-fish_add_path --global --path "$HOME/.opencode/bin"
 fish_add_path --global --path "$HOME/.cargo/bin"
 fish_add_path --global --path "$HOME/.bun/bin"
 fish_add_path --global --path "$HOME/.foundry/bin"

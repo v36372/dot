@@ -5,6 +5,12 @@ set -gx OMARCHY_PATH "$HOME/.local/share/omarchy"
 set -gx BUN_INSTALL "$HOME/.bun"
 set -gx GVM_ROOT "$HOME/.gvm"
 set -gx GOTESTS_TEMPLATE testify
+
+# Mise owns coding-agent upgrades; do not recreate unmanaged installations.
+set -gx DISABLE_AUTOUPDATER 1
+set -gx COPILOT_AUTO_UPDATE false
+set -gx GROK_DISABLE_AUTOUPDATER 1
+set -gx OPENCODE_DISABLE_AUTOUPDATE true
 if not set -q PI_COMMIT_SKILL
     set -gx PI_COMMIT_SKILL "$HOME/.pi/agent/skills/commit/SKILL.md"
 end

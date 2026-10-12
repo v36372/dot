@@ -21,25 +21,6 @@
       "installedAt": "2026-07-27T15:26:55.783Z",
       "updatedAt": "2026-08-28T17:19:31.732Z"
     },
-    "clean": {
-      "source": "OutThisLife/brooklyn-skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/OutThisLife/brooklyn-skills.git",
-      "ref": "main",
-      "skillPath": "skills/clean/SKILL.md",
-      "skillFolderHash": "bcb27fa471a531842b79c296e9b15415c845a923",
-      "installedAt": "2026-08-11T03:59:34.278Z",
-      "updatedAt": "2026-08-11T03:59:34.278Z"
-    },
-    "code-review": {
-      "source": "mattpocock/skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/mattpocock/skills.git",
-      "skillPath": "skills/engineering/code-review/SKILL.md",
-      "skillFolderHash": "fee7bb5fdddc069d58cbea09b2c36b5a859eac05",
-      "installedAt": "2026-07-19T04:26:53.463Z",
-      "updatedAt": "2026-10-12T07:23:53.654Z"
-    },
     "create-verification-skill": {
       "source": "cursor/plugins",
       "sourceType": "github",
@@ -58,15 +39,6 @@
       "skillFolderHash": "1697df691845b2ea8e78246df70052f9baf8d511",
       "installedAt": "2026-08-10T11:40:08.502Z",
       "updatedAt": "2026-08-10T11:40:08.502Z"
-    },
-    "domain-modeling": {
-      "source": "mattpocock/skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/mattpocock/skills.git",
-      "skillPath": "skills/engineering/domain-modeling/SKILL.md",
-      "skillFolderHash": "b3eb40152b81f0c98fd2095a023c019452dbdce56f7540cc67fece2972db8369",
-      "installedAt": "2026-07-19T04:26:53.465Z",
-      "updatedAt": "2026-10-12T07:23:56.577Z"
     },
     "ghidra": {
       "source": "mitsuhiko/agent-stuff",
@@ -174,16 +146,6 @@
       "installedAt": "2026-07-19T04:26:53.466Z",
       "updatedAt": "2026-10-12T07:24:01.187Z"
     },
-    "install-anti-slop": {
-      "source": "dmmulroy/anti-slop",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/dmmulroy/anti-slop.git",
-      "ref": "main",
-      "skillPath": "skills/install-anti-slop/SKILL.md",
-      "skillFolderHash": "89044d21c75a367eac1ddbaf208e650b1a7d5820",
-      "installedAt": "2026-08-16T12:46:51.747Z",
-      "updatedAt": "2026-09-26T04:42:00.161Z"
-    },
     "maintain-verification-skill": {
       "source": "cursor/plugins",
       "sourceType": "github",
@@ -192,16 +154,6 @@
       "skillFolderHash": "b6ce4dcdc378492f9acd55a4e56ae111204b4f11",
       "installedAt": "2026-07-23T05:23:53.746Z",
       "updatedAt": "2026-07-23T05:23:53.746Z"
-    },
-    "omarchy-help": {
-      "source": "IgorWarzocha/howaboua-pi-stuff",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/IgorWarzocha/howaboua-pi-stuff.git",
-      "ref": "main",
-      "skillPath": "packages/pi-skill-omarchy-help/skills/omarchy-help/SKILL.md",
-      "skillFolderHash": "ec17c3f82bc3a99c3b5314678bbce096241e72c7",
-      "installedAt": "2026-07-27T12:39:21.422Z",
-      "updatedAt": "2026-09-26T04:41:57.591Z"
     },
     "preflight": {
       "source": "ogulcancelik/agent-skills",
@@ -241,15 +193,6 @@
       "installedAt": "2026-07-19T04:26:53.467Z",
       "updatedAt": "2026-08-23T14:02:57.208Z"
     },
-    "to-tickets": {
-      "source": "mattpocock/skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/mattpocock/skills.git",
-      "skillPath": "skills/engineering/to-tickets/SKILL.md",
-      "skillFolderHash": "5f871bdc46a9212222214ba399be4965374208af1bd7f48f1271bef72841dd31",
-      "installedAt": "2026-07-19T04:26:53.468Z",
-      "updatedAt": "2026-10-12T07:24:04.014Z"
-    },
     "unslop": {
       "source": "cursor/plugins",
       "sourceType": "github",
@@ -267,16 +210,6 @@
       "skillFolderHash": "71d1296ae9f1ea0397f385f72d11ca3473827f5d067df4d06c58eb03377a57ce",
       "installedAt": "2026-07-19T04:26:53.468Z",
       "updatedAt": "2026-10-12T07:24:06.202Z"
-    },
-    "web-search": {
-      "source": "ogulcancelik/agent-skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/ogulcancelik/agent-skills.git",
-      "ref": "main",
-      "skillPath": "skills/web-search/SKILL.md",
-      "skillFolderHash": "e350810feb83f4e1450597c8560a5156bdbfb61d",
-      "installedAt": "2026-09-25T04:23:45.187Z",
-      "updatedAt": "2026-09-25T04:23:45.187Z"
     },
     "writing-great-skills": {
       "source": "mattpocock/skills",

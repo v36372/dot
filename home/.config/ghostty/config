@@ -8,8 +8,8 @@
   # --- Typography ---
   font-family = "TX-02"
   font-style = Regular
-  font-size = 12
-  font-thicken = false
+  font-size = 14
+  font-thicken = true
   adjust-cell-height = 2
 
   # --- Theme and Colors ---

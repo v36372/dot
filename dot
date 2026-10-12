@@ -52,6 +52,7 @@ Usage:
   dot components        List selectable config parts
   dot herdr-plugin  Build/link packages/herdr-toggle-popup
   dot add-skill     Vendor one skill from a GitHub skill-dir URL
+  dot remove-skill NAME  Remove a skill and its lock entry
   dot skills-sync   Update locked third-party skills
   dot doctor        Check tools + symlink health + herdr plugin
   dot path          Print repo path
@@ -530,6 +531,10 @@ cmd_add_skill() {
   "$PACKAGE_DIR/.agents/skills/scripts/add-skill.sh" "$@"
 }
 
+cmd_remove_skill() {
+  "$PACKAGE_DIR/.agents/skills/scripts/remove-skill.sh" "$@"
+}
+
 cmd_skills_sync() {
   "$PACKAGE_DIR/.agents/skills/scripts/sync-skills.sh" "$@"
 }
@@ -615,6 +620,7 @@ main() {
     unstow|unlink) cmd_unstow "$@" ;;
     herdr-plugin) cmd_herdr_plugin 1 "$@" ;;
     add-skill) cmd_add_skill "$@" ;;
+    remove-skill) cmd_remove_skill "$@" ;;
     skills-sync) cmd_skills_sync "$@" ;;
     components) printf '%s\n' "${COMPONENTS[@]}" ;;
     doctor) cmd_doctor "$@" ;;

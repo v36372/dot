@@ -24,6 +24,10 @@ Or from Fish: `skill-add <github-skill-url>`.
 `home/.agents` is the source of truth; `add-skill` writes there, updates
 `.skill-lock.json`, then syncs out to `~/.agents`.
 
+Remove a skill by its folder name with `./dot remove-skill <name>`. This deletes
+the folder and matching lock entry in both the repo and `~/.agents`, so future
+syncs do not reinstall it. Personal skills without lock entries work too.
+
 Do not run the installer with `--agent pi`; that writes duplicate copies under
 `~/.pi/agent/skills`. The sync command targets the shared `~/.agents/skills`
 location directly.

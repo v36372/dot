@@ -102,6 +102,7 @@ No neo-tree. File browsing is **Snacks explorer**. Fuzzy finding is **Telescope*
 ./dot unstow fish          # remove only Fish symlinks
 ./dot components           # list selectable parts
 ./dot herdr-plugin  # build/link packages/herdr-toggle-popup
+./dot remove-skill <name>  # remove a skill folder + its lock entry
 ./dot skills-sync   # update locked third-party skills
 ./dot doctor        # check tools + links + herdr plugin
 ```
@@ -138,6 +139,17 @@ Add a skill by pasting the GitHub URL of its skill directory (or SKILL.md):
 The helper vendors into `home/.agents`, records source metadata in the lock,
 and syncs out to `~/.agents`. Subsequent `./dot skills-sync` runs include the
 new skill automatically.
+
+Remove a skill using its folder name under `home/.agents/skills`:
+
+```bash
+./dot remove-skill poteto-mode
+```
+
+This removes the skill folder and matching lock entry from both the repo and
+`~/.agents`, including entries whose display name differs from the folder name.
+Personal skills without lock entries can also be removed. Other skills and lock
+metadata are preserved, and removed skills will no longer be included in syncs.
 
 ## Notes
 

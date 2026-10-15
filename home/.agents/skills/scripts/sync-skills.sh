@@ -210,11 +210,13 @@ PY
 echo
 echo "Syncing repo agents -> ~/.agents (repo is source of truth)..."
 mkdir -p "$HOME/.agents/skills"
-if [[ -L "$HOME/.agents/.skill-lock.json" ]]; then
-  rm -f "$HOME/.agents/.skill-lock.json"
+if [[ ! "$LOCK_FILE" -ef "$HOME/.agents/.skill-lock.json" ]]; then
+  if [[ -L "$HOME/.agents/.skill-lock.json" ]]; then
+    rm -f "$HOME/.agents/.skill-lock.json"
+  fi
+  cp -f "$LOCK_FILE" "$HOME/.agents/.skill-lock.json"
 fi
-cp -f "$LOCK_FILE" "$HOME/.agents/.skill-lock.json"
-if [[ -f "$REPO_AGENTS/README.md" ]]; then
+if [[ -f "$REPO_AGENTS/README.md" && ! "$REPO_AGENTS/README.md" -ef "$HOME/.agents/README.md" ]]; then
   if [[ -L "$HOME/.agents/README.md" ]]; then
     rm -f "$HOME/.agents/README.md"
   fi
@@ -224,6 +226,7 @@ for skill_dir in "$REPO_SKILLS"/*/; do
   [[ -d "$skill_dir" ]] || continue
   skill_name="$(basename "$skill_dir")"
   [[ "$skill_name" == "scripts" ]] && continue
+  [[ "$skill_dir" -ef "$HOME/.agents/skills/$skill_name" ]] && continue
   rm -rf "$HOME/.agents/skills/$skill_name"
   mkdir -p "$HOME/.agents/skills/$skill_name"
   cp -a "$skill_dir." "$HOME/.agents/skills/$skill_name/"

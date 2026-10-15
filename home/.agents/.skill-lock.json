@@ -1,16 +1,6 @@
 {
   "version": 3,
   "skills": {
-    "adversarial-qa": {
-      "source": "IgorWarzocha/howaboua-pi-stuff",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/IgorWarzocha/howaboua-pi-stuff.git",
-      "ref": "main",
-      "skillPath": "packages/pi-skill-adversarial-qa/skills/adversarial-qa/SKILL.md",
-      "skillFolderHash": "5242cb3dfce6bab4cfab496c29d12a1d2bd2a942",
-      "installedAt": "2026-07-27T15:31:17.620Z",
-      "updatedAt": "2026-07-27T15:31:17.620Z"
-    },
     "chrome-cdp": {
       "source": "IgorWarzocha/howaboua-pi-stuff",
       "sourceType": "github",
@@ -25,48 +15,11 @@
       "source": "cursor/plugins",
       "sourceType": "github",
       "sourceUrl": "https://github.com/cursor/plugins.git",
+      "ref": "main",
       "skillPath": "pstack/skills/create-verification-skill/SKILL.md",
-      "skillFolderHash": "38a3e016bb42ba7ba6f66315e04ef64242937660",
-      "installedAt": "2026-07-23T05:23:53.745Z",
-      "updatedAt": "2026-08-23T14:00:30.125Z"
-    },
-    "design-artifact": {
-      "source": "plannotator/effective-html",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/plannotator/effective-html.git",
-      "ref": "main",
-      "skillPath": "skills/design-artifact/SKILL.md",
-      "skillFolderHash": "1697df691845b2ea8e78246df70052f9baf8d511",
-      "installedAt": "2026-08-10T11:40:08.502Z",
-      "updatedAt": "2026-08-10T11:40:08.502Z"
-    },
-    "ghidra": {
-      "source": "mitsuhiko/agent-stuff",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/mitsuhiko/agent-stuff.git",
-      "ref": "main",
-      "skillPath": "skills/ghidra/SKILL.md",
-      "skillFolderHash": "ca4315094ac32ac10d13c3bb00091cf5f67450c0",
-      "installedAt": "2026-08-05T15:00:20.825Z",
-      "updatedAt": "2026-08-05T15:00:20.825Z"
-    },
-    "grill-me": {
-      "source": "mattpocock/skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/mattpocock/skills.git",
-      "skillPath": "skills/productivity/grill-me/SKILL.md",
-      "skillFolderHash": "3df14e2d3a89459bf300614be9247e3ce74798f8",
-      "installedAt": "2026-07-19T04:26:53.468Z",
-      "updatedAt": "2026-08-23T14:02:47.874Z"
-    },
-    "grill-with-docs": {
-      "source": "mattpocock/skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/mattpocock/skills.git",
-      "skillPath": "skills/engineering/grill-with-docs/SKILL.md",
-      "skillFolderHash": "eedaf2562c83155115e9c649fa3ecaac2e10e81d",
-      "installedAt": "2026-07-19T04:26:53.466Z",
-      "updatedAt": "2026-08-23T14:02:50.035Z"
+      "skillFolderHash": "5aa2dae2726d09d219397fbbedc1e9500a239d28",
+      "installedAt": "2026-10-15T05:41:06.431Z",
+      "updatedAt": "2026-10-15T05:41:06.431Z"
     },
     "grilling": {
       "source": "mattpocock/skills",
@@ -87,73 +40,35 @@
       "installedAt": "2026-09-25T04:18:01.627Z",
       "updatedAt": "2026-10-12T07:24:15.643Z"
     },
-    "html": {
-      "source": "plannotator/effective-html",
+    "in-your-own-words": {
+      "source": "cursor/plugins",
       "sourceType": "github",
-      "sourceUrl": "https://github.com/plannotator/effective-html.git",
+      "sourceUrl": "https://github.com/cursor/plugins.git",
       "ref": "main",
-      "skillPath": "skills/html/SKILL.md",
-      "skillFolderHash": "926c2a2bda2e983c51124c4232e8562ac281dc06",
-      "installedAt": "2026-08-10T11:40:00.280Z",
-      "updatedAt": "2026-08-10T11:40:00.280Z"
+      "skillPath": "pstack/skills/in-your-own-words/SKILL.md",
+      "skillFolderHash": "e5ff93020dd4ed33b80d9df9a235d1945c676a0d",
+      "installedAt": "2026-10-15T05:40:35.406Z",
+      "updatedAt": "2026-10-15T05:40:35.406Z"
     },
-    "html-diagram": {
-      "source": "plannotator/effective-html",
+    "ketchup": {
+      "source": "cursor/plugins",
       "sourceType": "github",
-      "sourceUrl": "https://github.com/plannotator/effective-html.git",
+      "sourceUrl": "https://github.com/cursor/plugins.git",
       "ref": "main",
-      "skillPath": "skills/html-diagram/SKILL.md",
-      "skillFolderHash": "9d773f19558970f4074244f1dd6aa0e499209045",
-      "installedAt": "2026-08-10T11:40:41.364Z",
-      "updatedAt": "2026-08-10T11:40:41.364Z"
-    },
-    "html-plan": {
-      "source": "plannotator/effective-html",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/plannotator/effective-html.git",
-      "ref": "main",
-      "skillPath": "skills/html-plan/SKILL.md",
-      "skillFolderHash": "799c7fa971764c0110a6f3b5cf3f0bdf6aba5c03",
-      "installedAt": "2026-08-10T11:40:33.077Z",
-      "updatedAt": "2026-08-10T11:40:33.077Z"
-    },
-    "html-prototype": {
-      "source": "plannotator/effective-html",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/plannotator/effective-html.git",
-      "ref": "main",
-      "skillPath": "skills/html-prototype/SKILL.md",
-      "skillFolderHash": "8c58a66561453202cdd46a0f506928406d65c226",
-      "installedAt": "2026-08-10T11:40:25.008Z",
-      "updatedAt": "2026-08-10T11:40:25.008Z"
-    },
-    "html-wireframe": {
-      "source": "plannotator/effective-html",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/plannotator/effective-html.git",
-      "ref": "main",
-      "skillPath": "skills/html-wireframe/SKILL.md",
-      "skillFolderHash": "8556dc5ca76c4128531598b2efbc955e1c5ab63a",
-      "installedAt": "2026-08-10T11:40:16.947Z",
-      "updatedAt": "2026-08-10T11:40:16.947Z"
-    },
-    "improve-codebase-architecture": {
-      "source": "mattpocock/skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/mattpocock/skills.git",
-      "skillPath": "skills/engineering/improve-codebase-architecture/SKILL.md",
-      "skillFolderHash": "ac2c94885f34ff8492dc12aa4543182f661f32ea1722b8d6b6c2c7045af33ae3",
-      "installedAt": "2026-07-19T04:26:53.466Z",
-      "updatedAt": "2026-10-12T07:24:01.187Z"
+      "skillPath": "pstack/skills/ketchup/SKILL.md",
+      "skillFolderHash": "7227e74c1a773578fb12cbebd32da4dd8cf3e874",
+      "installedAt": "2026-10-15T05:40:55.981Z",
+      "updatedAt": "2026-10-15T05:40:55.981Z"
     },
     "maintain-verification-skill": {
       "source": "cursor/plugins",
       "sourceType": "github",
       "sourceUrl": "https://github.com/cursor/plugins.git",
+      "ref": "main",
       "skillPath": "pstack/skills/maintain-verification-skill/SKILL.md",
       "skillFolderHash": "b6ce4dcdc378492f9acd55a4e56ae111204b4f11",
-      "installedAt": "2026-07-23T05:23:53.746Z",
-      "updatedAt": "2026-07-23T05:23:53.746Z"
+      "installedAt": "2026-10-15T05:41:17.359Z",
+      "updatedAt": "2026-10-15T05:41:17.359Z"
     },
     "preflight": {
       "source": "ogulcancelik/agent-skills",
@@ -165,6 +80,16 @@
       "installedAt": "2026-07-19T06:46:38.353Z",
       "updatedAt": "2026-09-25T04:23:04.065Z"
     },
+    "sharpen": {
+      "source": "cursor/plugins",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/cursor/plugins.git",
+      "ref": "main",
+      "skillPath": "pstack/skills/sharpen/SKILL.md",
+      "skillFolderHash": "a75511d0e89e7e07c10974ea7ff2786a8c93519a",
+      "installedAt": "2026-10-15T05:40:45.800Z",
+      "updatedAt": "2026-10-15T05:40:45.800Z"
+    },
     "show-me": {
       "source": "humanlayer/skills",
       "sourceType": "github",
@@ -175,24 +100,6 @@
       "installedAt": "2026-08-12T17:36:38.325Z",
       "updatedAt": "2026-09-26T04:42:02.639Z"
     },
-    "teach": {
-      "source": "cursor/plugins",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/cursor/plugins.git",
-      "skillPath": "pstack/skills/teach/SKILL.md",
-      "skillFolderHash": "3ee517292dae0476dc516f9f3805c08fb943c6ff",
-      "installedAt": "2026-07-23T05:23:53.752Z",
-      "updatedAt": "2026-09-26T04:41:35.484Z"
-    },
-    "to-spec": {
-      "source": "mattpocock/skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/mattpocock/skills.git",
-      "skillPath": "skills/engineering/to-spec/SKILL.md",
-      "skillFolderHash": "136b9651747cfccbfbb7c50a6b0dfb757e7547d2",
-      "installedAt": "2026-07-19T04:26:53.467Z",
-      "updatedAt": "2026-08-23T14:02:57.208Z"
-    },
     "unslop": {
       "source": "cursor/plugins",
       "sourceType": "github",
@@ -201,25 +108,6 @@
       "skillFolderHash": "4e572dd70e5557f490e3991c52ea58f0dcee8936",
       "installedAt": "2026-07-23T05:23:53.753Z",
       "updatedAt": "2026-10-12T07:23:44.932Z"
-    },
-    "wayfinder": {
-      "source": "mattpocock/skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/mattpocock/skills.git",
-      "skillPath": "skills/engineering/wayfinder/SKILL.md",
-      "skillFolderHash": "71d1296ae9f1ea0397f385f72d11ca3473827f5d067df4d06c58eb03377a57ce",
-      "installedAt": "2026-07-19T04:26:53.468Z",
-      "updatedAt": "2026-10-12T07:24:06.202Z"
-    },
-    "writing-great-skills": {
-      "source": "mattpocock/skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/mattpocock/skills.git",
-      "skillPath": "skills/productivity/writing-great-skills/SKILL.md",
-      "skillFolderHash": "81d36946d48842f90358d8af54e3cdcc141f8e01",
-      "pluginName": "mattpocock-skills",
-      "installedAt": "2026-07-19T04:26:53.469Z",
-      "updatedAt": "2026-07-19T04:26:53.469Z"
     }
   },
   "dismissed": {}

@@ -137,13 +137,13 @@ PY
 
 sync_repo_agents_to_home() {
   mkdir -p "$HOME/.agents/skills"
-  if [[ -f "$REPO_LOCK" ]]; then
+  if [[ -f "$REPO_LOCK" && ! "$REPO_LOCK" -ef "$HOME/.agents/.skill-lock.json" ]]; then
     if [[ -L "$HOME/.agents/.skill-lock.json" ]]; then
       rm -f "$HOME/.agents/.skill-lock.json"
     fi
     cp -f "$REPO_LOCK" "$HOME/.agents/.skill-lock.json"
   fi
-  if [[ -f "$REPO_AGENTS/README.md" ]]; then
+  if [[ -f "$REPO_AGENTS/README.md" && ! "$REPO_AGENTS/README.md" -ef "$HOME/.agents/README.md" ]]; then
     if [[ -L "$HOME/.agents/README.md" ]]; then
       rm -f "$HOME/.agents/README.md"
     fi
@@ -155,6 +155,7 @@ sync_repo_agents_to_home() {
     [[ -d "$skill_dir" ]] || continue
     skill_name="$(basename "$skill_dir")"
     [[ "$skill_name" == "scripts" ]] && continue
+    [[ "$skill_dir" -ef "$HOME/.agents/skills/$skill_name" ]] && continue
     rm -rf "$HOME/.agents/skills/$skill_name"
     mkdir -p "$HOME/.agents/skills/$skill_name"
     cp -a "$skill_dir." "$HOME/.agents/skills/$skill_name/"

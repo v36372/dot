@@ -50,7 +50,7 @@ Usage:
   dot restow [PART...]  Same as stow
   dot unstow [PART...]  Remove all or selected managed symlinks
   dot components        List selectable config parts
-  dot herdr-plugin  Build/link packages/herdr-toggle-popup
+  dot herdr-plugin  Build/link local Herdr plugins (float popup + companion)
   dot add-skill     Vendor one skill from a GitHub skill-dir URL
   dot remove-skill NAME  Remove a skill and its lock entry
   dot skills-sync   Update locked third-party skills
@@ -60,7 +60,7 @@ Usage:
 
 Layout:
   home/             Mirrors ~ and is linked into $HOME
-  packages/         Optional package lists / notes (herdr-toggle-popup lives here)
+  packages/         Optional package lists / notes (herdr plugins live here)
 
 Parts:
   agents fish ghostty git herdr mpv nvim pi starship tmux
@@ -359,6 +359,10 @@ HERDR_TOGGLE_POPUP_CONFIG_DIR="$TARGET_DIR/.config/herdr/plugins/config/local.to
 HERDR_TOGGLE_POPUP_CONFIG_DEST="$HERDR_TOGGLE_POPUP_CONFIG_DIR/config.toml"
 HERDR_TOGGLE_POPUP_ID="local.toggle-popup"
 
+HERDR_COMPANION_DIR="$DOTFILES_DIR/packages/herdr-companion"
+HERDR_COMPANION_NM="$HERDR_COMPANION_DIR/node_modules/glimpseui"
+HERDR_COMPANION_ID="local.companion"
+
 herdr_toggle_popup_linked() {
   command -v herdr >/dev/null 2>&1 || return 1
   [[ "$(herdr plugin list 2>/dev/null)" == *"$HERDR_TOGGLE_POPUP_ID"* ]]
@@ -406,7 +410,7 @@ seed_herdr_toggle_popup_config() {
 
 # Build binary, link local plugin, seed runtime config.
 # Best-effort when called from stow: missing herdr/go prints a skip, not a hard fail.
-cmd_herdr_plugin() {
+install_herdr_toggle_popup() {
   local strict="${1:-1}"
   local ok=0
 
@@ -453,6 +457,92 @@ cmd_herdr_plugin() {
     echo "  warn  plugin not fully installed"
     ok=1
   fi
+
+  [[ "$ok" -eq 0 ]]
+}
+
+herdr_companion_linked() {
+  command -v herdr >/dev/null 2>&1 || return 1
+  [[ "$(herdr plugin list 2>/dev/null)" == *"$HERDR_COMPANION_ID"* ]]
+}
+
+ensure_herdr_companion_deps() {
+  local newer_source
+
+  if [[ -d "$HERDR_COMPANION_NM" ]]; then
+    newer_source="$(find "$HERDR_COMPANION_DIR" \
+      \( -name 'package.json' -o -name 'package-lock.json' -o -name 'herdr-plugin.toml' \) \
+      -newer "$HERDR_COMPANION_NM" -print -quit 2>/dev/null)"
+    if [[ -z "$newer_source" ]]; then
+      return 0
+    fi
+  fi
+
+  if ! command -v npm >/dev/null 2>&1; then
+    echo "  skip  herdr-companion install (npm not found)"
+    return 1
+  fi
+
+  echo "  npm ci herdr-companion"
+  (
+    cd "$HERDR_COMPANION_DIR"
+    npm ci
+  )
+}
+
+install_herdr_companion() {
+  local strict="${1:-1}"
+  local ok=0
+
+  echo "== herdr-companion =="
+
+  if [[ ! -d "$HERDR_COMPANION_DIR" ]]; then
+    echo "  miss  $HERDR_COMPANION_DIR"
+    [[ "$strict" == "1" ]] && return 1
+    return 0
+  fi
+
+  if ! ensure_herdr_companion_deps; then
+    if [[ ! -d "$HERDR_COMPANION_NM" ]]; then
+      echo "  fail  node_modules missing: $HERDR_COMPANION_NM"
+      [[ "$strict" == "1" ]] && return 1
+      return 0
+    fi
+  fi
+
+  if ! command -v herdr >/dev/null 2>&1; then
+    echo "  skip  herdr plugin link (herdr not found)"
+    [[ "$strict" == "1" ]] && return 1
+    return 0
+  fi
+
+  if herdr_companion_linked; then
+    echo "  link  $HERDR_COMPANION_ID (refresh)"
+  else
+    echo "  link  $HERDR_COMPANION_ID"
+  fi
+  if ! herdr plugin link "$HERDR_COMPANION_DIR" >/dev/null; then
+    echo "  fail  herdr plugin link"
+    [[ "$strict" == "1" ]] && return 1
+    return 0
+  fi
+
+  if herdr_companion_linked && [[ -d "$HERDR_COMPANION_NM" ]]; then
+    echo "  ok    prefix+shift+c -> $HERDR_COMPANION_ID.toggle"
+  else
+    echo "  warn  plugin not fully installed"
+    ok=1
+  fi
+
+  [[ "$ok" -eq 0 ]]
+}
+
+cmd_herdr_plugin() {
+  local strict="${1:-1}"
+  local ok=0
+
+  install_herdr_toggle_popup "$strict" || ok=1
+  install_herdr_companion "$strict" || ok=1
 
   [[ "$ok" -eq 0 ]]
 }
@@ -541,7 +631,7 @@ cmd_skills_sync() {
 
 cmd_doctor() {
   echo "== tools =="
-  for t in nvim tmux fish ghostty herdr stow rg fd fzf starship git go; do
+  for t in nvim tmux fish ghostty herdr stow rg fd fzf starship git go node npm; do
     if command -v "$t" >/dev/null 2>&1; then
       printf "  ok  %s (%s)\n" "$t" "$(command -v "$t")"
     else
@@ -604,6 +694,30 @@ cmd_doctor() {
       printf "  ok    keybind ctrl+n -> local.toggle-popup.toggle-shell\n"
     else
       printf "  miss  keybind for local.toggle-popup.toggle-shell in config.toml\n"
+    fi
+  fi
+
+  echo
+  echo "== herdr companion plugin =="
+  if [[ -d "$HERDR_COMPANION_NM" ]]; then
+    printf "  ok    deps %s\n" "$HERDR_COMPANION_NM"
+  else
+    printf "  miss  deps %s (run: ./dot herdr-plugin)\n" "$HERDR_COMPANION_NM"
+  fi
+
+  if ! command -v herdr >/dev/null 2>&1; then
+    printf "  miss  herdr CLI\n"
+  elif herdr_companion_linked; then
+    printf "  ok    linked as %s\n" "$HERDR_COMPANION_ID"
+  else
+    printf "  miss  not linked (run: ./dot herdr-plugin)\n"
+  fi
+
+  if command -v herdr >/dev/null 2>&1 && [[ -f "$TARGET_DIR/.config/herdr/config.toml" ]]; then
+    if grep -Fq 'local.companion.toggle' "$TARGET_DIR/.config/herdr/config.toml"; then
+      printf "  ok    keybind prefix+shift+c -> local.companion.toggle\n"
+    else
+      printf "  miss  keybind for local.companion.toggle in config.toml\n"
     fi
   fi
 

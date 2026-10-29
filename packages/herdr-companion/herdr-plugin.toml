@@ -1,0 +1,56 @@
+id = "local.companion"
+name = "Companion"
+version = "0.1.0"
+min_herdr_version = "0.9.0"
+description = "Cursor-following status pill for Herdr agents: name, workspace, and a one-line blocked request"
+platforms = ["linux", "macos", "windows"]
+
+[[build]]
+command = ["npm", "ci"]
+
+[[startup]]
+command = ["node", "src/launch.mjs"]
+
+[[events]]
+on = "pane.agent_status_changed"
+command = ["node", "src/launch.mjs"]
+
+[[events]]
+on = "pane.closed"
+command = ["node", "src/launch.mjs"]
+
+[[events]]
+on = "pane.exited"
+command = ["node", "src/launch.mjs"]
+
+[[events]]
+on = "pane.agent_detected"
+command = ["node", "src/launch.mjs"]
+
+[[actions]]
+id = "toggle"
+title = "Toggle companion overlay"
+description = "Show or hide the cursor-following agent status pill"
+contexts = ["global"]
+command = ["node", "src/launch.mjs", "toggle"]
+
+[[actions]]
+id = "start"
+title = "Start companion overlay"
+description = "Show the cursor-following agent status pill"
+contexts = ["global"]
+command = ["node", "src/launch.mjs", "start"]
+
+[[actions]]
+id = "stop"
+title = "Stop companion overlay"
+description = "Hide the cursor-following agent status pill until started again"
+contexts = ["global"]
+command = ["node", "src/launch.mjs", "stop"]
+
+[[actions]]
+id = "demo"
+title = "Demo companion overlay"
+description = "Preview working and blocked pills without changing live agent state"
+contexts = ["global"]
+command = ["node", "src/launch.mjs", "demo"]

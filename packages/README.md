@@ -7,8 +7,10 @@
 ## Promote fish system-wide
 See `install-fish-system.md`.
 
-## Herdr local float popup
-See `herdr-toggle-popup/README.md`.
+## Herdr local plugins
+
+- Float popup: `herdr-toggle-popup/README.md`
+- Companion overlay: `herdr-companion/README.md`
 
 ```bash
 ./dot herdr-plugin    # build + link + seed config

@@ -19,7 +19,8 @@ Personal Linux (Omarchy) env via GNU Stow. Fish + Neovim + Tmux + Herdr + Ghostt
 │   └── starship.toml
 ├── home/.gitconfig
 └── packages/
-    └── herdr-toggle-popup/  # local Herdr float popup plugin (not stowed)
+    ├── herdr-toggle-popup/  # local Herdr float popup plugin (not stowed)
+    └── herdr-companion/     # cursor-following agent status pill (not stowed)
 ```
 
 ## WHERE TO LOOK
@@ -34,6 +35,7 @@ Personal Linux (Omarchy) env via GNU Stow. Fish + Neovim + Tmux + Herdr + Ghostt
 | Tmux | `home/.config/tmux/tmux.conf` |
 | Herdr | `home/.config/herdr/config.toml` |
 | Herdr float popup plugin | `packages/herdr-toggle-popup/` |
+| Herdr companion overlay | `packages/herdr-companion/` |
 | Ghostty | `home/.config/ghostty/config`, `home/.config/ghostty/shaders/` |
 | Git | `home/.gitconfig` |
 | Agent skill | `home/.agents/skills/<name>/SKILL.md` |
@@ -58,11 +60,11 @@ Personal Linux (Omarchy) env via GNU Stow. Fish + Neovim + Tmux + Herdr + Ghostt
 
 ```bash
 ./dot stow [part...] # all, or selected parts such as fish/agents/nvim
-./dot herdr-plugin   # build/link packages/herdr-toggle-popup only
+./dot herdr-plugin   # build/link local Herdr plugins (float popup + companion)
 ./dot add-skill <github-skill-url>
 ./dot remove-skill <name> # remove skill folder + matching lock entry
 ./dot skills-sync
-./dot doctor         # tools + links + herdr float plugin
+./dot doctor         # tools + links + herdr plugins
 ./dot unstow [part...]
 ```
 

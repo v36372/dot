@@ -14,6 +14,7 @@ Style inspired by [dmmulroy/.dotfiles](https://github.com/dmmulroy/.dotfiles): `
 | Tmux | `home/.config/tmux` | `C-s` prefix; default shell fish |
 | Herdr | `home/.config/herdr` | Workspace/tab/pane manager (fish shell) |
 | Herdr float popup | `packages/herdr-toggle-popup` | Local plugin: persistent 80% float (`ctrl+n`) |
+| Herdr companion | `packages/herdr-companion` | Local plugin: cursor-following agent status pill (`prefix+shift+c`) |
 | MPV | `home/.config/mpv` | Full player setup (uosc, scripts, shaders) |
 | Git | `home/.gitconfig` + `home/.config/git` | Aliases + difftastic |
 | Starship | `home/.config/starship.toml` | Prompt |
@@ -95,13 +96,13 @@ No neo-tree. File browsing is **Snacks explorer**. Fuzzy finding is **Telescope*
 ## Commands
 
 ```bash
-./dot stow                 # symlink everything (+ best-effort herdr float plugin)
+./dot stow                 # symlink everything (+ best-effort herdr plugins)
 ./dot stow fish            # symlink only Fish
 ./dot stow agents          # symlink only shared agent skills
 ./dot stow fish nvim tmux  # symlink several parts
 ./dot unstow fish          # remove only Fish symlinks
 ./dot components           # list selectable parts
-./dot herdr-plugin  # build/link packages/herdr-toggle-popup
+./dot herdr-plugin  # build/link local Herdr plugins (float popup + companion)
 ./dot remove-skill <name>  # remove a skill folder + its lock entry
 ./dot skills-sync   # update locked third-party skills
 ./dot doctor        # check tools + links + herdr plugin
@@ -110,8 +111,8 @@ No neo-tree. File browsing is **Snacks explorer**. Fuzzy finding is **Telescope*
 Selectable parts are `agents`, `fish`, `ghostty`, `git`, `herdr`, `mpv`,
 `nvim`, `pi`, `starship`, and `tmux`. `skills` and `agent-skills` are aliases
 for `agents`. With no part, `stow`, `restow`, and `unstow` still operate on
-the complete suite. The Herdr popup plugin is attempted only when `herdr` is
-selected (or when stowing everything).
+the complete suite. Local Herdr plugins (float popup + companion) are
+attempted only when `herdr` is selected (or when stowing everything).
 
 ## Agent skills
 

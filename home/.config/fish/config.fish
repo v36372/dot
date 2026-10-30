@@ -28,3 +28,5 @@ set -gx PATH $PATH $HOME/.bend/bin
 
 # opencode
 fish_add_path /Users/v36372/.opencode/bin
+
+set -g fish_greeting

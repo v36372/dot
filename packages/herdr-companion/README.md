@@ -18,6 +18,29 @@ Working cats run back and forth in a 6-cell track (same RunCat frames as the Pi 
 
 Idle agents stay off the overlay. Several working or blocked agents stack in one pill. Blocked rows glow so they are hard to miss.
 
+## Herdr desktop app
+
+The desktop adapter reuses the same overlay and reads agents from `herdr-app ls`
+and terminal text from `hc read`. Set `HERDR_APP_COMPANION=1` and a separate
+`HERDR_PLUGIN_STATE_DIR` when running `src/companion.mjs`; it stays running while
+agents are idle and hides itself when the app is unavailable. It polls once per
+second. Agent statuses and spaces are taken from the open app window.
+
+On this Mac, `~/Library/LaunchAgents/dev.personal.herdr-app-companion.plist`
+starts it at login. Stop it with:
+
+```bash
+launchctl bootout gui/$(id -u)/dev.personal.herdr-app-companion
+```
+
+Start it again with:
+
+```bash
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/dev.personal.herdr-app-companion.plist
+```
+
+The old TUI installation below is separate.
+
 ## Install
 
 Requires Herdr 0.9.0+ and Node 18+.

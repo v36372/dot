@@ -6,6 +6,8 @@ import { join } from "node:path";
 import { pidFilePath, pluginRoot } from "./paths.mjs";
 import { getCompanionSocketPath, usesNamedPipe } from "./socket-path.mjs";
 import { buildSnapshot, DEMO_ROWS } from "./snapshot.mjs";
+import { buildAppSnapshot } from "./app-snapshot.mjs";
+const appMode = process.env.HERDR_APP_COMPANION === "1";
 
 const SOCK = getCompanionSocketPath();
 const ROOT = pluginRoot();
@@ -417,7 +419,7 @@ function resetIdle(hasRows) {
     clearTimeout(idleTimer);
     idleTimer = null;
   }
-  if (hasRows || Date.now() < demoUntil) {
+  if (appMode || hasRows || Date.now() < demoUntil) {
     return;
   }
   idleTimer = setTimeout(() => {
@@ -436,14 +438,15 @@ function poll() {
   if (Date.now() < demoUntil) {
     return;
   }
-  const snapshot = buildSnapshot();
+  const snapshot = appMode ? buildAppSnapshot() : buildSnapshot();
   if (!snapshot.ok) {
     failCount += 1;
-    if (failCount >= 6) {
+    if (!appMode && failCount >= 6) {
       cleanup();
       process.exit(0);
     }
     return;
+    if (appMode) renderRows([]);
   }
   failCount = 0;
   renderRows(mergeLive(snapshot.rows));

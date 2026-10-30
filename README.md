@@ -13,6 +13,7 @@ Style inspired by [dmmulroy/.dotfiles](https://github.com/dmmulroy/.dotfiles): `
 | Ghostty | `home/.config/ghostty` | Starts fish |
 | Tmux | `home/.config/tmux` | `C-s` prefix; default shell fish |
 | Herdr | `home/.config/herdr` | Workspace/tab/pane manager (fish shell) |
+| Herdr app | `home/.config/herdr-app` | Desktop app keys and settings |
 | Herdr float popup | `packages/herdr-toggle-popup` | Local plugin: persistent 80% float (`ctrl+n`) |
 | Herdr companion | `packages/herdr-companion` | Local plugin: cursor-following agent status pill (`prefix+shift+c`) |
 | MPV | `home/.config/mpv` | Full player setup (uosc, scripts, shaders) |
@@ -99,6 +100,7 @@ No neo-tree. File browsing is **Snacks explorer**. Fuzzy finding is **Telescope*
 ./dot stow                 # symlink everything (+ best-effort herdr plugins)
 ./dot stow fish            # symlink only Fish
 ./dot stow agents          # symlink only shared agent skills
+./dot stow herdr-app       # symlink desktop app keys and settings
 ./dot stow fish nvim tmux  # symlink several parts
 ./dot unstow fish          # remove only Fish symlinks
 ./dot components           # list selectable parts
@@ -108,7 +110,7 @@ No neo-tree. File browsing is **Snacks explorer**. Fuzzy finding is **Telescope*
 ./dot doctor        # check tools + links + herdr plugin
 ```
 
-Selectable parts are `agents`, `fish`, `ghostty`, `git`, `herdr`, `mpv`,
+Selectable parts are `agents`, `fish`, `ghostty`, `git`, `herdr`, `herdr-app`, `mpv`,
 `nvim`, `pi`, `starship`, and `tmux`. `skills` and `agent-skills` are aliases
 for `agents`. With no part, `stow`, `restow`, and `unstow` still operate on
 the complete suite. Local Herdr plugins (float popup + companion) are

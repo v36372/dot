@@ -71,9 +71,6 @@ export function isPromptingUser(text) {
     return false;
   }
   const tail = lines.slice(-PROMPT_TAIL).join("\n");
-  if (/\bask user\b/i.test(tail)) {
-    return true;
-  }
   if (/type your own answer/i.test(tail)) {
     return true;
   }

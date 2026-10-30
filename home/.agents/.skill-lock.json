@@ -70,15 +70,15 @@
       "installedAt": "2026-07-19T04:26:53.469Z",
       "updatedAt": "2026-10-29T07:36:58.474Z"
     },
-    "herdr": {
-      "source": "herdrdev/herdr",
+    "herdr-core": {
+      "source": "herdrdev/herdr-core",
       "sourceType": "github",
-      "sourceUrl": "https://github.com/herdrdev/herdr.git",
+      "sourceUrl": "https://github.com/herdrdev/herdr-core.git",
       "ref": "master",
-      "skillPath": "skills/herdr/SKILL.md",
-      "skillFolderHash": "72177e911f55467de8737174072ec6bb08e30bbf62bceabcb69678e944398b18",
-      "installedAt": "2026-09-25T04:18:01.627Z",
-      "updatedAt": "2026-10-29T07:37:12.919Z"
+      "skillPath": "skills/herdr-core/SKILL.md",
+      "skillFolderHash": "9691960a86a372aaa06eae674f93192b8e54cfad",
+      "installedAt": "2026-10-30T06:11:39.375Z",
+      "updatedAt": "2026-10-30T06:11:39.375Z"
     },
     "ladder": {
       "source": "backnotprop/bro",

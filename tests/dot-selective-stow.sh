@@ -37,4 +37,14 @@ HOME="$TARGET" "$ROOT/dot" stow agents >/dev/null
 [[ "$(readlink -f "$TARGET/.agents/.skill-lock.json")" == "$(readlink -f "$ROOT/home/.agents/.skill-lock.json")" ]]
 [[ "$(readlink "$TARGET/.agents/README.md")" == /tmp/old-dotfiles-agents-readme ]]
 
+mkdir -p "$TARGET/.config/herdr-app/data"
+printf 'runtime state\n' > "$TARGET/.config/herdr-app/data/state"
+HOME="$TARGET" "$ROOT/dot" stow herdr-app >/dev/null
+[[ -L "$TARGET/.config/herdr-app/keys.json" ]]
+[[ -L "$TARGET/.config/herdr-app/settings.json" ]]
+[[ "$(cat "$TARGET/.config/herdr-app/data/state")" == "runtime state" ]]
+HOME="$TARGET" "$ROOT/dot" unstow herdr-app >/dev/null
+[[ ! -e "$TARGET/.config/herdr-app/keys.json" ]]
+[[ -f "$TARGET/.config/herdr-app/data/state" ]]
+
 echo "selective stow checks passed"

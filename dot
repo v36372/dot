@@ -63,7 +63,7 @@ Layout:
   packages/         Optional package lists / notes (herdr plugins live here)
 
 Parts:
-  agents fish ghostty git herdr mpv nvim pi starship tmux
+  agents fish ghostty git herdr herdr-app mpv nvim pi starship tmux
 
 Examples:
   dot stow fish
@@ -72,7 +72,7 @@ Examples:
 EOF
 }
 
-COMPONENTS=(agents fish ghostty git herdr mpv nvim pi starship tmux)
+COMPONENTS=(agents fish ghostty git herdr herdr-app mpv nvim pi starship tmux)
 SELECT_ALL=0
 SELECTED_COMPONENTS=()
 SELECTED_PATHS=()
@@ -84,6 +84,7 @@ component_paths() {
     ghostty) printf '%s\n' .config/ghostty ;;
     git) printf '%s\n' .config/git .gitconfig .gitconfig_personal .gitignore_global ;;
     herdr) printf '%s\n' .config/herdr ;;
+    herdr-app) printf '%s\n' .config/herdr-app ;;
     mpv) printf '%s\n' .config/mpv ;;
     nvim) printf '%s\n' .config/nvim ;;
     pi) printf '%s\n' .pi ;;
@@ -95,7 +96,7 @@ component_paths() {
 canonical_component() {
   case "$1" in
     agents|agent-skills|skills) echo agents ;;
-    fish|ghostty|git|herdr|mpv|nvim|pi|starship|tmux) echo "$1" ;;
+    fish|ghostty|git|herdr|herdr-app|mpv|nvim|pi|starship|tmux) echo "$1" ;;
     *) return 1 ;;
   esac
 }

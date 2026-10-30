@@ -164,6 +164,15 @@ test("pi ask_user_question dialog is prompting even while herdr says working", (
   );
 });
 
+test("answered Pi questions are not live prompts", () => {
+  assert.equal(isPromptingUser(`
+ ask user Maintenance
+ ✓ Maintenance: Both ready—proceed
+ ─ Worked for 1m 37s ───
+ Preparing client quiescence
+ `), false);
+});
+
 test("ordinary working output is not a prompt", () => {
   assert.equal(
     isPromptingUser(`

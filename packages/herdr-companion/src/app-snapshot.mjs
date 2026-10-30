@@ -37,7 +37,7 @@ export function buildAppSnapshot() {
     if (!Array.isArray(spaces)) return { ok: false, rows: [] };
     return snapshotFromSpaces(spaces, (address, machine) => {
       const target = machine && !address.includes("/") ? `${machine}/${address}` : address;
-      const read = spawnSync("hc", ["read", target, "--lines", "50"], { encoding: "utf8", timeout: 3000, maxBuffer: 2_000_000 });
+      const read = spawnSync("hc", ["read", target], { encoding: "utf8", timeout: 3000, maxBuffer: 2_000_000 });
       return read.status === 0 ? read.stdout : "";
     });
   } catch {

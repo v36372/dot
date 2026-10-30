@@ -1,0 +1,39 @@
+{
+  "global": {
+    "ctrl-s": "mod.open:herdr-prefix",
+    "alt-h": "pane.go:left",
+    "alt-j": "pane.go:down",
+    "alt-k": "pane.go:up",
+    "alt-l": "pane.go:right",
+    "ctrl-h": "pane.go:left",
+    "ctrl-j": "pane.go:down",
+    "ctrl-k": "pane.go:up",
+    "ctrl-l": "pane.go:right",
+    "ctrl-shift-p": "app.palette",
+    "ctrl-tab": "tab.next",
+    "ctrl-shift-tab": "tab.prev",
+    "f2": "tab.rename",
+    "shift-f2": "space.rename",
+    "ctrl-1": "space.select:1",
+    "ctrl-2": "space.select:2",
+    "ctrl-3": "space.select:3",
+    "ctrl-4": "space.select:4",
+    "ctrl-5": "space.select:5",
+    "ctrl-6": "space.select:6",
+    "ctrl-7": "space.select:7",
+    "ctrl-8": "space.select:8",
+    "ctrl-9": "space.select:9"
+  },
+  "terminal": {
+    "ctrl-s": "mod.open:herdr-prefix",
+    "ctrl-shift-c": "terminal.copy",
+    "ctrl-shift-v": "terminal.paste",
+    "ctrl-v": "terminal.paste_image",
+    "alt-left": "send:\u001bb",
+    "alt-right": "send:\u001bf",
+    "alt-backspace": "send:\u0017"
+  },
+  "mod:herdr-prefix": {
+    "ctrl-s": "herdr-prefix.send-prefix"
+  }
+}

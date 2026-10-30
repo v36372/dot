@@ -159,7 +159,7 @@ path_selected() {
 }
 
 path_ignored() {
-  [[ "$1" == .agents/README.md ]]
+  [[ "$1" == .agents/README.md || "$1" == .config/herdr-app || "$1" == .config/herdr-app/* ]]
 }
 
 # Repo moves leave target symlinks pointing at the old package path. GNU Stow
@@ -270,6 +270,7 @@ prepare_stow_dirs() {
   for root in "${SELECTED_PATHS[@]}"; do
     src="$PACKAGE_DIR/$root"
     [[ -d "$src" ]] || continue
+    path_ignored "$root" && continue
 
     current=""
     src_current="$PACKAGE_DIR"
@@ -351,6 +352,60 @@ unlink_file() {
       echo "  skip   $rel (points elsewhere)"
     fi
   fi
+}
+
+herdr_app_platform() {
+  case "$(uname -s)" in
+    Linux) echo linux ;;
+    Darwin) echo macos ;;
+    *) echo "unsupported OS for herdr-app: $(uname -s)" >&2; return 1 ;;
+  esac
+}
+
+herdr_app_links() {
+  local action="$1" platform="$2" name src dest link bak suffix do_action
+  for name in mods/herdr-prefix keys.json settings.json; do
+    src="$DOTFILES_DIR/platforms/herdr-app/$platform/$name"
+    dest="$TARGET_DIR/.config/herdr-app/$name"
+    do_action="$action"
+    [[ "$name" == mods/herdr-prefix && "$platform" != linux ]] && do_action=unstow
+    if [[ "$do_action" == stow ]]; then
+      [[ -e "$src" ]] || { echo "missing source: $src" >&2; return 1; }
+      mkdir -p "$(dirname "$dest")"
+      if [[ -L "$dest" ]] && paths_match "$dest" "$src"; then
+        echo "  keep  .config/herdr-app/$name"
+        continue
+      fi
+      if [[ -L "$dest" ]]; then
+        link="$(readlink "$dest")"
+        if [[ "$link" == "$PACKAGE_DIR/.config/herdr-app/$name" || "$link" == "$DOTFILES_DIR/platforms/herdr-app/"*"/$name" ]]; then
+          rm "$dest"
+        fi
+      fi
+      if [[ -e "$dest" || -L "$dest" ]]; then
+        if [[ "$name" == mods/* ]]; then
+          echo "refusing to overwrite existing mod: $dest" >&2
+          return 1
+        fi
+        bak="$dest.bak.$(date +%s)"
+        suffix=0
+        while [[ -e "$bak" || -L "$bak" ]]; do
+          ((suffix += 1))
+          bak="$dest.bak.$(date +%s).$suffix"
+        done
+        echo "  backup $dest -> $bak"
+        mv "$dest" "$bak"
+      fi
+      ln -s "$src" "$dest"
+      echo "  link  .config/herdr-app/$name ($platform)"
+    elif [[ -L "$dest" ]]; then
+      link="$(readlink "$dest")"
+      if [[ "$link" == "$PACKAGE_DIR/.config/herdr-app/$name" || "$link" == "$DOTFILES_DIR/platforms/herdr-app/"*"/$name" ]]; then
+        rm "$dest"
+        echo "  unlink .config/herdr-app/$name"
+      fi
+    fi
+  done
 }
 
 HERDR_TOGGLE_POPUP_DIR="$DOTFILES_DIR/packages/herdr-toggle-popup"
@@ -550,6 +605,10 @@ cmd_herdr_plugin() {
 
 cmd_stow() {
   select_components "$@"
+  local herdr_app_os=""
+  if component_selected herdr-app; then
+    herdr_app_os="$(herdr_app_platform)" || return 1
+  fi
   reclaim_stale_links
   backup_conflicting_nodes
   prepare_stow_dirs
@@ -562,9 +621,9 @@ cmd_stow() {
     (
       cd "$DOTFILES_DIR"
       if [[ "$SELECT_ALL" -eq 1 ]]; then
-        stow --target="$TARGET_DIR" --restow --verbose=1 --ignore='^\.agents/README\.md$' home
+        stow --target="$TARGET_DIR" --restow --verbose=1 --ignore='^\.agents/README\.md$' --ignore='^\.config/herdr-app(?:/.*)?$' home
       else
-        stow --target="$TARGET_DIR" --restow --verbose=1 --ignore='^\.agents/README\.md$' "${filter_args[@]}" home
+        stow --target="$TARGET_DIR" --restow --verbose=1 --ignore='^\.agents/README\.md$' --ignore='^\.config/herdr-app(?:/.*)?$' "${filter_args[@]}" home
       fi
     )
     echo "stowed via GNU Stow: ${SELECTED_COMPONENTS[*]}"
@@ -581,6 +640,10 @@ cmd_stow() {
     done < <(find "$PACKAGE_DIR" -type f -print0)
 
     echo "linked $PACKAGE_DIR -> $TARGET_DIR"
+  fi
+
+  if component_selected herdr-app; then
+    herdr_app_links stow "$herdr_app_os"
   fi
 
   # Non-strict: configs still land even if herdr/go are missing on a fresh box.
@@ -601,21 +664,23 @@ cmd_unstow() {
     (
       cd "$DOTFILES_DIR"
       if [[ "$SELECT_ALL" -eq 1 ]]; then
-        stow --target="$TARGET_DIR" --delete --verbose=1 --ignore='^\.agents/README\.md$' home
+        stow --target="$TARGET_DIR" --delete --verbose=1 --ignore='^\.agents/README\.md$' --ignore='^\.config/herdr-app(?:/.*)?$' home
       else
-        stow --target="$TARGET_DIR" --delete --verbose=1 --ignore='^\.agents/README\.md$' "${filter_args[@]}" home
+        stow --target="$TARGET_DIR" --delete --verbose=1 --ignore='^\.agents/README\.md$' --ignore='^\.config/herdr-app(?:/.*)?$' "${filter_args[@]}" home
       fi
     )
     echo "unstowed via GNU Stow: ${SELECTED_COMPONENTS[*]}"
-    return 0
+  else
+    echo "GNU Stow not found; removing managed symlinks"
+    while IFS= read -r -d '' f; do
+      path_ignored "$(rel_from_home "$f")" && continue
+      path_selected "$(rel_from_home "$f")" || continue
+      unlink_file "$f"
+    done < <(find "$PACKAGE_DIR" -type f -print0)
   fi
-
-  echo "GNU Stow not found; removing managed symlinks"
-  while IFS= read -r -d '' f; do
-    path_ignored "$(rel_from_home "$f")" && continue
-    path_selected "$(rel_from_home "$f")" || continue
-    unlink_file "$f"
-  done < <(find "$PACKAGE_DIR" -type f -print0)
+  if component_selected herdr-app; then
+    herdr_app_links unstow ""
+  fi
 }
 
 cmd_add_skill() {

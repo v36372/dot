@@ -13,7 +13,7 @@ Style inspired by [dmmulroy/.dotfiles](https://github.com/dmmulroy/.dotfiles): `
 | Ghostty | `home/.config/ghostty` | Starts fish |
 | Tmux | `home/.config/tmux` | `C-s` prefix; default shell fish |
 | Herdr | `home/.config/herdr` | Workspace/tab/pane manager (fish shell) |
-| Herdr app | `home/.config/herdr-app` | Desktop app keys and settings |
+| Herdr app | `platforms/herdr-app` | Per-OS desktop app keys and settings |
 | Herdr float popup | `packages/herdr-toggle-popup` | Local plugin: persistent 80% float (`ctrl+n`) |
 | Herdr companion | `packages/herdr-companion` | Local plugin: cursor-following agent status pill (`prefix+shift+c`) |
 | MPV | `home/.config/mpv` | Full player setup (uosc, scripts, shaders) |
@@ -115,6 +115,14 @@ Selectable parts are `agents`, `fish`, `ghostty`, `git`, `herdr`, `herdr-app`, `
 for `agents`. With no part, `stow`, `restow`, and `unstow` still operate on
 the complete suite. Local Herdr plugins (float popup + companion) are
 attempted only when `herdr` is selected (or when stowing everything).
+
+Herdr App uses separate files in `platforms/herdr-app/{linux,macos}/`. Stowing
+automatically links the current OS's keys and settings; edits stay on that OS.
+On Linux, Ctrl+S opens the Herdr-prefix mod; press the TUI action key next.
+Ctrl+S twice sends a literal Ctrl+S to the focused terminal, including Neovim.
+Copy and paste are Ctrl+Shift+C and Ctrl+Shift+V.
+Ctrl+H/J/K/L and Alt+H/J/K/L move between Herdr App panes (not Neovim splits);
+Herdr captures these chords instead of passing them to terminal programs.
 
 ## Agent skills
 

@@ -11,6 +11,16 @@
       "installedAt": "2026-10-29T07:17:15.457Z",
       "updatedAt": "2026-10-29T07:17:15.457Z"
     },
+    "break-it-down": {
+      "source": "loganthorneloe/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/loganthorneloe/skills.git",
+      "ref": "main",
+      "skillPath": "skills/rtg/research/break-it-down/SKILL.md",
+      "skillFolderHash": "51a7438743ec83750fc4618bfc7a3f06db8ee8d3",
+      "installedAt": "2026-11-05T17:20:20.849Z",
+      "updatedAt": "2026-11-05T17:20:20.849Z"
+    },
     "bro": {
       "source": "backnotprop/bro",
       "sourceType": "github",
@@ -60,6 +70,16 @@
       "skillFolderHash": "506010476ff11a7f91dd30d73bc59f642b5bec76",
       "installedAt": "2026-10-29T07:17:32.911Z",
       "updatedAt": "2026-10-29T07:17:32.911Z"
+    },
+    "find-evidence": {
+      "source": "loganthorneloe/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/loganthorneloe/skills.git",
+      "ref": "main",
+      "skillPath": "skills/rtg/research/find-evidence/SKILL.md",
+      "skillFolderHash": "86af05e176d5a6ec7b38d8af93bdc17a5d964c96",
+      "installedAt": "2026-11-05T17:20:47.395Z",
+      "updatedAt": "2026-11-05T17:20:47.395Z"
     },
     "grilling": {
       "source": "mattpocock/skills",
@@ -140,6 +160,16 @@
       "installedAt": "2026-10-15T05:40:45.800Z",
       "updatedAt": "2026-10-29T07:25:31.702Z"
     },
+    "source-audit": {
+      "source": "loganthorneloe/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/loganthorneloe/skills.git",
+      "ref": "main",
+      "skillPath": "skills/rtg/research/source-audit/SKILL.md",
+      "skillFolderHash": "744c77c9548a35c0998259b89b6973a7b0d65666",
+      "installedAt": "2026-11-05T17:20:33.939Z",
+      "updatedAt": "2026-11-05T17:20:33.939Z"
+    },
     "status": {
       "source": "backnotprop/bro",
       "sourceType": "github",
@@ -158,6 +188,16 @@
       "skillFolderHash": "4e572dd70e5557f490e3991c52ea58f0dcee8936",
       "installedAt": "2026-07-23T05:23:53.753Z",
       "updatedAt": "2026-10-12T07:23:44.932Z"
+    },
+    "voice": {
+      "source": "loganthorneloe/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/loganthorneloe/skills.git",
+      "ref": "main",
+      "skillPath": "skills/rtg/research/voice/SKILL.md",
+      "skillFolderHash": "1782c7550db5b7c5d69d042860f90f1186bca17d",
+      "installedAt": "2026-11-05T17:21:02.498Z",
+      "updatedAt": "2026-11-05T17:21:02.498Z"
     }
   },
   "dismissed": {}

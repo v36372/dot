@@ -5,6 +5,5 @@
   },
   "font_size": 14,
   "ui_font": "TX-02",
-  "minimum_contrast": 1,
-  "appearance": "light"
+  "minimum_contrast": 1
 }

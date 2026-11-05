@@ -32,3 +32,10 @@ set -gx PATH $PATH $HOME/.local/share/pnpm/bin
 fish_add_path /Users/v36372/.opencode/bin
 
 set -g fish_greeting
+
+# pnpm
+set -gx PNPM_HOME "/Users/v36372/Library/pnpm"
+if not string match -q -- "$PNPM_HOME/bin" $PATH
+  set -gx PATH "$PNPM_HOME/bin" $PATH
+end
+# pnpm end

@@ -86,9 +86,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/mattpocock/skills.git",
       "skillPath": "skills/productivity/grilling/SKILL.md",
-      "skillFolderHash": "ef1641a2047b71b60f1942cd35efb47d3afc9d584dff5a0b01f8c7db923aaa08",
+      "skillFolderHash": "f551b6e0d219fdda0b6abf277f8f915b3127d1e9",
       "installedAt": "2026-07-19T04:26:53.469Z",
-      "updatedAt": "2026-10-29T07:36:58.474Z"
+      "updatedAt": "2026-11-09T15:18:08.782Z"
     },
     "herdr-core": {
       "source": "herdrdev/herdr-core",

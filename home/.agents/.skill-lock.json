@@ -81,6 +81,17 @@
       "installedAt": "2026-11-05T17:20:47.395Z",
       "updatedAt": "2026-11-05T17:20:47.395Z"
     },
+    "gemini-api-cli": {
+      "source": "google-gemini/gemini-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/google-gemini/gemini-skills.git",
+      "ref": "main",
+      "commit": "c4d0c62c1240e08a90546186bf320600ab6a039a",
+      "skillPath": "skills/gemini-api-cli/SKILL.md",
+      "skillFolderHash": "4556d17734aaf954064809633952260ba7ab614d",
+      "installedAt": "2026-11-24T02:54:42.724Z",
+      "updatedAt": "2026-11-24T02:54:42.724Z"
+    },
     "grilling": {
       "source": "mattpocock/skills",
       "sourceType": "github",

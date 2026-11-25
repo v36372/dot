@@ -1,0 +1,16 @@
+# Debian/Ubuntu packages. dot's linux_extras handles Neovim, Starship and Herdr.
+bat
+build-essential
+curl
+fd-find
+fish
+fzf
+git
+golang-go
+python3
+ripgrep
+rsync
+stow
+tmux
+unzip
+zoxide

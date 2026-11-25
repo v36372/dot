@@ -16,10 +16,10 @@ for path in /usr/local/opt/libpq/bin /usr/local/opt/python@3.10/bin
 end
 
 # Dotfiles helper on PATH (repo may live in either place)
-if test -x "$HOME/.dotfiles/dot"
-    fish_add_path --global --path "$HOME/.dotfiles"
-else if test -x "$HOME/workspace/personal/dot/dot"
-    fish_add_path --global --path "$HOME/workspace/personal/dot"
+if test -x "$HOME/.dotfiles/dot/bin/dot"
+    fish_add_path --global --path "$HOME/.dotfiles/dot/bin"
+else if test -x "$HOME/workspace/personal/dot/dot/bin/dot"
+    fish_add_path --global --path "$HOME/workspace/personal/dot/dot/bin"
 end
 
 # Omarchy tools

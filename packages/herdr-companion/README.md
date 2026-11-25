@@ -48,10 +48,10 @@ Requires Herdr 0.9.0+ and Node 18+.
 Preferred (from the dotfiles root):
 
 ```bash
-./dot stow            # configs + best-effort plugin install
+dot stow              # link configs
 # or explicitly:
-./dot herdr-plugin    # npm ci + link companion and the float popup
-./dot doctor          # verify plugin is linked
+dot init --only herdr_plugins    # npm ci + link both plugins
+dot doctor --only herdr_plugins  # verify plugin is linked
 ```
 
 Manual:

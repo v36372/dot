@@ -1,4 +1,4 @@
-function skill-add -d "Vendor one upstream skill from a GitHub skill-dir URL"
+function skill-add -d "Install and lock an upstream skill from GitHub"
     if test (count $argv) -eq 0
         echo "Usage: skill-add <github-skill-url>" >&2
         echo "Example: skill-add https://github.com/owner/repo/tree/main/path/to/skill" >&2
@@ -9,7 +9,7 @@ function skill-add -d "Vendor one upstream skill from a GitHub skill-dir URL"
         case -h --help
             echo "Usage: skill-add <github-skill-url>"
             echo
-            echo "Wraps ./dot add-skill. Pass a GitHub tree URL of the skill directory"
+            echo "Wraps 'dot add-skill'. Pass a GitHub tree URL of the skill directory"
             echo "(the folder that contains SKILL.md), or a blob URL of SKILL.md."
             return 0
     end
@@ -19,11 +19,5 @@ function skill-add -d "Vendor one upstream skill from a GitHub skill-dir URL"
         return 127
     end
 
-    set -l dotfiles_root (dot path 2>/dev/null)
-    or begin
-        echo "error: could not resolve dotfiles path" >&2
-        return 1
-    end
-
-    "$dotfiles_root/dot" add-skill $argv
+    command dot add-skill $argv
 end

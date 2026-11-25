@@ -16,10 +16,10 @@ Differences from upstream:
 Preferred (from the dotfiles root):
 
 ```bash
-./dot stow            # configs + best-effort plugin install
+dot stow              # link configs
 # or explicitly:
-./dot herdr-plugin    # build, link, seed config
-./dot doctor          # verify plugin is linked
+dot init --only herdr_plugins    # build, link, seed config
+dot doctor --only herdr_plugins  # verify plugin is linked
 ```
 
 Manual:

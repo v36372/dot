@@ -6,14 +6,15 @@ Personal Linux (Omarchy) env via GNU Stow. Fish + Neovim + Tmux + Herdr + Ghostt
 
 ```
 .dotfiles/
-├── dot                     # CLI: stow/doctor
-├── home/.agents/skills/    # Shared Agent Skills (Pi, Codex, etc.)
+├── dot/bin/dot             # CLI: init/update/doctor/stow
+├── home/.agents/           # Skill lock (installed files stay outside the repo)
 ├── home/.config/
 │   ├── nvim/               # Editor (see nvim AGENTS)
 │   ├── fish/               # Shell (see fish/AGENTS.md)
 │   ├── tmux/               # Prefix C-s, default shell fish
 │   ├── ghostty/            # command = fish; shaders/
 │   ├── herdr/              # Prefix C-;, default_shell fish
+│   ├── rex/                # Prefix C-s, Lua config
 │   ├── mpv/
 │   ├── git/
 │   └── starship.toml
@@ -34,11 +35,12 @@ Personal Linux (Omarchy) env via GNU Stow. Fish + Neovim + Tmux + Herdr + Ghostt
 | Shell function | `home/.config/fish/functions/<name>.fish` |
 | Tmux | `home/.config/tmux/tmux.conf` |
 | Herdr | `home/.config/herdr/config.toml` |
+| Rex keymap | `home/.config/rex/v36372/keymaps.lua` |
 | Herdr float popup plugin | `packages/herdr-toggle-popup/` |
 | Herdr companion overlay | `packages/herdr-companion/` |
 | Ghostty | `home/.config/ghostty/config`, `home/.config/ghostty/shaders/` |
 | Git | `home/.gitconfig` |
-| Agent skill | `home/.agents/skills/<name>/SKILL.md` |
+| Agent skill | `dot add-skill <github-skill-url>` → `home/.agents/.skill-lock.json` |
 
 ## CONVENTIONS
 
@@ -51,7 +53,7 @@ Personal Linux (Omarchy) env via GNU Stow. Fish + Neovim + Tmux + Herdr + Ghostt
 ## ANTI-PATTERNS
 
 - Edit `~/.config/*` real files while stowed (edit through symlink / repo)
-- Add shared skills under `~/.pi/agent/skills`; use `home/.agents/skills/`
+- Add shared skills under `~/.pi/agent/skills`; use `dot add-skill`
 - Re-adding neo-tree / oil as primary explorer without asking
 - Hardcoding machine-specific absolute paths under `/Users/...` or old macOS paths
 - Committing herdr logs/sockets or mpv memo history
@@ -59,13 +61,13 @@ Personal Linux (Omarchy) env via GNU Stow. Fish + Neovim + Tmux + Herdr + Ghostt
 ## COMMANDS
 
 ```bash
-./dot stow [part...] # all, or selected parts such as fish/agents/nvim
-./dot herdr-plugin   # build/link local Herdr plugins (float popup + companion)
-./dot add-skill <github-skill-url>
-./dot remove-skill <name> # remove skill folder + matching lock entry
-./dot skills-sync
-./dot doctor         # tools + links + herdr plugins
-./dot unstow [part...]
+dot stow                      # link home/ (all configs)
+dot init --only herdr_app      # select OS-specific desktop files
+dot init --only herdr_plugins  # build/link local Herdr plugins
+dot add-skill <github-skill-url>
+dot remove-skill <name>
+dot skills-sync               # restore/update third-party skills from the lock
+dot doctor                    # check machine components
 ```
 
 ## NVIM KEY BINDINGS (IMPORTANT)

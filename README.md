@@ -1,8 +1,8 @@
 # dot
 
-Personal dotfiles for Linux (Omarchy / Hyprland). Managed with [GNU Stow](https://www.gnu.org/software/stow/).
+Personal dotfiles for macOS and Linux (including Omarchy). Managed with [GNU Stow](https://www.gnu.org/software/stow/).
 
-Style inspired by [dmmulroy/.dotfiles](https://github.com/dmmulroy/.dotfiles): `home/` mirrors `~`, one-plugin-per-file Neovim config, small `dot` helper.
+The [`dot` CLI](dot/README.md) is forked from [dmmulroy/.dotfiles at `c3a895aa`](https://github.com/dmmulroy/.dotfiles/commit/c3a895aa9077f655532e958235cbf0204d1f4b0a) and adapted for `v36372/dot`.
 
 ## What's included
 
@@ -14,27 +14,23 @@ Style inspired by [dmmulroy/.dotfiles](https://github.com/dmmulroy/.dotfiles): `
 | Tmux | `home/.config/tmux` | `C-s` prefix; default shell fish |
 | Herdr | `home/.config/herdr` | Workspace/tab/pane manager (fish shell) |
 | Herdr app | `platforms/herdr-app` | Per-OS desktop app keys and settings |
+| Rex | `home/.config/rex` | `Ctrl+S` prefix, tabs and pane controls |
 | Herdr float popup | `packages/herdr-toggle-popup` | Local plugin: persistent 80% float (`ctrl+n`) |
 | Herdr companion | `packages/herdr-companion` | Local plugin: cursor-following agent status pill (`prefix+shift+c`) |
 | MPV | `home/.config/mpv` | Full player setup (uosc, scripts, shaders) |
 | Git | `home/.gitconfig` + `home/.config/git` | Aliases + difftastic |
 | Starship | `home/.config/starship.toml` | Prompt |
-| Agent skills | `home/.agents/skills` | Shared skills discovered by Pi and other Agent Skills clients |
+| Agent skills | `home/.agents/.skill-lock.json` | Lock file for skills installed outside the repo |
 
 ## Quick start
 
 ```bash
-# dependencies
-# Arch: sudo pacman -S stow neovim tmux zsh starship ripgrep fd fzf
-
 git clone https://github.com/v36372/dot.git ~/.dotfiles
 cd ~/.dotfiles
 
-# existing conflicts are moved to timestamped .bak files
-./dot stow
-
-# optional: put `dot` on PATH
-ln -sf ~/.dotfiles/dot ~/.local/bin/dot
+./dot/bin/dot init --dry-run   # preview setup
+./dot/bin/dot stow             # link configs only (requires GNU Stow)
+./dot/bin/dot skills-sync      # restore third-party skills (requires Node.js)
 ```
 
 ## Neovim
@@ -76,96 +72,86 @@ No neo-tree. File browsing is **Snacks explorer**. Fuzzy finding is **Telescope*
 
 ```
 .dotfiles/
-├── dot                 # helper: stow / doctor
+├── dot/bin/dot         # component-based bootstrap CLI
 ├── home/               # stowed into ~
-│   ├── .agents/skills/ # shared Agent Skills
+│   ├── .agents/        # skill lock
 │   ├── .config/
 │   │   ├── nvim/
 │   │   ├── ghostty/
 │   │   ├── tmux/
 │   │   ├── herdr/
+│   │   ├── rex/
 │   │   ├── mpv/
 │   │   ├── git/
 │   │   └── starship.toml
-│   ├── .zshrc
 │   ├── .gitconfig
 │   └── .gitignore_global
-├── packages/           # optional notes / brew-like lists
+├── packages/           # package lists and local Herdr plugins
 └── README.md
 ```
 
 ## Commands
 
 ```bash
-./dot stow                 # symlink everything (+ best-effort herdr plugins)
-./dot stow fish            # symlink only Fish
-./dot stow agents          # symlink only shared agent skills
-./dot stow herdr-app       # symlink desktop app keys and settings
-./dot stow fish nvim tmux  # symlink several parts
-./dot unstow fish          # remove only Fish symlinks
-./dot components           # list selectable parts
-./dot herdr-plugin  # build/link local Herdr plugins (float popup + companion)
-./dot remove-skill <name>  # remove a skill folder + its lock entry
-./dot skills-sync   # update locked third-party skills
-./dot doctor        # check tools + links + herdr plugin
+dot stow                                  # link the entire home/ tree
+dot init --only herdr_app                  # link desktop app keys and settings
+dot update --no-pull --only herdr_plugins  # build/link the two local plugins
+dot components                            # list setup components
+dot doctor --only stow,rex                 # check specific components
 ```
 
-Selectable parts are `agents`, `fish`, `ghostty`, `git`, `herdr`, `herdr-app`, `mpv`,
-`nvim`, `pi`, `starship`, and `tmux`. `skills` and `agent-skills` are aliases
-for `agents`. With no part, `stow`, `restow`, and `unstow` still operate on
-the complete suite. Local Herdr plugins (float popup + companion) are
-attempted only when `herdr` is selected (or when stowing everything).
+Fish adds `dot` to `PATH` after startup; use `./dot/bin/dot` directly otherwise.
+`dot stow` replaces selective stow/unstow. Conflicting files are backed up
+under `~/.dot-backup/`. Use `--only` or `--skip` with `init`, `update`, and
+`doctor`. The [CLI guide](dot/README.md) covers packages and dry runs.
 
-Herdr App uses separate files in `platforms/herdr-app/{linux,macos}/`. Stowing
-automatically links the current OS's keys and settings; edits stay on that OS.
+The `herdr_app` component links the current OS's keys and settings from
+`platforms/herdr-app/{linux,macos}/`.
 On Linux, Ctrl+S opens the Herdr-prefix mod; press the TUI action key next.
 Ctrl+S twice sends a literal Ctrl+S to the focused terminal, including Neovim.
 Copy and paste are Ctrl+Shift+C and Ctrl+Shift+V.
 Ctrl+H/J/K/L and Alt+H/J/K/L move between Herdr App panes (not Neovim splits);
 Herdr captures these chords instead of passing them to terminal programs.
 
+## Rex
+
+```bash
+dot stow
+rex config check && rex config reload
+```
+
+Press `Ctrl+S` and then `/` to split right, `Enter` to split down, or `?`
+to open the action palette. `Ctrl+H/J/K/L` focus panes without the prefix;
+at the edge the key goes to the terminal. `Ctrl+S` then `Shift+R` enters resize
+mode (`Esc` or `Enter` exits). `Ctrl+S` twice sends the chord to the terminal.
+`Cmd+N` creates a new Rex session; `Cmd+Shift+N` opens a new macOS window.
+Edit `home/.config/rex/v36372/` in this repo, then run the check and reload again.
+
+Optional macOS settings: turn on **Show key sequence hints** under **Settings →
+Terminal → Keyboard**. To use the upstream palette, go to **Settings → Themes →
+Import Theme** and pick `~/.config/rex/themes/catppuccin-macchiato`.
+
 ## Agent skills
 
-Skills are committed under `home/.agents/skills` and stowed to the shared
-`~/.agents/skills` location. Third-party source metadata lives in
-`home/.agents/.skill-lock.json` and is maintained by the `skills` CLI.
+Skill files are installed in `~/.agents/skills/`, not committed to the repo.
+Git tracks their source metadata in `home/.agents/.skill-lock.json`. After
+`dot stow`:
 
 ```bash
-./dot skills-sync
-
-git diff -- home/.agents
+dot skills-sync   # restore missing entries and update installed skills
+dot add-skill https://github.com/owner/repo/tree/main/path/to/skill
+dot remove-skill skill-name
+git diff -- home/.agents/.skill-lock.json
 ```
 
-The sync command updates every skill recorded in the lock, grouping entries by
-their upstream source. Personal skills without lock entries are untouched.
-Review the resulting diff before committing upstream changes.
-
-Add a skill by pasting the GitHub URL of its skill directory (or SKILL.md):
-
-```bash
-./dot add-skill https://github.com/owner/repo/tree/main/path/to/skill
-# or: skill-add https://github.com/owner/repo/tree/main/path/to/skill
-```
-
-The helper vendors into `home/.agents`, records source metadata in the lock,
-and syncs out to `~/.agents`. Subsequent `./dot skills-sync` runs include the
-new skill automatically.
-
-Remove a skill using its folder name under `home/.agents/skills`:
-
-```bash
-./dot remove-skill poteto-mode
-```
-
-This removes the skill folder and matching lock entry from both the repo and
-`~/.agents`, including entries whose display name differs from the folder name.
-Personal skills without lock entries can also be removed. Other skills and lock
-metadata are preserved, and removed skills will no longer be included in syncs.
+These commands use the [Vercel skills CLI](https://github.com/vercel-labs/skills)
+and require Node.js 22.20+. Sync follows upstream refs and updates the lock; it
+does not restore an exact historical snapshot.
 
 ## Notes
 
 - **Do not edit** `~/.config/*` when stowed — edit files under `~/.dotfiles/home/` (or follow the symlink).
-- Pi discovers the stowed skills directly from `~/.agents/skills`; `~/.pi/agent/skills` is no longer used.
+- Pi discovers skills directly from `~/.agents/skills`.
 - Shell is **Fish** (Dillon-style). Ghostty/tmux/herdr start fish; interactive bash execs fish as a bridge.
 - User-local fish may live at `~/.local/bin/fish` until `sudo pacman -S fish` + `chsh`.
 - Hyprland / Omarchy desktop config stays outside this repo (managed by Omarchy).

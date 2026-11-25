@@ -1,0 +1,22 @@
+# Arch packages. dot's linux_extras also installs Herdr when needed.
+base-devel
+bat
+curl
+eza
+fd
+fish
+fisher
+fzf
+git
+go
+lazygit
+neovim
+python
+ripgrep
+rsync
+starship
+stow
+tmux
+tree-sitter-cli
+unzip
+zoxide

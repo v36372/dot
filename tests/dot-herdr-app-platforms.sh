@@ -14,7 +14,7 @@ export HOME="$TARGET" PATH="$TARGET/bin:$PATH"
 ln -s "$ROOT/home/.config/herdr-app/keys.json" "$TARGET/.config/herdr-app/keys.json"
 printf 'local settings\n' > "$TARGET/.config/herdr-app/settings.json"
 export TEST_UNAME=Linux
-"$ROOT/dot" stow herdr-app >/dev/null
+"$ROOT/dot/bin/dot" init --only herdr_app >/dev/null
 [[ "$(readlink "$TARGET/.config/herdr-app/keys.json")" == "$ROOT/platforms/herdr-app/linux/keys.json" ]]
 [[ "$(readlink "$TARGET/.config/herdr-app/settings.json")" == "$ROOT/platforms/herdr-app/linux/settings.json" ]]
 [[ "$(readlink "$TARGET/.config/herdr-app/mods/herdr-prefix")" == "$ROOT/platforms/herdr-app/linux/mods/herdr-prefix" ]]
@@ -22,13 +22,12 @@ backups=("$TARGET"/.config/herdr-app/settings.json.bak.*)
 [[ "${#backups[@]}" -eq 1 && "$(<"${backups[0]}")" == 'local settings' ]]
 
 export TEST_UNAME=Darwin
-"$ROOT/dot" stow herdr-app >/dev/null
+"$ROOT/dot/bin/dot" init --only herdr_app >/dev/null
 [[ "$(readlink "$TARGET/.config/herdr-app/keys.json")" == "$ROOT/platforms/herdr-app/macos/keys.json" ]]
 [[ "$(readlink "$TARGET/.config/herdr-app/settings.json")" == "$ROOT/platforms/herdr-app/macos/settings.json" ]]
 [[ ! -e "$TARGET/.config/herdr-app/mods/herdr-prefix" ]]
-"$ROOT/dot" stow herdr-app >/dev/null
-"$ROOT/dot" unstow herdr-app >/dev/null
-[[ ! -L "$TARGET/.config/herdr-app/keys.json" ]]
-[[ ! -L "$TARGET/.config/herdr-app/settings.json" ]]
+"$ROOT/dot/bin/dot" update --no-pull --only herdr_app >/dev/null
+[[ "$(readlink "$TARGET/.config/herdr-app/keys.json")" == "$ROOT/platforms/herdr-app/macos/keys.json" ]]
+[[ "$(readlink "$TARGET/.config/herdr-app/settings.json")" == "$ROOT/platforms/herdr-app/macos/settings.json" ]]
 [[ "$(<"$TARGET/.config/herdr-app/data/state")" == 'runtime state' ]]
 printf 'herdr-app platform checks passed\n'

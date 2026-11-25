@@ -40,7 +40,7 @@ fish/
 | `t` | tmux attach/new |
 | `ff`/`fvim`/`eff` | fzf helpers |
 | `g`/`gst`/… | git + abbrs from `__git.init` |
-| `skill-add` | Vendor/lock upstream skills (`./dot add-skill`) |
+| `skill-add` | Install and lock upstream skills (`dot add-skill`) |
 | `aiup` / `agents-upgrade` | Upgrade mise coding agents with fresh metadata and no release-age delay (`--dry-run` to preview) |
 | `agents-prune` | Remove unused mise coding-agent versions only (`--dry-run` to preview; restart old sessions first) |
 

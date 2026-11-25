@@ -11,7 +11,7 @@ fd, and a Nerd Font. Optional integrations use Fish and Lazygit.
 Plugins use built-in `vim.pack`; Mason installs language tools.
 
 ```sh
-./dot stow nvim
+dot stow
 nvim --headless +MasonToolsInstallSync +qa
 nvim --headless '+lua assert(vim.v.errmsg == "", vim.v.errmsg); assert(_G.V36372); assert(package.loaded["v36372.plugins.keymaps"]); print("NVIM_SETUP_OK")' +qa
 ```

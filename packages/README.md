@@ -13,6 +13,5 @@ See `install-fish-system.md`.
 - Companion overlay: `herdr-companion/README.md`
 
 ```bash
-./dot herdr-plugin    # build + link + seed config
-# also attempted automatically by: ./dot stow
+dot init --only herdr_plugins    # build + link + seed config
 ```
